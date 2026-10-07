@@ -1,0 +1,10 @@
+{
+  "name": "archify",
+  "source": "github.com/tt-a1i/archify",
+  "subpath": "archify",
+  "version": "3.0.1",
+  "license": "MIT",
+  "installed": "2026-10-01",
+  "method": "manual git clone (install_skill.py 200 文件上限不适用)，裁剪 test/delta/migrations/recipes 等开发资料",
+  "verified": "node bin/archify.mjs doctor"
+}

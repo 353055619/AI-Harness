@@ -1,0 +1,10 @@
+{
+  "name": "godw-loop",
+  "version": "0.2.0",
+  "description": "godw 永续循环引擎：godw-loop-init 一次调用编排开局（godw-goal 澄清定稿首建 GOAL.md → /init → godw-loop-doc 初建账本 → 门禁+SaveWorkflow 注册自循环 workflow）；start/run/complete 三段主循环默认无人值守（用户接口=CHAT.md 只增+直投 proposal），notes 一题一文件夹（3P 文件组）+ TRAP 坑账 + history 决策摘要账；guard 写保护 hooks（human 区/GOAL 存在即冻结/CHAT 只增/notes 机械门/AGENTS.md 预算/history 校验）。",
+  "author": {
+    "name": "godw"
+  },
+  "skills": "./skills",
+  "hooks": "./hooks/hooks.json"
+}

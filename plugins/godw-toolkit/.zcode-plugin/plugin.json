@@ -1,0 +1,9 @@
+{
+  "name": "godw-toolkit",
+  "version": "0.3.1",
+  "description": "godw 原子技能包：godw-session-init（session 契约）、godw-goal（5Why+Mom Test 澄清，两章 GOAL 一次定稿——首建放行，guard 存在即冻结）、godw-report（交付呈现 delivery/DELIVERY/status.html，web/html 过 impeccable 门）+ vendored 14 件（remotion 官方系/ECC 摘取/archify）。循环引擎在 godw-loop 插件，搜索调研在 godw-finder 插件，三插件成对使用。",
+  "author": {
+    "name": "godw"
+  },
+  "skills": "./skills"
+}

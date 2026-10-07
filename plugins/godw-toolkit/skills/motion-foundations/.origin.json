@@ -1,0 +1,6 @@
+{
+  "source": "affaan-m/ECC",
+  "url": "https://github.com/affaan-m/ECC",
+  "installed": "2026-10-06",
+  "note": "上游为 293 技能单体 plugin，过重，仅摘 motion-foundations vendored（remotion-video-creation 已于 0.2.1 移除，官方 remotion-* 覆盖）"
+}

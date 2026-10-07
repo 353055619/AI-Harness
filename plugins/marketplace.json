@@ -1,0 +1,187 @@
+{
+  "name": "godw-plugins-marketplace",
+  "plugins": [
+    {
+      "name": "godw-toolkit",
+      "source": "./godw-toolkit",
+      "version": "0.3.0",
+      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-goal (5Why+Mom Test clarification, two-chapter GOAL.md, finalize-once), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 14 vendored skills (remotion official series/ECC/archify). Loop engine in godw-loop, search in godw-finder; install the three plugins in pairs.",
+      "displayName": "godw-toolkit",
+      "displayName_i18n": {
+        "zh-CN": "Godw Toolkit：Godw自研Agent工具箱"
+      },
+      "description_i18n": {
+        "zh-CN": "One-sentence kickoff: session contract → goal finalization (5Why clarification engine) → delivery presentation (status.html per-round dashboard + impeccable gate); loop engine and search capabilities are in the godw-loop / godw-finder companion plugins."
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "data-animation-skills",
+      "source": "./data-animation-skills",
+      "version": "0.1.0",
+      "description": "Data animation / animated infographic skills for AI coding agents — turn a CSV into a chart that moves, with exact, accurate numbers on every frame.",
+      "displayName": "data-animation-skills",
+      "displayName_i18n": {
+        "zh-CN": "data-animation-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "数据动画三件套：信息图序列、图表竞赛/CSV 转视频、PPT 转视频。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "explainer-video-skills",
+      "source": "./explainer-video-skills",
+      "version": "0.1.0",
+      "description": "Explainer video skills for AI coding agents: script, storyboard, and render narrated explainers, year-in-review recaps, and animated diagrams.",
+      "displayName": "explainer-video-skills",
+      "displayName_i18n": {
+        "zh-CN": "explainer-video-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "解说视频五件套：白板、等轴测、图示动画、年度回顾、全流程解说。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "javascript-animation-skills",
+      "source": "./javascript-animation-skills",
+      "version": "0.4.1",
+      "description": "Every frame drawn in JavaScript: canvas animation with zero image assets, rendered to MP4, with a code-synthesized Web Audio soundtrack and an A/V sync check.",
+      "displayName": "javascript-animation-skills",
+      "displayName_i18n": {
+        "zh-CN": "javascript-animation-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "纯代码 canvas 动画与代码合成配乐（soundtrack）。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "kinetic-typography-skills",
+      "source": "./kinetic-typography-skills",
+      "version": "0.1.0",
+      "description": "Kinetic typography skills for AI coding agents — animate headlines, stagger text reveals, and build lyric/title videos across CSS, GSAP, Framer Motion, and Remotion.",
+      "displayName": "kinetic-typography-skills",
+      "displayName_i18n": {
+        "zh-CN": "kinetic-typography-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "大字报/动态文字动画。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "lower-thirds-skills",
+      "source": "./lower-thirds-skills",
+      "version": "0.1.0",
+      "description": "Animated lower thirds and stream overlays with a transparent background, drawn in JavaScript and rendered to WebM with alpha (OBS) or ProRes 4444 (Premiere, Resolve, Final Cut).",
+      "displayName": "lower-thirds-skills",
+      "displayName_i18n": {
+        "zh-CN": "lower-thirds-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "下三分之一字幕条/直播叠加层（透明 WebM/ProRes）。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "map-animation-skills",
+      "source": "./map-animation-skills",
+      "version": "0.1.0",
+      "description": "Map animation skills for AI coding agents — build editorial, \"Vox-style\" animated maps for explainer and documentary video: camera zooms, drawn-on routes, dropped pins, region highlights, and the 12fps stutter.",
+      "displayName": "map-animation-skills",
+      "displayName_i18n": {
+        "zh-CN": "map-animation-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "地图动画（编辑向）。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "text-message-video-skills",
+      "source": "./text-message-video-skills",
+      "version": "0.1.0",
+      "description": "Text-message animation skills for AI coding agents — turn a chat script into a scroll-stopping iMessage/WhatsApp/SMS conversation video, rendered from a messages array.",
+      "displayName": "text-message-video-skills",
+      "displayName_i18n": {
+        "zh-CN": "text-message-video-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "聊天记录弹窗动画。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "tiktok-video-skills",
+      "source": "./tiktok-video-skills",
+      "version": "0.1.0",
+      "description": "TikTok, Reels, and Shorts skills for AI coding agents — engineer short-form video that survives the swipe.",
+      "displayName": "tiktok-video-skills",
+      "displayName_i18n": {
+        "zh-CN": "tiktok-video-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "竖屏短视频三件套：字幕动画、倒计时、short-form 成片。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "web-animation-skills",
+      "source": "./web-animation-skills",
+      "version": "0.1.0",
+      "description": "Web animation skills for AI coding agents — GSAP, SVG, Lottie, micro-interactions, page transitions, and 60fps performance, installed straight into your agent.",
+      "displayName": "web-animation-skills",
+      "displayName_i18n": {
+        "zh-CN": "web-animation-skills"
+      },
+      "description_i18n": {
+        "zh-CN": "前端网页动效九件套：GSAP、SVG、Lottie、页面转场、60fps、无障碍等，产出独立 HTML。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "impeccable",
+      "source": "./impeccable/plugin",
+      "version": "4.5.0",
+      "description": "Design-quality gate for web/HTML deliverables: 58 offline anti-pattern rules (AI tells, contrast, type, layout) via the impeccable detect CLI, plus the impeccable skill with 24 /impeccable commands. Hooks are not installed; detection runs fully offline.",
+      "displayName": "Impeccable",
+      "displayName_i18n": {
+        "zh-CN": "设计质检"
+      },
+      "description_i18n": {
+        "zh-CN": "web/html 交付设计质检门禁：58 条反模式规则纯离线检测（AI 味、对比度、排版、布局），含 impeccable 技能与 detect CLI（--json 结构化输出、退出码 0/2/1）；hooks 不挂。"
+      },
+      "category": "design"
+    },
+    {
+      "name": "godw-loop",
+      "source": "./godw-loop",
+      "version": "0.1.0",
+      "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, self-loop workflow (godw-loop-round bundled), guard write-protection hooks (human zone / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
+      "displayName": "godw-loop",
+      "displayName_i18n": {
+        "zh-CN": "Godw Loop：Godw自研24小时无人值守项目开发框架"
+      },
+      "description_i18n": {
+        "zh-CN": "Three-stage main loop start->run->complete; one-proposal-one-folder notes with 3P file set; TRAP pitfall log + history decision ledger; self-loop workflow runs zero-overlap in series; guard hooks protect human zone/GOAL/notes/AGENTS.md budgets."
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "godw-finder",
+      "source": "./godw-finder",
+      "version": "0.1.0",
+      "description": "godw unified search plugin: godw-finder orchestrator (4-agent full research, tiered adoption, reference/ disk persistence + AGENTS.md index) + atomic skills plugin-finder (offline local marketplace search), skill-finder (internet skill search and safe install), web-search (web/API channels), social-search (social platforms via browser-act). Called by godw-loop-start, also user-invocable.",
+      "displayName": "godw-finder",
+      "displayName_i18n": {
+        "zh-CN": "Godw Finder: 统一搜索入口"
+      },
+      "description_i18n": {
+        "zh-CN": "Four-agent full research + plugin/skill/web/social four-atom search; research artifacts written to survey files + mirror + reference/AGENTS.md index."
+      },
+      "category": "utilities"
+    }
+  ]
+}
