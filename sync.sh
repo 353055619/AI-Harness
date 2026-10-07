@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 将 ~/.agents 镜像到本仓库并推送到 GitHub。
-# 首次运行会自动通过 gh 在 GitHub 创建私有仓库 AI-Harness。
+# 首次运行会自动通过 gh 在 GitHub 创建公开仓库 AI-Harness。
 # 用法：./sync.sh
 set -euo pipefail
 
@@ -29,7 +29,7 @@ fi
 if ! git remote get-url origin >/dev/null 2>&1; then
   GH_USER="$(gh api user --jq .login)"
   if ! gh repo view "$GH_USER/$REPO_NAME" >/dev/null 2>&1; then
-    gh repo create "$REPO_NAME" --private \
+    gh repo create "$REPO_NAME" --public \
       --description "Mirror of ~/.agents — AI agent skills & plugins" >/dev/null
     echo "已创建私有仓库 $GH_USER/$REPO_NAME"
   fi

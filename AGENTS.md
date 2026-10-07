@@ -1,6 +1,6 @@
 # AI-Harness
 
-本仓库是 `~/.agents`（本地 AI Agent 技能与插件库）的 GitHub 镜像，由 `sync.sh` 单向同步并推送，不是开发项目。远程仓库：`353055619/AI-Harness`（私有）。
+本仓库是 `~/.agents`（本地 AI Agent 技能与插件库）的 GitHub 镜像，由 `sync.sh` 单向同步并推送，不是开发项目。远程仓库：`353055619/AI-Harness`（公开）。
 
 ## 目录结构
 
