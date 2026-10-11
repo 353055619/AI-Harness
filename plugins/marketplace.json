@@ -18,14 +18,14 @@
     {
       "name": "godw-goal",
       "source": "./godw-goal",
-      "version": "0.1.0",
-      "description": "godw goal-clarification plugin: godw-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once) + vendored grill-me/grilling (mattpocock/skills frontier-based rounds interview engine, adopted wholesale). Called by godw-loop-init, also user-invocable.",
+      "version": "0.1.1",
+      "description": "godw goal-clarification plugin: godw-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once) + 4 vendored interview engines from mattpocock/skills (grill-me, grilling, grill-with-docs with ADR/glossary persistence via domain-modeling — adopted wholesale). Called by godw-loop-init, also user-invocable.",
       "displayName": "godw-goal",
       "displayName_i18n": {
         "zh-CN": "Godw Goal：需求澄清域"
       },
       "description_i18n": {
-        "zh-CN": "godw-goal 定目标（诉求升级法+5Why 组合链，两章 GOAL 一次定稿）+ vendored grill-me/grilling 访谈引擎（mattpocock/skills 整装纳入）；被 godw-loop-init 调用，也可直呼。"
+        "zh-CN": "godw-goal 定目标（诉求升级法+5Why 组合链，两章 GOAL 一次定稿）+ vendored 访谈引擎四件（grill-me/grilling/grill-with-docs/domain-modeling，mattpocock/skills 整装纳入，grill-with-docs 面向代码库场景沉淀 ADR 与术语表）；被 godw-loop-init 调用，也可直呼。"
       },
       "category": "productivity"
     },
