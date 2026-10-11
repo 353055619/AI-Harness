@@ -7,7 +7,7 @@
 - `skills/` — 技能源码（约 12 个：xiaohongshu-search、tiktok-search-videos、algo-coach 等）
 - `plugins/` — 插件源码（约 16 个 + `marketplace.json` 插件注册表）
 - `sync.sh` — 一键「安装到 `~/.agents` + 提交推送 GitHub」的脚本
-- `.zcode/skills/publish/` — 本项目专用技能 `/publish`（发布前差异检查 → `sync.sh` → 验证汇报），随仓库版本化，不安装到 `~/.agents`
+- `.zcode/skills/publish/` — 本项目专用技能 `/publish`（发布前差异检查 → `sync.sh` → 插件生效 update/install+enable → 验证汇报），随仓库版本化，不安装到 `~/.agents`
 - `~/.agents/.tools-update/`（更新备份与运行状态，16MB）不在本仓库管理范围
 
 ## 工作流：开发 → 安装 → 推送
