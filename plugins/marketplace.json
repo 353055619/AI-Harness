@@ -158,7 +158,7 @@
     {
       "name": "godw-loop",
       "source": "./godw-loop",
-      "version": "0.1.0",
+      "version": "0.2.1",
       "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, self-loop workflow (godw-loop-round bundled), guard write-protection hooks (human zone / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
       "displayName": "godw-loop",
       "displayName_i18n": {
