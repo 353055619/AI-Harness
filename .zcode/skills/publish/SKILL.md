@@ -21,9 +21,9 @@ description: AI-Harness 仓库专用发布技能：开发完成后将 skills/ �
    ```
 
    判读（`*deleting` 开头的是仓库新增文件，属正常开发产物，忽略）：
-   - 无 `<f` 输出且 `git status --porcelain` 为空 → 无任何变更，告知用户后结束。
-   - 有 `<f` 输出，且这些文件正是本次开发的改动（git status 能对上）→ 正常发布，继续。
-   - 有 `<f` 输出但 `git status --porcelain` 为空（仓库干净却存在差异）→ 差异来自 `~/.agents` 侧。**停下**，逐项列出差异，问用户：`./sync.sh pull` 回收入库，还是直接覆盖发布。未答复不继续。
+   - 无 `>f` 输出且 `git status --porcelain` 为空 → 无任何变更，告知用户后结束。
+   - 有 `>f` 输出，且这些文件正是本次开发的改动（git status 能对上）→ 正常发布，继续。
+   - 有 `>f` 输出但 `git status --porcelain` 为空（仓库干净却存在差异）→ 差异来自 `~/.agents` 侧。**停下**，逐项列出差异，问用户：`./sync.sh pull` 回收入库，还是直接覆盖发布。未答复不继续。
 
 3. **发布**：
    1. 先记录本次变更的插件清单（`sync.sh` 提交后 git status 就清空了，事后拿不到）：

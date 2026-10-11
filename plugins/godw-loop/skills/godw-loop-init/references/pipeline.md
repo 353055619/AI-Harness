@@ -8,7 +8,7 @@
 |---|---|---|
 | godw-loop | loop-init / loop-start / loop-run / loop-complete / loop-postmortem / loop-doc | 循环引擎 + guard hooks + 自循环 workflow |
 | godw-toolkit | godw-session-init / godw-goal / godw-report + vendored 14 | session 契约、目标定稿、交付呈现 |
-| godw-finder | godw-finder（编排）+ plugin-finder / skill-finder / web-search / social-search | 搜索调研域 |
+| godw-finder | godw-finder（编排）+ plugin-finder / find-skills / web-search / social-search | 搜索调研域 |
 
 ## 主循环（自循环 workflow 承载；每段走 Goal Mode）
 

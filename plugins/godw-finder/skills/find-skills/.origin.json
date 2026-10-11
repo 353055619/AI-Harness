@@ -1,0 +1,1 @@
+{"source": "vercel-labs/skills", "url": "https://github.com/vercel-labs/skills/tree/main/skills/find-skills", "installed": "2026-10-11", "note": "替代原自研 skill-finder；上游 MIT；npx skills 遥测可用 DISABLE_TELEMETRY=1 关闭"}

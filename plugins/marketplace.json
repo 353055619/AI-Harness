@@ -172,8 +172,8 @@
     {
       "name": "godw-finder",
       "source": "./godw-finder",
-      "version": "0.1.0",
-      "description": "godw unified search plugin: godw-finder orchestrator (4-agent full research, tiered adoption, reference/ disk persistence + AGENTS.md index) + atomic skills plugin-finder (offline local marketplace search), skill-finder (internet skill search and safe install), web-search (web/API channels), social-search (social platforms via browser-act). Called by godw-loop-start, also user-invocable.",
+      "version": "0.2.0",
+      "description": "godw unified search plugin: godw-finder orchestrator (4-agent full research, tiered adoption, reference/ disk persistence + AGENTS.md index) + atomic skills plugin-finder (offline local marketplace search), find-skills (skills.sh ecosystem skill search & install, vendored from vercel-labs/skills), web-search (web/API channels), social-search (social platforms via browser-act). Called by godw-loop-start, also user-invocable.",
       "displayName": "godw-finder",
       "displayName_i18n": {
         "zh-CN": "Godw Finder: 统一搜索入口"
