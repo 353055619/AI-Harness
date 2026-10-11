@@ -8,7 +8,7 @@
 |---|---|---|
 | godw-loop | loop-init / loop-start / loop-run / loop-complete / loop-postmortem / loop-doc | 循环引擎 + guard hooks + 自循环 workflow |
 | godw-toolkit | godw-session-init / godw-report + vendored 14 | session 契约、交付呈现 |
-| godw-goal | godw-goal + vendored grill-me / grilling | 需求澄清域（2026-10-11 自 godw-toolkit 拆出） |
+| godw-goal | clarify-goal + vendored grill-me / grilling / grill-with-docs / domain-modeling | 需求澄清域（2026-10-11 自 godw-toolkit 拆出） |
 | godw-finder | godw-finder（编排）+ plugin-finder / find-skills / web-search / social-search | 搜索调研域 |
 
 ## 主循环（自循环 workflow 承载；每段走 Goal Mode）
@@ -49,7 +49,10 @@ godw-loop-init --create/--update（一次调用编排全程：
 │       ├── proposed/<YYYYMMDD-主题>/proposal.md
 │       ├── changes/<YYYYMMDD-主题>/{proposal.md, plan.md, postmortem.md, BLOCKED?, 工作产物}
 │       └── archived/<YYYYMMDD-主题>/（3P 全套=done；+reject.md=rejected）
-├── docs/                         # 说明文档（按需）
+├── GLOSSARY.md                   # 项目术语表（grill-with-docs 产出，懒创建，上游默认位置）
+├── docs/
+│   ├── adr/0001-*.md             # 架构决策记录（grill-with-docs 顺序编号，懒创建）
+│   └── 其余说明文档（按需）
 ├── reference/
 │   ├── AGENTS.md                 # 调研索引之家（survey 清单+镜像+日期+用途）
 │   ├── survey-<theme>-YYYYMMDD.md

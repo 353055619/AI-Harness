@@ -1,6 +1,6 @@
 # godw-loop
 
-godw 永续循环引擎插件。godw-loop-init 一次调用编排开局（godw-goal 澄清定稿 → /init → godw-loop-doc 初建账本 → 门禁+workflow 注册），三段主循环 start（提案）→ run（派发执行）→ complete（评审收口）默认无人值守——用户接口收敛为 CHAT.md（只增）+直投 proposal；notes 一题一文件夹（3P 文件组），TRAP 坑账 + history 决策摘要账，自循环 workflow 承载（workflows/godw-loop-round.ts，init 收尾 SaveWorkflow 注册进项目），guard 写保护 hooks。
+godw 永续循环引擎插件。godw-loop-init 一次调用编排开局（clarify-goal 澄清定稿 → /init → godw-loop-doc 初建账本 → 门禁+workflow 注册），三段主循环 start（提案）→ run（派发执行）→ complete（评审收口）默认无人值守——用户接口收敛为 CHAT.md（只增）+直投 proposal；notes 一题一文件夹（3P 文件组），TRAP 坑账 + history 决策摘要账，自循环 workflow 承载（workflows/godw-loop-round.ts，init 收尾 SaveWorkflow 注册进项目），guard 写保护 hooks。
 
 - 技能：godw-loop-init（--create/--update 开局编排）/ godw-loop-start / godw-loop-run / godw-loop-complete / godw-loop-postmortem / godw-loop-doc
 - 搭配：godw-toolkit（session-init/goal/report）、godw-finder（搜索调研）成对使用

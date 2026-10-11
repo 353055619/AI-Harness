@@ -15,7 +15,7 @@ vendored 14 件（带 .origin.json，只读）：archify · motion-foundations �
 
 - **godw-loop**（循环引擎：loop-init/start/run/complete/postmortem/doc + guard hooks + 自循环 workflow）
 - **godw-finder**（搜索调研：编排 + plugin/find-skills/web/social 四原子）
-- **godw-goal**（需求澄清：godw-goal 定目标 + vendored grill-me/grilling 访谈引擎，2026-10-11 拆出）
+- **godw-goal**（需求澄清：clarify-goal 定目标 + vendored 访谈引擎四件 grill-me/grilling/grill-with-docs/domain-modeling，2026-10-11 拆出）
 
 四插件成对安装；安装从 godw-plugin-optimization 仓 workspace/agent/ 开发区经 install-plugin-file.sh 装至 ~/.agents/plugins/ + ZCode cache，UI 刷新生效。
 

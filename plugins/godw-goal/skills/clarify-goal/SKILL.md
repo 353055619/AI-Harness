@@ -1,14 +1,14 @@
 ---
-name: godw-goal
-description: godw-loop 第二步（原子技能）：定目标。强制输入原始目标文本或文件路径，经 5Why+Mom Test 组合链多轮澄清挖清真实需求，输出严格两章 GOAL.md（第一章原话照录、第二章纯澄清目标），一次定稿不再修改。agent 与人均可调用。
+name: clarify-goal
+description: 定目标原子技能：强制输入原始目标文本或文件路径，经 5Why+Mom Test 组合链多轮澄清挖清真实需求，输出严格两章 GOAL.md（第一章原话照录、第二章纯澄清目标），一次定稿不再修改。agent 与人均可调用。
 ---
 
 # 定目标 → .agents/GOAL.md（一次定稿）
 
 ## 输入（强制，缺则问用户）
 
-- 原文文本：`godw-goal "xxx"`；或
-- 文件路径：`godw-goal .agents/GOAL.md`（取第一章原话为输入）
+- 原文文本：`clarify-goal "xxx"`；或
+- 文件路径：`clarify-goal .agents/GOAL.md`（取第一章原话为输入）
 
 ## 澄清引擎（5Why + Mom Test 组合链，方法论见 references/principles.md）
 
@@ -39,7 +39,7 @@ description: godw-loop 第二步（原子技能）：定目标。强制输入原
 
 ## 定稿铁律
 
-- **执行完即定稿**：澄清收口后**首建** `.agents/GOAL.md`，两章一次写全（guard 对不存在的 GOAL.md 放行首建；存在即冻结）。无 update 模式、无修订史文件、无解锁钥匙。
-- 用户确需修改：手动编辑文件（带外行为，godw-loop-start 每轮重读自然生效）。
+- **执行完即定稿**：澄清收口后**首建** `.agents/GOAL.md`，两章一次写全；GOAL.md 已存在则冻结不写（本技能只首建，无 update 模式、无修订史文件、无解锁钥匙）。
+- 用户确需修改：手动编辑文件（带外行为）。
 - 完成门：两章字段无空白、无占位桩。
-- 交还调用方收尾：godw-loop-init 场景由 init 继续跑 /init、godw-loop-doc 初建与门禁自检；独立调用场景提示用户手动启动循环（/godw-loop-start，或项目内自循环 workflow godw-loop-round——init 收尾已注册）。
+- 交还调用方：返回 GOAL.md 路径与第二章摘要，后续动作由调用方决定。

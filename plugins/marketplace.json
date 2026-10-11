@@ -4,7 +4,7 @@
     {
       "name": "godw-toolkit",
       "source": "./godw-toolkit",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 14 vendored skills (remotion official series/ECC/archify). Since 2026-10-11 godw-goal lives in its own plugin with vendored grilling. Loop engine in godw-loop, search in godw-finder.",
       "displayName": "godw-toolkit",
       "displayName_i18n": {
@@ -18,14 +18,14 @@
     {
       "name": "godw-goal",
       "source": "./godw-goal",
-      "version": "0.1.1",
-      "description": "godw goal-clarification plugin: godw-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once) + 4 vendored interview engines from mattpocock/skills (grill-me, grilling, grill-with-docs with ADR/glossary persistence via domain-modeling — adopted wholesale). Called by godw-loop-init, also user-invocable.",
+      "version": "0.2.0",
+      "description": "godw goal-clarification plugin: clarify-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once; atomic, caller-agnostic) + 4 vendored interview engines from mattpocock/skills (grill-me, grilling, grill-with-docs with ADR/glossary persistence via domain-modeling — adopted wholesale, upstream output paths respected: root GLOSSARY.md + docs/adr/).",
       "displayName": "godw-goal",
       "displayName_i18n": {
         "zh-CN": "Godw Goal：需求澄清域"
       },
       "description_i18n": {
-        "zh-CN": "godw-goal 定目标（诉求升级法+5Why 组合链，两章 GOAL 一次定稿）+ vendored 访谈引擎四件（grill-me/grilling/grill-with-docs/domain-modeling，mattpocock/skills 整装纳入，grill-with-docs 面向代码库场景沉淀 ADR 与术语表）；被 godw-loop-init 调用，也可直呼。"
+        "zh-CN": "clarify-goal 定目标原子（诉求升级法+5Why 组合链，两章 GOAL 一次定稿，不预设调用方）+ vendored 访谈引擎四件（mattpocock/skills 整装纳入；grill-with-docs 产出根 GLOSSARY.md 与 docs/adr/，尊重上游默认位置不改道）。"
       },
       "category": "productivity"
     },
@@ -172,7 +172,7 @@
     {
       "name": "godw-loop",
       "source": "./godw-loop",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, self-loop workflow (godw-loop-round bundled), guard write-protection hooks (human zone / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
       "displayName": "godw-loop",
       "displayName_i18n": {
