@@ -4,14 +4,28 @@
     {
       "name": "godw-toolkit",
       "source": "./godw-toolkit",
-      "version": "0.3.0",
-      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-goal (5Why+Mom Test clarification, two-chapter GOAL.md, finalize-once), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 14 vendored skills (remotion official series/ECC/archify). Loop engine in godw-loop, search in godw-finder; install the three plugins in pairs.",
+      "version": "0.4.0",
+      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 14 vendored skills (remotion official series/ECC/archify). Since 2026-10-11 godw-goal lives in its own plugin with vendored grilling. Loop engine in godw-loop, search in godw-finder.",
       "displayName": "godw-toolkit",
       "displayName_i18n": {
         "zh-CN": "Godw Toolkit：Godw自研Agent工具箱"
       },
       "description_i18n": {
-        "zh-CN": "One-sentence kickoff: session contract → goal finalization (5Why clarification engine) → delivery presentation (status.html per-round dashboard + impeccable gate); loop engine and search capabilities are in the godw-loop / godw-finder companion plugins."
+        "zh-CN": "Session 契约 + 交付呈现（status.html 每轮看板 + impeccable 门）+ vendored 14 件；2026-10-11 起 godw-goal 拆出为独立插件（含 vendored grilling 访谈引擎）；循环在 godw-loop、搜索在 godw-finder。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "godw-goal",
+      "source": "./godw-goal",
+      "version": "0.1.0",
+      "description": "godw goal-clarification plugin: godw-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once) + vendored grill-me/grilling (mattpocock/skills frontier-based rounds interview engine, adopted wholesale). Called by godw-loop-init, also user-invocable.",
+      "displayName": "godw-goal",
+      "displayName_i18n": {
+        "zh-CN": "Godw Goal：需求澄清域"
+      },
+      "description_i18n": {
+        "zh-CN": "godw-goal 定目标（诉求升级法+5Why 组合链，两章 GOAL 一次定稿）+ vendored grill-me/grilling 访谈引擎（mattpocock/skills 整装纳入）；被 godw-loop-init 调用，也可直呼。"
       },
       "category": "productivity"
     },
@@ -158,7 +172,7 @@
     {
       "name": "godw-loop",
       "source": "./godw-loop",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, self-loop workflow (godw-loop-round bundled), guard write-protection hooks (human zone / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
       "displayName": "godw-loop",
       "displayName_i18n": {

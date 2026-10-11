@@ -5,7 +5,7 @@ description: 汇报呈现总入口：格式选型（markdown/html/archify/video�
 
 # 汇报呈现
 
-思想先行：汇报是交付信心产品（方法论见 godw-goal/references/principles.md）。两种用法：
+思想先行：汇报是交付信心产品（方法论见 godw-goal 插件 skills/godw-goal/references/principles.md）。两种用法：
 
 1. **循环滚动**（子 agent，被 godw-loop-complete 每轮并行调用）：按 GOAL 第二章交付格式重生成 delivery/（项目根），覆盖旧版；同步更新 .agents/DELIVERY.md；**每轮必更 .agents/status.html**——循环现状一页看板（proposed 队列 Human/Agent 计数、changes 在途与卡点、最近 5 个 done 题分数趋势、TRAP 条数），全离线单文件，同样过 impeccable detect 门留 JSON 证据。轻量验证（能打开 / 能读 / 链接活），重验留给用户点名。
 2. **完整呈现**（手动 `/godw-report [markdown|html|archify|video]`，空格分隔可多选；未给参数按判定表推荐并与用户确认一次）：
