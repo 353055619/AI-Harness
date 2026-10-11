@@ -45,13 +45,14 @@ godw-loop-init --create/--update（一次调用编排全程：
 │   ├── TRAP.md                   # 坑账：一条一行
 │   ├── CHAT.md  DELIVERY.md      # CHAT=用户↔agent 唯一异步接口（只增）
 │   ├── automation-id.txt         # 仅 cron 兜底通道使用
+│   ├── GLOSSARY.md               # 项目术语表（grill-with-docs 产出，懒创建；编排层指定落 .agents/，偏离上游默认根目录）
+│   ├── GLOSSARY-MAP.md           # 多上下文大仓的术语地图（同上；各上下文 GLOSSARY 留原位）
 │   └── notes/                    # 一题一文件夹，流转不改名
 │       ├── proposed/<YYYYMMDD-主题>/proposal.md
 │       ├── changes/<YYYYMMDD-主题>/{proposal.md, plan.md, postmortem.md, BLOCKED?, 工作产物}
 │       └── archived/<YYYYMMDD-主题>/（3P 全套=done；+reject.md=rejected）
-├── GLOSSARY.md                   # 项目术语表（grill-with-docs 产出，懒创建，上游默认位置）
 ├── docs/
-│   ├── adr/0001-*.md             # 架构决策记录（grill-with-docs 顺序编号，懒创建）
+│   ├── adr/0001-*.md             # 架构决策记录（grill-with-docs 顺序编号，懒创建，上游默认位置）
 │   └── 其余说明文档（按需）
 ├── reference/
 │   ├── AGENTS.md                 # 调研索引之家（survey 清单+镜像+日期+用途）

@@ -18,11 +18,11 @@ godw 需求澄清域插件（v0.2.0，2026-10-11 自 godw-toolkit 拆出升级�
 - **grilling**（vendored 整装）：把松散计划压成可承诺方案——frontier 分轮批量提问，按其自带规则原样执行
 - **grill-with-docs**（vendored 整装）：同上但有代码库对齐，决策沉淀为 ADR/术语表
 
-## grill 系列文档的落点（上游默认位置，不改道）
+## grill 系列文档的落点
 
-- **术语表**：项目根 `GLOSSARY.md`（多上下文大仓为 `GLOSSARY-MAP.md` + 各上下文一份）
-- **决策记录**：`docs/adr/0001-<slug>.md` 顺序编号，懒创建
-- 改道=修改引擎，违背整装原则；godw-loop 目录全景已登记这两个位置（循环项目认得它们）
+- **术语表**：`.agents/GLOSSARY.md`（多上下文大仓为 `.agents/GLOSSARY-MAP.md`；各上下文自己的 GLOSSARY 留在原位）——编排层（clarify-goal 调用时）指定，**偏离上游默认的项目根**，引擎本体未改
+- **决策记录**：`docs/adr/0001-<slug>.md` 顺序编号，懒创建——上游默认位置，不改道
+- godw-loop 目录全景已登记上述位置（循环项目认得它们）
 
 上游更新方式：tools-update 不进自研插件内部，grill-me/grilling 的更新 = 按 `.origin.json` 整装重拉（不拆不改）。
 

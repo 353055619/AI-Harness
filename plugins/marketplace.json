@@ -18,14 +18,14 @@
     {
       "name": "godw-goal",
       "source": "./godw-goal",
-      "version": "0.2.0",
-      "description": "godw goal-clarification plugin: clarify-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once; atomic, caller-agnostic) + 4 vendored interview engines from mattpocock/skills (grill-me, grilling, grill-with-docs with ADR/glossary persistence via domain-modeling — adopted wholesale, upstream output paths respected: root GLOSSARY.md + docs/adr/).",
+      "version": "0.2.1",
+      "description": "godw goal-clarification plugin: clarify-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once; atomic, caller-agnostic) + 4 vendored interview engines from mattpocock/skills (grill-me, grilling, grill-with-docs with ADR/glossary persistence via domain-modeling — adopted wholesale, glossary at .agents/ via orchestration override, ADR at docs/adr/ per upstream default).",
       "displayName": "godw-goal",
       "displayName_i18n": {
         "zh-CN": "Godw Goal：需求澄清域"
       },
       "description_i18n": {
-        "zh-CN": "clarify-goal 定目标原子（诉求升级法+5Why 组合链，两章 GOAL 一次定稿，不预设调用方）+ vendored 访谈引擎四件（mattpocock/skills 整装纳入；grill-with-docs 产出根 GLOSSARY.md 与 docs/adr/，尊重上游默认位置不改道）。"
+        "zh-CN": "clarify-goal 定目标原子（诉求升级法+5Why 组合链，两章 GOAL 一次定稿，不预设调用方）+ vendored 访谈引擎四件（mattpocock/skills 整装纳入；grill-with-docs 术语表编排指定落 .agents/GLOSSARY.md，ADR 按上游默认 docs/adr/）。"
       },
       "category": "productivity"
     },
@@ -172,7 +172,7 @@
     {
       "name": "godw-loop",
       "source": "./godw-loop",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, self-loop workflow (godw-loop-round bundled), guard write-protection hooks (human zone / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
       "displayName": "godw-loop",
       "displayName_i18n": {
