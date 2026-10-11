@@ -9,7 +9,7 @@ godw 原子技能包（v0.5.0，2026-10-07 v3 改版：循环拆往 godw-loop、
 | godw-session-init | session 工作契约（11 条，原 godw-init 更名） |
 | godw-report | 交付呈现：delivery/ + .agents/DELIVERY.md + .agents/status.html（每轮看板）；web/html 强制 impeccable detect 门 |
 
-vendored 13 件（带 .origin.json，只读）：motion-foundations · remotion-{best-practices, captions, create, docs, interactivity, maps, markup, multimedia, render, saas, studio, upgrade}（archify 已迁 godw-html）。
+vendored 14 件（带 .origin.json，只读）：humanizer-zh（中文去 AI 味编辑规范，godw-report 文字交付操作化）· motion-foundations · remotion-{best-practices, captions, create, docs, interactivity, maps, markup, multimedia, render, saas, studio, upgrade}（archify 已迁 godw-html）。
 
 ## 搭配
 
@@ -22,6 +22,7 @@ vendored 13 件（带 .origin.json，只读）：motion-foundations · remotion-
 
 ## 版本
 
+- 0.5.1（2026-10-11）：vendored humanizer-zh（op7418，MIT，31 条中文模式）；godw-report 文字交付（markdown/DELIVERY.md）过 humanizer-zh，与 html 的 impeccable 门对称。
 - 0.5.0（2026-10-11）：html 制作独立成域——godw-report 的 html 格式改调 godw-html 插件 make-html；archify 迁往 godw-html；vendored 14→13。
 - 0.4.0（2026-10-11）：godw-goal 连同新增 vendored grill-me/grilling（mattpocock/skills）拆出为独立 godw-goal 插件；本包聚焦 session 契约与交付呈现。
 - 0.3.0（2026-10-07）：v3 大改版——godw-init→godw-session-init；godw-goal 定稿制+5Why 引擎；godw-report 增 status.html；godw-start/pursue/review/research 拆出（进 godw-loop 与 godw-finder）；hooks 随 guard 移入 godw-loop。

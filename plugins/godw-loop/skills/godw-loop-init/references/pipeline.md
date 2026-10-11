@@ -7,7 +7,7 @@
 | 插件 | 技能 | 职责 |
 |---|---|---|
 | godw-loop | loop-init / loop-start / loop-run / loop-complete / loop-postmortem / loop-doc | 循环引擎 + guard hooks + 自循环 workflow |
-| godw-toolkit | godw-session-init / godw-report + vendored 13 | session 契约、交付呈现 |
+| godw-toolkit | godw-session-init / godw-report + vendored 14 | session 契约、交付呈现 |
 | godw-html | make-html + vendored frontend-design / archify | html 制作域（2026-10-11 设立；godw-report html 格式调度至此） |
 | godw-goal | clarify-goal + vendored grill-me / grilling / grill-with-docs / domain-modeling | 需求澄清域（2026-10-11 自 godw-toolkit 拆出） |
 | godw-finder | godw-finder（编排）+ plugin-finder / find-skills / web-search / social-search | 搜索调研域 |

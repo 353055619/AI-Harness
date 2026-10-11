@@ -4,14 +4,14 @@
     {
       "name": "godw-toolkit",
       "source": "./godw-toolkit",
-      "version": "0.5.0",
-      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 13 vendored skills (remotion official series/ECC). Since 2026-10-11 godw-goal (with vendored grilling) and godw-html (html production with frontend-design/archify) are separate plugins. Loop engine in godw-loop, search in godw-finder.",
+      "version": "0.5.1",
+      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 14 vendored skills (remotion official series/ECC/humanizer-zh Chinese anti-slop editing). Since 2026-10-11 godw-goal (with vendored grilling) and godw-html (html production with frontend-design/archify) are separate plugins. Loop engine in godw-loop, search in godw-finder.",
       "displayName": "godw-toolkit",
       "displayName_i18n": {
         "zh-CN": "Godw Toolkit：Godw自研Agent工具箱"
       },
       "description_i18n": {
-        "zh-CN": "Session 契约 + 交付呈现（status.html 每轮看板 + impeccable 门）+ vendored 13 件；2026-10-11 起 godw-goal（含 grilling）与 godw-html（html 制作，含 frontend-design/archify）为独立插件；循环在 godw-loop、搜索在 godw-finder。"
+        "zh-CN": "Session 契约 + 交付呈现（status.html 每轮看板 + impeccable 门）+ vendored 14 件（含 humanizer-zh 中文去 AI 味）；2026-10-11 起 godw-goal（含 grilling）与 godw-html（html 制作，含 frontend-design/archify）为独立插件；循环在 godw-loop、搜索在 godw-finder。"
       },
       "category": "productivity"
     },
@@ -200,7 +200,7 @@
     {
       "name": "godw-loop",
       "source": "./godw-loop",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, self-loop workflow (godw-loop-round bundled), guard write-protection hooks (human zone / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
       "displayName": "godw-loop",
       "displayName_i18n": {
