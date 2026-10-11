@@ -20,7 +20,7 @@
 
 特殊场景：`~/.agents` 侧通过 tools-update 更新了 vendored 技能（如 kinetic-typography）需要回收入库时，运行 `./sync.sh pull`（反向镜像 + 提交推送）。
 
-前置条件：`gh` 已登录（`gh auth status` 验证）、`rsync` 可用（macOS 自带）。
+前置条件：本地 SSH 密钥可连 GitHub（`ssh -T git@github.com` 验证，日常推送认证用）；`gh` 已登录（`gh auth status` 验证，仅首次建仓需要）；`rsync` 可用（macOS 自带）。
 
 ## 编辑规则
 
@@ -32,3 +32,4 @@
 
 - 仓库总量约 135MB / 5800+ 文件，主要是各插件的 `showcase.gif`（最大 6.5MB），远低于 GitHub 限制，无需 LFS。
 - 技能/插件目录普遍为 `SKILL.md`（技能定义）+ `scripts/`/`references/`（实现与参考）；vendored 技能另带 `.origin.json`（上游来源标记）。
+- 远程用 SSH 地址（`git@github.com:353055619/AI-Harness.git`），git 推拉走本地 SSH 密钥认证，不读 `gh` 令牌/钥匙串；`gh` 仅在首次运行建仓时调用（创建仓库只能走 GitHub API，SSH 做不到）。
