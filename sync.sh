@@ -27,7 +27,7 @@ ensure_remote() {
         --description "AI agent skills & plugins — main repo, installed to ~/.agents" >/dev/null
       echo "已创建公开仓库 $GH_USER/$REPO_NAME"
     fi
-    git remote add origin "https://github.com/$GH_USER/$REPO_NAME.git"
+    git remote add origin "git@github.com:$GH_USER/$REPO_NAME.git"
   fi
 }
 
