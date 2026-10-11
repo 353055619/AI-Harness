@@ -1,13 +1,14 @@
-# godw-loop 流水线：四插件、三段循环与目录全景
+# godw-loop 流水线：五插件、三段循环与目录全景
 
-2026-10-07 v3 定稿（godw 拍板，v1 四段制与 v2 notes 扁平件退役，演化史见 design-notes.md）；2026-10-11 godw-goal 拆出为独立插件。
+2026-10-07 v3 定稿（godw 拍板，v1 四段制与 v2 notes 扁平件退役，演化史见 design-notes.md）；2026-10-11 godw-goal 拆出为独立插件，同日 html 制作独立为 godw-html 插件。
 
-## 四插件格局
+## 五插件格局
 
 | 插件 | 技能 | 职责 |
 |---|---|---|
 | godw-loop | loop-init / loop-start / loop-run / loop-complete / loop-postmortem / loop-doc | 循环引擎 + guard hooks + 自循环 workflow |
-| godw-toolkit | godw-session-init / godw-report + vendored 14 | session 契约、交付呈现 |
+| godw-toolkit | godw-session-init / godw-report + vendored 13 | session 契约、交付呈现 |
+| godw-html | make-html + vendored frontend-design / archify | html 制作域（2026-10-11 设立；godw-report html 格式调度至此） |
 | godw-goal | clarify-goal + vendored grill-me / grilling / grill-with-docs / domain-modeling | 需求澄清域（2026-10-11 自 godw-toolkit 拆出） |
 | godw-finder | godw-finder（编排）+ plugin-finder / find-skills / web-search / social-search | 搜索调研域 |
 

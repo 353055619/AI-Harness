@@ -1,0 +1,9 @@
+{
+  "name": "chart-visualization-skills",
+  "version": "1.0.0",
+  "description": "AntV data visualization skills: G2 charts, G6 graphs, X6 editors, infographics, GPT-Vis, T8 narrative text viz, icon retrieval. Upstream: github.com/antvis/chart-visualization-skills. Local adaptations for ZCode: this .zcode-plugin wrapper manifest, and upstream .claude-plugin/marketplace.json renamed to .upstream-claudefmt (Claude inline format conflicts with ZCode validation). Update = re-clone upstream + redo both adaptations.",
+  "author": {
+    "name": "AntV Visualization Team"
+  },
+  "skills": "./skills"
+}
