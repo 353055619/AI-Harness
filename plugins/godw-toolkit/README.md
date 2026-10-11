@@ -22,6 +22,7 @@ vendored 14 件（带 .origin.json，只读）：humanizer-zh（中文去 AI 味
 
 ## 版本
 
+- 0.5.2（2026-10-11）：godw-report 全部输出文字（含 html 页面文字、status.html、视频文案）统一过 humanizer-zh——汇报就说人话；impeccable 只管样式不管文字。
 - 0.5.1（2026-10-11）：vendored humanizer-zh（op7418，MIT，31 条中文模式）；godw-report 文字交付（markdown/DELIVERY.md）过 humanizer-zh，与 html 的 impeccable 门对称。
 - 0.5.0（2026-10-11）：html 制作独立成域——godw-report 的 html 格式改调 godw-html 插件 make-html；archify 迁往 godw-html；vendored 14→13。
 - 0.4.0（2026-10-11）：godw-goal 连同新增 vendored grill-me/grilling（mattpocock/skills）拆出为独立 godw-goal 插件；本包聚焦 session 契约与交付呈现。

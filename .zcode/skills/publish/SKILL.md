@@ -44,6 +44,7 @@ description: AI-Harness 仓库专用发布技能：开发完成后将 skills/ �
    对每个变更插件二选一：
    - 已在 `zcode plugins list` 输出中 → `zcode plugins update <name>@$MARKET`（重物化缓存到新版本）
    - 不在列表中 → 先 `zcode plugins install <name>@$MARKET`，**再** `zcode plugins enable <name>@$MARKET`。装 ≠ 启用：漏掉 enable 的插件默认 disabled，技能不加载。前提：新插件已在 `marketplace.json` 注册条目（source 指向其目录），否则市场里找不到它。
+   - 已知坑：`sync.sh` 刚跑完就 install 新插件，可能报 `plugin_dependency_missing` 且依赖是它自己——市场快照秒级未刷新的时序问题，不是配置错误；等约 20 秒重试即可。
 
    技能（skills/ 下）无需此步：装到 `~/.agents/skills` 后新开会话自动生效。
 

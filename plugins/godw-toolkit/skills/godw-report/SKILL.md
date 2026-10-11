@@ -12,5 +12,5 @@ description: 汇报呈现总入口：格式选型（markdown/html/archify/video�
    - 判定表、思想关（结论前置 / 1 分钟读完 / 他的口径 / 附件化，缺一不过）见 references/selection.md。
    - 调度（全部走原子技能，无 godw* 格式执行者）：markdown → agent 直写；html → **godw-html 插件 make-html**（html 制作统一入口：frontend-design 设计规范先行 → web-animation/antv/archify 选型实现 → impeccable detect 质检门，详见其 SKILL.md）；archify → archify（godw-html 插件，上游技能直连，选型其 SKILL.md 自带）；video → 视频制作系按品类选型（explainer-video / chart-animation / wrapped-video 等），Remotion 工程走 remotion-best-practices 官方系，成片形态用 caption-animation / kinetic-typography / lower-thirds / short-form-video 等按需叠加。iart-ai 系、antvis 系与 impeccable 以上游插件形态按名调用（装好后即可用）；remotion 官方系与 ECC 摘取随本包（godw-toolkit）。多选先 markdown 定思想载体，再同源换皮，产物落同一项目。
    - 验证关：每格式按其技能验证节执行、证据落盘；独立复核只看证据不看结论，逐项对上才标过。web/html 交付另强制过 impeccable detect 门（判据与命令见 references/selection.md 验证关；status.html 同管）。
-   - G2 精简 + slop 清单（见 references/selection.md）：先保义删到不能再删，再删 10%。正文文字（markdown / DELIVERY.md）另过 vendored **humanizer-zh**（中文去 AI 味 31 条模式，编辑约束与保留边界见其 SKILL.md——html 有 impeccable 检测门，文字以此对称）。
+   - G2 精简 + slop 清单（见 references/selection.md）：先保义删到不能再删，再删 10%。**所有输出文字统一过 vendored humanizer-zh**（markdown 正文 / html 页面文字 / status.html / DELIVERY.md / 视频字幕与口播文案——汇报就说人话；impeccable detect 管样式反模式，humanizer-zh 管文字反模式，互补不重叠；31 条模式与保留边界见其 SKILL.md）。
 3. 产出 delivery/ 成品（项目根）+ .agents/DELIVERY.md（结论前置 / 打开方式 / 假设；验证两栏：已验证附证据路径、未覆盖如实列出）。

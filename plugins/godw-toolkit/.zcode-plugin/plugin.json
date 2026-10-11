@@ -1,6 +1,6 @@
 {
   "name": "godw-toolkit",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "godw 原子技能包：godw-session-init（session 契约）、godw-report（交付呈现 delivery/DELIVERY/status.html，web/html 过 impeccable 门）+ vendored 14 件（remotion 官方系/ECC 摘取/humanizer-zh 中文去 AI 味编辑规范）。2026-10-11 起 godw-goal 拆出为独立插件（含 vendored grilling），html 制作拆往 godw-html 插件（archify 随迁）。循环引擎在 godw-loop 插件，搜索调研在 godw-finder 插件。",
   "author": {
     "name": "godw"
