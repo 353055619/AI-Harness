@@ -1,12 +1,13 @@
 # godw-html
 
-godw html 制作域插件（v0.3.1，2026-10-11 设立：html 制作能力自 godw-toolkit/godw-report 的格式调度中独立成域；2026-10-15 增设 lo-fi 线支撑 godw-design 原型段；2026-10-17 成品线规范按页面类型分工、双门收口、裁剪 effective-html 路由器）。
+godw html 制作域插件（v0.4.0，2026-10-11 设立：html 制作能力自 godw-toolkit/godw-report 的格式调度中独立成域；2026-10-15 增设 lo-fi 线支撑 godw-design 原型段；2026-10-17 成品线规范按页面类型分工、裁剪 effective-html 路由器，同日增设渲染验收门 render_gate 成三门收口）。
 
 ## 技能（2 自研 + 7 vendored）
 
 | 技能 | 职责 |
 |---|---|
-| make-html | html 制作统一入口，双线：**成品线**（设计规范按页面类型选 → 实现选型路由 → 单文件构建 → 质检门）；**lo-fi 线**（workbench-conventions 定分区 → html-wireframe 探结构 → html-prototype 可交互交付） |
+| make-html | html 制作统一入口，双线：**成品线**（设计规范按页面类型选 → 实现选型路由 → 单文件构建 → 三门）；**lo-fi 线**（workbench-conventions 定分区 → html-wireframe 探结构 → html-prototype 可交互交付 → 同三门） |
+| scripts/render_gate.mjs | 渲染验收门（自研）：错误收集/三宽度截图/溢出与图片断言/交互冒烟，JSON+截图证据，退出码裁决 |
 | workbench-conventions | 自研工作台惯例：审批四区（宜搭/飞书出处）、split-view（Fiori/Camunda 出处）、页面×角色可见性矩阵——工作台类页面出稿前必经 |
 | humanizer-zh | 文字门依赖（godw-toolkit 提供，按名调用）：页内文字过 31 条中文反模式，与 impeccable 样式门互补 |
 | frontend-design | vendored 设计规范（anthropics 官方）：token 计划两步法、AI 味五大雷区自校准、质量地板（成品线 dashboard/app 用） |
@@ -25,7 +26,7 @@ godw html 制作域插件（v0.3.1，2026-10-11 设立：html 制作能力自 go
 
 - **web-animation-skills**（iart-ai）：网页动效九件套，产出独立 HTML
 - **chart-visualization-skills**（antvis）：G2/G6/X6/信息图等图表系（上游仓为 marketplace 内联定义，本仓为其加了 `.zcode-plugin/plugin.json` 包装清单；上游更新=重克隆+重加包装）
-- **impeccable**：html 质检门（58 条反模式 detect CLI），双线共用
+- **impeccable**：html 样式门（58 条反模式 detect CLI），双线共用
 
 ## 与 godw-report 的分工
 

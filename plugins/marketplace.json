@@ -4,8 +4,8 @@
     {
       "name": "godw-toolkit",
       "source": "./godw-toolkit",
-      "version": "0.5.2",
-      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 14 vendored skills (remotion official series/ECC/humanizer-zh Chinese anti-slop editing). Since 2026-10-11 godw-goal (with vendored grilling) and godw-html (html production with frontend-design/archify) are separate plugins. Loop engine in godw-loop, search in godw-finder.",
+      "version": "0.5.3",
+      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 15 vendored skills (remotion official series/ECC/humanizer-zh Chinese anti-slop editing/design-doc-mermaid). Since 2026-10-11 godw-goal (with vendored grilling) and godw-html (html production with frontend-design/archify) are separate plugins. Loop engine in godw-loop, search in godw-finder.",
       "displayName": "godw-toolkit",
       "displayName_i18n": {
         "zh-CN": "Godw Toolkit：Godw自研Agent工具箱"
@@ -18,7 +18,7 @@
     {
       "name": "godw-html",
       "source": "./godw-html",
-      "version": "0.3.1",
+      "version": "0.4.0",
       "description": "godw html-production plugin, two lines: production line (make-html orchestrator: frontend-design design-first token plan -> web-animation/antv/archify implementation routing -> single-file build -> impeccable detect gate) and lo-fi line (workbench-conventions partitioning -> vendored html-wireframe structure exploration -> vendored html-prototype interactive delivery with JSON-mock data; delegated by godw-design prototype stage) + vendored frontend-design (anthropics official, 971K installs), archify, and 4 effective-html skills (html router + html-wireframe + html-prototype + design-artifact, plannotator/effective-html MIT 3627 stars) + self-built workbench-conventions (approval 4-zone / RBAC / split-view from official DingTalk Yida, Feishu Approval, SAP Fiori My Inbox, Camunda Tasklist docs). Sibling plugins called by name: web-animation-skills, chart-visualization-skills, impeccable. Called by godw-report html format and godw-design prototype stage, also user-invocable.",
       "displayName": "godw-html",
       "displayName_i18n": {

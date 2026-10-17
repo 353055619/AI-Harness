@@ -24,10 +24,11 @@ description: html 制作统一入口（原子编排）：lo-fi 线（线框/可�
    - 纯静态排版 → 按 frontend-design 规范直写，不引动效库
    - 类型可叠加（图表页也可有动效），总量受 frontend-design「大胆只花一处」纪律约束
 3. **构建**：单文件 html（内联 CSS/JS，离线可开）；响应式、键盘焦点、reduced-motion、可访问性按 frontend-design 质量地板执行（lo-fi 线按 html-prototype 自带的响应式与可访问性纪律执行）。
-4. **质检门（必经，双门各自留证据，不跳步）**：
+4. **质检门（必经，三门串行各自留证据，不跳步）**：
    - 样式门：impeccable detect（--json 证据落盘，退出码 0 过门）；
-   - 文字门：页内全部文字（含标题/按钮/空态提示）过 vendored humanizer-zh（godw-toolkit，31 条中文模式）——impeccable 管样式反模式，humanizer-zh 管文字反模式，互补不重叠；
-   - 任一门不过回对应步骤修，不带病交付。
+   - **渲染门**：`node <插件根>/scripts/render_gate.mjs <产出.html> --smoke`（本插件自带，纯 node+CDP 连本机 Chrome，设 GODW_CHROME 可指定浏览器）——收集运行时错误/资源加载失败，375/768/1280 三宽度截图与横向溢出检测，交互冒烟点遍导航按钮；**退出码 0 过门，2 不过**；证据落盘 `<产出目录>/render-gate-evidence/`（render-gate.json + 三张截图）；**必须亲眼看三张截图对照所选设计规范评审**，发现视觉问题回第 2 步修；
+   - 文字门：页内全部文字（含标题/按钮/空态提示）过 vendored humanizer-zh（godw-toolkit，31 条中文模式）—— impeccable 管样式反模式，渲染门管"真的能看"，humanizer-zh 管文字反模式，三者互补不重叠；
+   - 任一门不过回对应步骤修，不带病交付。两线共用本步（lo-fi 线的角色走查评分仍归调用方 design-gate）。
 
 ## 边界
 
