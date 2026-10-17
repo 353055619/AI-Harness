@@ -1,6 +1,6 @@
 {
   "name": "godw-html",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "godw html 制作域插件：make-html（自研编排，双线：成品线 frontend-design 设计规范先行 → web-animation/antv/archify 实现选型路由 → 单文件构建 → impeccable detect 质检门；lo-fi 线 workbench-conventions 定分区 → vendored html-wireframe 探结构 → vendored html-prototype 可交互交付，供 godw-design 原型段委派）+ vendored frontend-design（anthropics 官方设计规范，971K installs）/ archify（图示制作）/ effective-html 选件四技能（html 路由器 + html-wireframe + html-prototype + design-artifact，plannotator/effective-html MIT 3627★）+ 自研 workbench-conventions（审批四区/RBAC 分区/split-view 惯例，宜搭/飞书/Fiori/Camunda 官方出处）。web-animation-skills、chart-visualization-skills、impeccable 为按名调用的兄弟插件。被 godw-report html 格式与 godw-design 原型段调用，也可用户直呼。",
   "author": {
     "name": "godw"

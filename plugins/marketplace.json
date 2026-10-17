@@ -18,7 +18,7 @@
     {
       "name": "godw-html",
       "source": "./godw-html",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "description": "godw html-production plugin, two lines: production line (make-html orchestrator: frontend-design design-first token plan -> web-animation/antv/archify implementation routing -> single-file build -> impeccable detect gate) and lo-fi line (workbench-conventions partitioning -> vendored html-wireframe structure exploration -> vendored html-prototype interactive delivery with JSON-mock data; delegated by godw-design prototype stage) + vendored frontend-design (anthropics official, 971K installs), archify, and 4 effective-html skills (html router + html-wireframe + html-prototype + design-artifact, plannotator/effective-html MIT 3627 stars) + self-built workbench-conventions (approval 4-zone / RBAC / split-view from official DingTalk Yida, Feishu Approval, SAP Fiori My Inbox, Camunda Tasklist docs). Sibling plugins called by name: web-animation-skills, chart-visualization-skills, impeccable. Called by godw-report html format and godw-design prototype stage, also user-invocable.",
       "displayName": "godw-html",
       "displayName_i18n": {
