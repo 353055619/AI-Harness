@@ -1,7 +1,7 @@
 {
   "name": "godw-goal",
-  "version": "0.2.1",
-  "description": "godw 需求澄清域插件：clarify-goal（自研原子：诉求升级法四步 + 5Why+Mom Test 组合链，一次一问，严格两章 GOAL.md 一次定稿）+ vendored 访谈引擎四件 grill-me / grilling / grill-with-docs / domain-modeling（mattpocock/skills，整装纳入不改动，上游更新=整装重拉；grill-with-docs 面向有代码库场景并沉淀 ADR 与术语表——编排层指定术语表落 .agents/GLOSSARY.md，ADR 按上游默认 docs/adr/）。原子能力，独立调用，不预设调用方。",
+  "version": "0.2.2",
+  "description": "godw 需求澄清域插件：clarify-goal（自研原子：诉求升级法四步 + 5Why+Mom Test 组合链，一次一问，严格两章 GOAL.md 一次定稿）+ vendored 访谈引擎四件 grill-me / grilling / grill-with-docs / domain-modeling（mattpocock/skills，整装纳入不改动，上游更新=整装重拉；grill-with-docs 面向有代码库场景并沉淀 ADR 与术语表——编排层指定术语表落 .agents/GLOSSARY.md，ADR 按上游默认 docs/adr/）+ vendored prototype（一次性原型验证，LOGIC/UI 双分支）。原子能力，独立调用，不预设调用方。",
   "author": {
     "name": "godw"
   },

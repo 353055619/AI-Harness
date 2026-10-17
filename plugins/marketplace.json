@@ -18,14 +18,14 @@
     {
       "name": "godw-html",
       "source": "./godw-html",
-      "version": "0.1.0",
-      "description": "godw html-production plugin: make-html (orchestrator: frontend-design design-first token plan -> web-animation/antv/archify implementation routing -> single-file build -> impeccable detect gate) + vendored frontend-design (anthropics official, 971K installs) and archify. Sibling plugins called by name: web-animation-skills, chart-visualization-skills, impeccable. Called by godw-report html format, also user-invocable.",
+      "version": "0.3.0",
+      "description": "godw html-production plugin, two lines: production line (make-html orchestrator: frontend-design design-first token plan -> web-animation/antv/archify implementation routing -> single-file build -> impeccable detect gate) and lo-fi line (workbench-conventions partitioning -> vendored html-wireframe structure exploration -> vendored html-prototype interactive delivery with JSON-mock data; delegated by godw-design prototype stage) + vendored frontend-design (anthropics official, 971K installs), archify, and 4 effective-html skills (html router + html-wireframe + html-prototype + design-artifact, plannotator/effective-html MIT 3627 stars) + self-built workbench-conventions (approval 4-zone / RBAC / split-view from official DingTalk Yida, Feishu Approval, SAP Fiori My Inbox, Camunda Tasklist docs). Sibling plugins called by name: web-animation-skills, chart-visualization-skills, impeccable. Called by godw-report html format and godw-design prototype stage, also user-invocable.",
       "displayName": "godw-html",
       "displayName_i18n": {
         "zh-CN": "Godw HTML：html 制作域"
       },
       "description_i18n": {
-        "zh-CN": "make-html 统一入口（frontend-design 设计先行 → web-animation/antv/archify 选型实现 → 单文件构建 → impeccable 质检门）+ vendored frontend-design（anthropics 官方）/archify；兄弟插件按名调用；被 godw-report html 格式调度，也可直呼。"
+        "zh-CN": "make-html 统一入口双线：成品线（frontend-design 设计先行 → web-animation/antv/archify 选型实现 → 单文件构建 → impeccable 质检门）；lo-fi 线（workbench-conventions 定分区 → vendored html-wireframe 探结构 → html-prototype 可交互交付，JSON 模拟数据+跳转+状态流转）+ vendored frontend-design/archify/effective-html 选件四技能 + 自研 workbench-conventions（审批四区/RBAC/split-view，宜搭/飞书/Fiori/Camunda 官方出处）；被 godw-report html 格式与 godw-design 原型段调用，也可直呼。"
       },
       "category": "utilities"
     },
@@ -46,7 +46,7 @@
     {
       "name": "godw-goal",
       "source": "./godw-goal",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "description": "godw goal-clarification plugin: clarify-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once; atomic, caller-agnostic) + 4 vendored interview engines from mattpocock/skills (grill-me, grilling, grill-with-docs with ADR/glossary persistence via domain-modeling — adopted wholesale, glossary at .agents/ via orchestration override, ADR at docs/adr/ per upstream default).",
       "displayName": "godw-goal",
       "displayName_i18n": {
@@ -54,6 +54,20 @@
       },
       "description_i18n": {
         "zh-CN": "clarify-goal 定目标原子（诉求升级法+5Why 组合链，两章 GOAL 一次定稿，不预设调用方）+ vendored 访谈引擎四件（mattpocock/skills 整装纳入；grill-with-docs 术语表编排指定落 .agents/GLOSSARY.md，ADR 按上游默认 docs/adr/）。"
+      },
+      "category": "productivity"
+    },
+    {
+      "name": "godw-design",
+      "source": "./godw-design",
+      "version": "0.1.0",
+      "description": "godw design-pipeline plugin, pipeline self-contained (world-first per 2026-10-14 research: no existing tool chains requirement-clarification -> architecture doc -> interactive lo-fi prototype end to end): make-design orchestrates five unattended stages — leg split (split-goal, in-plugin) -> 4A architecture doc ARCH-4A.md (business/application/data-information/technology sections + C4 diagrams + machine-readable handoff JSON block) -> design-gate text-layer acceptance -> interactive lo-fi prototype (handoff-block-driven, JSON-mock DB + real navigation + real state transitions, delegated to godw-html lo-fi line) -> design-gate prototype-layer acceptance. Self-evolution: simulated users expose requirement gaps, which flow back into GOAL files via delivery-boundary check (controlled GOAL.md revision with evolution log); prototype fixes sync document fixes; iterate until nothing-left-to-change (PASS), 5-round safety cap. split-goal decomposes finalized GOAL.md into architecture leg GOAL-4A.md + experience leg GOAL-UX.md (decompose-only-never-invent, GOAL.md read-only, legs revisable). design-gate = rehearsing production ops with simulated users: per-persona subagents (three-source union: business users + doc roles + admin/ops/audit ecosystem roles) walk business flows mentally on docs and hands-on on prototypes, plus developer reproduce-from-doc exam and architect 7-dimension quality review; feedback tri-classified blockers/gaps/suggestions. The /goal-mode unattended iteration: finalized GOAL.md is the contract, skill orchestration is the loop. + vendored c4-architecture (softaworks/agent-toolkit MIT, Mermaid C4). Sibling plugins called by name: godw-goal, godw-html.",
+      "displayName": "godw-design",
+      "displayName_i18n": {
+        "zh-CN": "Godw Design：设计流水线域（需求→4A架构→可交互原型）"
+      },
+      "description_i18n": {
+        "zh-CN": "流水线自包含的godw设计域插件。make-design 五段无人值守流水线：双腿分解（split-goal，本插件）→ 4A 架构文档（业务/应用/数据·信息/技术四节 + C4 图 + 机器可读衔接块）→ 文字层验收门 → 可交互低保真原型（JSON 模拟数据库 + 跳转全通 + 状态真实流转，委托 godw-html lo-fi 线）→ 原型层验收门。自进化：模拟用户暴露的需求缺口经交付边界判定回写 GOAL 系文件（GOAL.md 受控修订+演进记录），改低保真同步改文档，迭代到改无可改（PASS），安全上限 5 轮。design-gate = 提前用 Agent 模拟真实用户做生产运维：分类用户（三源并集，含管理员/运维等生态角色）思维业务流走查文档/实操原型 + 开发者只凭文档复现考试 + 架构师七维质量审视；反馈三分类 blockers/gaps/suggestions。+ vendored c4-architecture（softaworks MIT）。按名调用 godw-goal（仅 clarify-goal 定稿）、godw-html。"
       },
       "category": "productivity"
     },

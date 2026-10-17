@@ -1,0 +1,9 @@
+{
+  "name": "godw-design",
+  "version": "0.1.0",
+  "description": "godw 设计流水线域插件（流水线自包含）：make-design（自研编排：GOAL.md 双腿分解 → 4A 架构文档（业务/应用/数据·信息/技术四节骨架 + C4 图 + 机器可读衔接块）→ design-gate 文字层验收 → 可交互低保真原型（衔接块程序化消费，JSON 模拟数据 + 跳转 + 状态流转）→ design-gate 原型层验收；需求回流协议：模拟用户暴露的需求缺口经交付边界判定回写 GOAL 系文件（GOAL.md 受控修订+演进记录留痕），修改低保真同步修改文档，全链进化到改无可改才放行，安全上限 5 轮）+ split-goal（自研原子：GOAL.md 只分解不发明地拆为架构腿 GOAL-4A.md + 体验腿 GOAL-UX.md，缺口显式标记，GOAL.md 只读、两腿随迭代修订）+ design-gate（自研验收闭环原子：提前用 Agent 模拟真实用户做生产版本运维——分类用户思维业务流走查/原型实操 + 开发者只凭文档复现 + 架构师七维质量审视；角色三源并集全覆盖含管理员/运维等生态角色；评分卡三分类 blockers/gaps/suggestions）+ vendored c4-architecture（softaworks/agent-toolkit，MIT，Mermaid C4 图方法学）。上游复用 godw-goal（clarify-goal 定稿），下游复用 godw-html（effective-html lo-fi 线 + workbench-conventions）。全链先例不存在（2026-10-14 调研确认），本插件补中段即首创。",
+  "author": {
+    "name": "godw"
+  },
+  "skills": "./skills"
+}
