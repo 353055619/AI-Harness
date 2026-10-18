@@ -74,7 +74,7 @@
     {
       "name": "data-animation-skills",
       "source": "./data-animation-skills",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Data animation / animated infographic skills for AI coding agents — turn a CSV into a chart that moves, with exact, accurate numbers on every frame.",
       "displayName": "data-animation-skills",
       "displayName_i18n": {
@@ -116,7 +116,7 @@
     {
       "name": "kinetic-typography-skills",
       "source": "./kinetic-typography-skills",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Kinetic typography skills for AI coding agents — animate headlines, stagger text reveals, and build lyric/title videos across CSS, GSAP, Framer Motion, and Remotion.",
       "displayName": "kinetic-typography-skills",
       "displayName_i18n": {
@@ -144,7 +144,7 @@
     {
       "name": "map-animation-skills",
       "source": "./map-animation-skills",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Map animation skills for AI coding agents — build editorial, \"Vox-style\" animated maps for explainer and documentary video: camera zooms, drawn-on routes, dropped pins, region highlights, and the 12fps stutter.",
       "displayName": "map-animation-skills",
       "displayName_i18n": {
@@ -158,7 +158,7 @@
     {
       "name": "web-animation-skills",
       "source": "./web-animation-skills",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "description": "Web animation skills for AI coding agents — GSAP, SVG, Lottie, micro-interactions, page transitions, and 60fps performance, installed straight into your agent.",
       "displayName": "web-animation-skills",
       "displayName_i18n": {

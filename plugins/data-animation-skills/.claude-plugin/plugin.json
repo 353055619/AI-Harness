@@ -1,6 +1,6 @@
 {
   "name": "data-animation-skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Data animation / animated infographic skills for AI coding agents — turn a CSV into a chart that moves, with exact, accurate numbers on every frame.",
   "author": {
     "name": "iart.ai",
