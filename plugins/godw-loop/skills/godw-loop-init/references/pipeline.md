@@ -1,25 +1,25 @@
 # godw-loop 流水线：五插件、三段循环与目录全景
 
-2026-10-07 v3 定稿（godw 拍板，v1 四段制与 v2 notes 扁平件退役，演化史见 design-notes.md）；2026-10-11 godw-goal 拆出为独立插件，同日 html 制作独立为 godw-html 插件。
+2026-10-07 v3 定稿（godw 拍板，v1 四段制与 v2 notes 扁平件退役，演化史见 design-notes.md）；2026-10-11 godw-goal 拆出为独立插件，同日 html 制作独立为 godw-html 插件；2026-10-18 v4 自治驱动改 ZCode 原生 goal 模式（自循环 workflow 与 cron 兜底通道退役）。
 
 ## 五插件格局
 
 | 插件 | 技能 | 职责 |
 |---|---|---|
-| godw-loop | loop-init / loop-start / loop-run / loop-complete / loop-postmortem / loop-doc | 循环引擎 + guard hooks + 自循环 workflow |
+| godw-loop | loop-init / loop-start / loop-run / loop-complete / loop-postmortem / loop-doc | 循环引擎 + guard hooks |
 | godw-toolkit | godw-session-init / godw-report + vendored 14 | session 契约、交付呈现 |
 | godw-html | make-html + vendored frontend-design / archify | html 制作域（2026-10-11 设立；godw-report html 格式调度至此） |
 | godw-goal | clarify-goal + vendored grill-me / grilling / grill-with-docs / domain-modeling | 需求澄清域（2026-10-11 自 godw-toolkit 拆出） |
 | godw-finder | godw-finder（编排）+ plugin-finder / find-skills / web-search / social-search | 搜索调研域 |
 
-## 主循环（自循环 workflow 承载；每段走 Goal Mode）
+## 主循环（goal 模式承载；一轮=一次 goal 迭代）
 
 ```
 godw-loop-init --create/--update（一次调用编排全程：
-   goal 澄清定稿 → /init → doc 初建账本 → 门禁+首commit+workflow 注册）
-                                                      │ (用户手动启动)
+   goal 澄清定稿 → /init → doc 初建账本 → 门禁+首commit+goal 启动指引）
+                                                      │ (用户 /goal 启动)
                                                       ▼
- ┌─ 循环 ──────────────────────────────────────────────┐
+ ┌─ 循环（ZCode 原生 /goal 会话目标自动迭代）────────────┐
  │ godw-loop-start（门禁+消化CHAT+分析+调 finder+提案）  │
  │   ▼                                                 │
  │ godw-loop-run（清遗留→FIFO 派发→plan.md→执行）        │
@@ -29,7 +29,7 @@ godw-loop-init --create/--update（一次调用编排全程：
  └─────────────────────────────────────────────────────┘
 ```
 
-- 承载：自循环 workflow `godw-loop-round`（唯一自动化编排，脚本内 while，天然串行零重叠；init 收尾 SaveWorkflow 注册进项目 `.zcode/workflows/`——插件清单无 workflows 组件，随包文件不会被自动注册；cron 兜底也调 workflow）；技能链仅最后手段。
+- 承载：ZCode 原生 `/goal` 会话目标（启动模板见 goal-prompt.md）——一次设置自动迭代，每轮迭代走一遍技能链；会话内天然串行零重叠。会话关闭循环即停，重设同一目标即续；`/goal pause` 暂停、`/goal clear` 结束。
 - 中断恢复：段间以 git + changes/ 状态锚定，从当前段续。
 
 ## 目录全景（新项目）
@@ -45,7 +45,6 @@ godw-loop-init --create/--update（一次调用编排全程：
 │   ├── history.json              # 决策摘要账（godw-loop-doc 独占；根标记）
 │   ├── TRAP.md                   # 坑账：一条一行
 │   ├── CHAT.md  DELIVERY.md      # CHAT=用户↔agent 唯一异步接口（只增）
-│   ├── automation-id.txt         # 仅 cron 兜底通道使用
 │   ├── GLOSSARY.md               # 项目术语表（grill-with-docs 产出，懒创建；编排层指定落 .agents/，偏离上游默认根目录）
 │   ├── GLOSSARY-MAP.md           # 多上下文大仓的术语地图（同上；各上下文 GLOSSARY 留原位）
 │   └── notes/                    # 一题一文件夹，流转不改名
@@ -64,7 +63,7 @@ godw-loop-init --create/--update（一次调用编排全程：
 ├── .tmp/  .trash/                # 临时区 / 停尸房
 ```
 
-退役件（v1/v2 骨架有、本版不建）：BACKLOG.md（队列=proposed/）、state.json（history 即根标记）、postmortem/ 目录（history+TRAP 替代）、docs/research.md（survey 替代）、GOAL.history.md 与 .goal-unlock（定稿制）、meta.json 与 index.json（单一事实源原则）。
+退役件（v1/v2 骨架有、本版不建）：BACKLOG.md（队列=proposed/）、state.json（history 即根标记）、postmortem/ 目录（history+TRAP 替代）、docs/research.md（survey 替代）、GOAL.history.md 与 .goal-unlock（定稿制）、meta.json 与 index.json（单一事实源原则）、automation-id.txt 与 .zcode/workflows/ 注册件（v4 起 workflow/cron 通道退役，驱动=goal 模式）。
 
 ## --update 迁移映射
 
@@ -75,10 +74,11 @@ godw-loop-init --create/--update（一次调用编排全程：
 | 旧 journal/流水、旧 postmortem/ 目录 | docs/ 存档（冻结史不动） |
 | state.json / GOAL.history.md / .goal-unlock / meta.json / index.json | 挪 .trash |
 | QUESTIONS.md / INSTRUCTION.md | 条目转 CHAT.md（补时间戳与 From 头），旧件挪 .trash |
+| .zcode/workflows/ 注册件、automation-id.txt（v3 遗物） | 挪 .trash（v4 goal 模式驱动，无注册件） |
 
 ## hooks 保障（随 godw-loop 分发）
 
-1. workspace/human/ 写锁（automation-id.txt 在场即拦）
+1. workspace/human/ 写锁（agent 写入一律拦；用户带外编辑不受影响）
 2. GOAL.md 存在即拦写（定稿制；文件不存在时放行首建=goal 澄清后一次写全两章；双位置兼容旧项目 docs/GOAL.md）
 2b. CHAT.md 只增（Edit 拦；Write 前缀追加校验，首建放行）
 3. notes 机械门：文件夹名正则、三态闭集、proposal 头部格式、archived 拒改写

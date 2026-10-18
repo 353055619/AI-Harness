@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""godw-loop 关键控制节点守卫（v5：GOAL 首建放行 + CHAT.md 只增门）。
+"""godw-loop 关键控制节点守卫（v6：human 区无条件只读，automation-id 依赖随 cron 兜底退役）。
 
 用法：guard.py <pre|state>，工具调用 JSON 由 stdin 传入。
 exit 2 = 拦截/报错（stderr 反馈给模型）；exit 0 = 放行。
 
 pre 规则（PreToolUse Write|Edit）：
-  1) workspace/human/ 写锁：.agents/automation-id.txt 在场（cron 兜底循环运行）即拦
+  1) workspace/human/ 写锁：用户领地 agent 一律不可写（铁律"human 区只读"的机械化；
+     用户自己经编辑器/Finder 带外写入，不经 agent 工具不受此门影响）
   2) GOAL.md 定稿锁（v5 语义：存在即冻结，首建放行）：docs/GOAL.md（历史位）与
      .agents/GOAL.md 文件不存在时放行首建（godw-goal 澄清收口后一次写全两章=定稿）；
      存在即拦——改目标=用户手动编辑（带外）
@@ -146,11 +147,10 @@ def _rel_under(path, directory):
 def rule_human(cf, root, agents):
     human_cf = os.path.join(root, "workspace", "human").casefold()
     if cf == human_cf or cf.startswith(human_cf + os.sep):
-        if os.path.exists(os.path.join(agents, "automation-id.txt")):
-            block(
-                "workspace/human/ 是用户领地，循环运行期间上锁不可写。"
-                "确需写入：先经用户暂停循环（删 automation-id.txt 与定时注册）。"
-            )
+        block(
+            "workspace/human/ 是用户领地，agent 只读不可写。"
+            "确需变更：用户手动编辑（带外行为，不经 agent 工具）。"
+        )
 
 
 def rule_goal(cf, root, path):

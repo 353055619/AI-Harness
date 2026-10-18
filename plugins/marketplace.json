@@ -4,7 +4,7 @@
     {
       "name": "godw-toolkit",
       "source": "./godw-toolkit",
-      "version": "0.5.3",
+      "version": "0.5.4",
       "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 15 vendored skills (remotion official series/ECC/humanizer-zh Chinese anti-slop editing/design-doc-mermaid). Since 2026-10-11 godw-goal (with vendored grilling) and godw-html (html production with frontend-design/archify) are separate plugins. Loop engine in godw-loop, search in godw-finder.",
       "displayName": "godw-toolkit",
       "displayName_i18n": {
@@ -88,8 +88,8 @@
     {
       "name": "explainer-video-skills",
       "source": "./explainer-video-skills",
-      "version": "0.1.0",
-      "description": "Explainer video skills for AI coding agents: script, storyboard, and render narrated explainers, year-in-review recaps, and animated diagrams.",
+      "version": "0.1.1",
+      "description": "Explainer video skills for AI coding agents: script, storyboard, and render narrated explainers and animated diagrams.",
       "displayName": "explainer-video-skills",
       "displayName_i18n": {
         "zh-CN": "explainer-video-skills"
@@ -156,34 +156,6 @@
       "category": "productivity"
     },
     {
-      "name": "text-message-video-skills",
-      "source": "./text-message-video-skills",
-      "version": "0.1.0",
-      "description": "Text-message animation skills for AI coding agents — turn a chat script into a scroll-stopping iMessage/WhatsApp/SMS conversation video, rendered from a messages array.",
-      "displayName": "text-message-video-skills",
-      "displayName_i18n": {
-        "zh-CN": "text-message-video-skills"
-      },
-      "description_i18n": {
-        "zh-CN": "聊天记录弹窗动画。"
-      },
-      "category": "productivity"
-    },
-    {
-      "name": "tiktok-video-skills",
-      "source": "./tiktok-video-skills",
-      "version": "0.1.0",
-      "description": "TikTok, Reels, and Shorts skills for AI coding agents — engineer short-form video that survives the swipe.",
-      "displayName": "tiktok-video-skills",
-      "displayName_i18n": {
-        "zh-CN": "tiktok-video-skills"
-      },
-      "description_i18n": {
-        "zh-CN": "竖屏短视频三件套：字幕动画、倒计时、short-form 成片。"
-      },
-      "category": "productivity"
-    },
-    {
       "name": "web-animation-skills",
       "source": "./web-animation-skills",
       "version": "0.1.0",
@@ -214,14 +186,14 @@
     {
       "name": "godw-loop",
       "source": "./godw-loop",
-      "version": "0.2.6",
-      "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, self-loop workflow (godw-loop-round bundled), guard write-protection hooks (human zone / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
+      "version": "0.3.0",
+      "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), driven by the native /goal session objective (set once, auto-iterates, one round per goal iteration); one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, guard write-protection hooks (human zone read-only / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
       "displayName": "godw-loop",
       "displayName_i18n": {
-        "zh-CN": "Godw Loop：Godw自研24小时无人值守项目开发框架"
+        "zh-CN": "Godw Loop：Godw 自研无人值守项目开发循环框架"
       },
       "description_i18n": {
-        "zh-CN": "Three-stage main loop start->run->complete; one-proposal-one-folder notes with 3P file set; TRAP pitfall log + history decision ledger; self-loop workflow runs zero-overlap in series; guard hooks protect human zone/GOAL/notes/AGENTS.md budgets."
+        "zh-CN": "三段主循环 start→run→complete，由 ZCode 原生 /goal 会话目标驱动自动迭代（一次设置，每轮迭代走一遍技能链）；notes 一题一文件夹（3P 文件组）；TRAP 坑账 + history 决策摘要账；guard hooks 保护 human 区/GOAL/notes/AGENTS.md 预算。"
       },
       "category": "productivity"
     },

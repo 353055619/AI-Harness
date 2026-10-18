@@ -26,7 +26,7 @@ npx remotion still Short out/f-mid.png  --frame=N  --props='{...}'
 npx remotion still Short out/f-end.png  --frame=L  --props='{...}'
 scripts/contact-sheet.sh sheet.png out/f-hook.png out/f-mid.png out/f-end.png
 npx remotion render Short out/short.mp4 --props='{...}'
-scripts/probe-mp4.sh out/short.mp4 1080x1920 30      # vertical short contract
+scripts/probe-mp4.sh out/video.mp4 1920x1080 30      # 16:9 contract
 ```
 
 **Heavy — Manim**: save the last frame (`-s`) / a range (`-n a,b`), tile, assert.

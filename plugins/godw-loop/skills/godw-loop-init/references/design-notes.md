@@ -7,6 +7,7 @@
 - 2026-10-06：结构迁移 v2/v3（delivery 回根、journal 退役、notes 扁平三态、git 标配）；loop 引擎定官方积木版（Automations+Goal Mode，CLI 路线撤档）。
 - 2026-10-07：**v3 大改版**（godw 拍板）——loop 系列独立成 godw-loop 插件；notes 一题一文件夹（proposed/changes/archived + 3P 文件组 proposal/plan/postmortem）；meta.json/index.json 裁撤（状态单一事实源=目录+文件存在性+proposal 头）；三段主循环 start→run→complete；proposal 并入 start；双 finder 并入新插件 godw-finder 代替 godw-search；GOAL 定稿制（update 退役）；guard 机械门扩 notes/预算/history；自循环 workflow 唯一自动化编排（hook 调起 rejected：拦截器非调度器）；BACKLOG/state.json/postmortem 目录/GOAL.history 等退役；AGENTS.md 体系改"至少两层+关键子树多层+机械预算"；status.html 每轮看板；TRAP.md 坑账。
 - 2026-10-07：**planv2（首试用 AI-SoftwareDevelopment 暴露问题后拍板）**——初始化段重排：init 一次调用编排 goal 澄清定稿→/init→doc 初建账本→门禁+首 commit（goal 先行，账本初建即带真实口径；首轮缺位问题连根拔）；GOAL.md 写入通道修正为"首建放行、存在即冻结"（guard v5，原一律拦写与 init/goal 文本互斥致首步即断）；INSTRUCTION/QUESTIONS 合并为 CHAT.md（只增，用户↔agent 唯一异步接口，另一接口=直投 proposal）；start 无在场模式（移除用户讨论分支，默认无人值守）；workflow 注册机制修正：插件清单无 workflows 组件，随包文件不会被注册，init 收尾显式 SaveWorkflow 进项目 .zcode/workflows/。
+- 2026-10-18：**v4 精简**——自循环 workflow（godw-loop-round.ts）与 cron 兜底通道退役，自治驱动改 ZCode 原生 `/goal` 会话目标（一次设置自动迭代，每轮迭代走三段技能链，会话内天然串行；启动模板=init references/goal-prompt.md）；automation-id.txt 退役，guard v6 human 区写锁改无条件拦 agent 写（用户带外编辑不受影响）；init 收尾由注册 workflow 改为输出 goal 启动指引。
 
 ## 铁律（全族）
 
@@ -30,4 +31,4 @@
 
 - 主通道：本仓（godw-plugin-optimization）git 推拉；workspace/agent/ 三插件开发区即源。
 - 安装：install-plugin-file.sh 从开发区装至 ~/.agents/plugins/ + ZCode cache；ZCode UI 刷新插件 + 新会话生效。
-- 定时自动化是工作区级配置不随文件走，换机重注册（cron 兜底通道才需要；主通道为自循环 workflow，随项目 .zcode/workflows/ 走）。
+- 定时自动化已随 v4 退役，无需换机重注册；循环驱动=goal 模式随会话走，新机器重开 /goal 即续。

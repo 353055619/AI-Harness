@@ -1,6 +1,6 @@
 ---
 name: godw-loop-start
-description: 循环第一段（默认无人值守）：门禁（结构+GOAL 两章）→ 消化 CHAT.md 增量 → 深分析（history/archived/TRAP/reference）→ 调 godw-finder 调研 → 自主定稿提案 → 查重后写 proposed 提案。循环契约与 cron 兜底见 references/。
+description: 循环第一段（默认无人值守）：门禁（结构+GOAL 两章）→ 消化 CHAT.md 增量 → 深分析（history/archived/TRAP/reference）→ 调 godw-finder 调研 → 自主定稿提案 → 查重后写 proposed 提案。循环契约与 goal 驱动见 references/。
 ---
 
 # 循环·第一段：提案 → .agents/notes/proposed/

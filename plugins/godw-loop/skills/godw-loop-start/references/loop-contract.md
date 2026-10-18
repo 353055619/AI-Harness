@@ -51,9 +51,9 @@ changes/ 遗留 > Human 最早 > Agent 最早；BLOCKED 文件内容=原因+起�
 2. 评审独立：postmortem 必须新鲜上下文子智能体；派发一切子智能体 prompt **原样带禁令**（hook 只拦主会话）。
 3. **Bash 禁令**：notes/ 的**文件内容**严禁经 Bash 写入（echo/sed/tee/cat 重定向绕 hook 属违规，评审专项抽查）；文件夹移动（mv）与经 .trash 的删除仅限 run/complete 的状态转移动作，内容创建与修改一律走 Write/Edit 过机械门。
 4. human 区只读；删除先进 .trash；.tmp 随时可清；宣称完成必须有当场验证过的输出。
-5. 每轮三段各设 AC 目标（Goal Mode，可改小重设）；报告只写实际跑过的命令。
+5. 每轮三段各设 AC 目标（可改小重设）；报告只写实际跑过的命令。
 6. 派生子智能体配额意识：一轮 ≤ 4（finder）+3（complete）个。
 
-## cron 兜底（references/cron-prompt.md）
+## goal 模式驱动（godw-loop-init/references/goal-prompt.md）
 
-automation 触发的会话调自循环 workflow（godw-loop-round）；注册参数与 prompt 模板见该文件；默认节奏 4h；automation-id.txt 仅此通道使用（在场=human 区写锁生效）。
+循环驱动=ZCode 原生 `/goal` 会话目标：一次设置自动迭代，每轮迭代走 start→run→complete 技能链，验收锚=GOAL.md 第二章与 AC；目标文本模板见该文件。会话关闭循环即停，重设同一目标即续；`/goal pause` 暂停人工介入、`/goal clear` 结束循环。手动跑单轮直接调 `/godw-loop-start`。
