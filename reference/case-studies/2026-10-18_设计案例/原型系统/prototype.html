@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生态运营管理 · 交互原型（godw-design 2a）</title>
+<style>
+:root{--bd:#d4d4d8;--fg:#18181b;--mut:#71717a;--bg:#f4f4f5;--card:#fff;--blue:#2563eb;--orange:#d97706;--green:#16a34a;--dgreen:#15803d;--red:#dc2626;--purple:#7c3aed;--gray:#71717a}
+*{box-sizing:border-box}body{margin:0;font:14px/1.55 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--fg);background:var(--bg)}
+header{background:#fff;border-bottom:1px solid var(--bd);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header b{font-size:15px}
+.pill{border:1px solid var(--bd);border-radius:14px;padding:2px 10px;font-size:12px;background:#fff}
+.layout{display:flex;min-height:calc(100vh - 49px)}
+nav{width:220px;background:#fff;border-right:1px solid var(--bd);padding:10px 0;flex-shrink:0}
+nav .lv1{font-weight:600;padding:8px 14px 2px}
+nav a{display:flex;justify-content:space-between;text-decoration:none;color:var(--fg);padding:5px 14px 5px 26px}
+nav a:hover{background:var(--bg)}
+nav a.on{background:#eef2ff;color:var(--blue)}
+nav a.sub{padding-left:38px;color:#3f3f46}
+.cnt{background:var(--red);color:#fff;border-radius:9px;font-size:11px;padding:0 6px;min-width:16px;text-align:center;display:inline-block}
+main{flex:1;padding:16px 20px;max-width:1080px}
+h2{margin:0 0 4px;font-size:18px}h3{margin:18px 0 8px;font-size:15px}
+.crumb{color:var(--mut);font-size:12px;margin-bottom:8px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;background:#fff}
+th,td{border:1px solid var(--bd);padding:6px 9px;text-align:left;font-size:13px;vertical-align:top}
+th{background:#fafafa;font-weight:600}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.f{display:flex;flex-direction:column;gap:3px;margin:6px 0}
+.f label{font-size:12px;color:var(--mut)}
+input,select,textarea{padding:6px 8px;border:1px solid var(--bd);border-radius:6px;font:inherit;background:#fff;min-width:0}
+button{padding:6px 14px;border:1px solid var(--bd);border-radius:6px;background:#fff;cursor:pointer;font:inherit}
+button.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+button.dgr{background:#fff;border-color:var(--red);color:var(--red)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.b{display:inline-block;border-radius:10px;padding:1px 9px;font-size:12px;color:#fff;white-space:nowrap}
+.b.gray{background:var(--gray)}.b.blue{background:var(--blue)}.b.orange{background:var(--orange)}.b.green{background:var(--green)}.b.dgreen{background:var(--dgreen)}.b.red{background:var(--red)}.b.purple{background:var(--purple)}
+.mut{color:var(--mut);font-size:12px}
+.ok{color:var(--dgreen)}.err{color:var(--red)}
+.msg{border-radius:6px;padding:8px 12px;margin:10px 0}
+.msg.errm{background:#fef2f2;border:1px solid #fecaca;color:var(--red)}
+.msg.okm{background:#f0fdf4;border:1px solid #bbf7d0;color:var(--dgreen)}
+.msg.infom{background:#eff6ff;border:1px solid #bfdbfe;color:var(--blue)}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{border-left:2px solid var(--bd);margin-left:6px;padding:2px 0 8px 12px;position:relative}
+.tl li::before{content:"";position:absolute;left:-5px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--bd)}
+.tl li.bad::before{background:var(--red)}
+.tl li.bad{color:var(--red)}
+.empty{padding:26px;text-align:center;color:var(--mut);border:1px dashed var(--bd);border-radius:8px;background:#fff}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tabs button{border-radius:14px;padding:3px 12px;font-size:12px}
+.tabs button.on{background:var(--fg);color:#fff;border-color:var(--fg)}
+.hint{background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 12px;font-size:12px;margin:10px 0}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:4px 12px;font-size:13px}
+.kv div:nth-child(odd){color:var(--mut)}
+@media(max-width:760px){nav{width:100%;border-right:none;border-bottom:1px solid var(--bd)}.layout{flex-direction:column}.kv{grid-template-columns:110px 1fr}}
+@media(prefers-reduced-motion:no-preference){a,button{transition:background .15s}}
+</style>
+</head>
+<body>
+<header>
+<b>生态运营管理</b><span class="pill">交互原型 · 模拟数据</span>
+<span style="flex:1"></span>
+<span class="mut">当前角色：</span>
+<select id="who" onchange="switchUser(this.value)"></select>
+<button onclick="resetDB()" title="恢复初始演示数据">重置演示数据</button>
+</header>
+<div class="layout">
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+<script>
+/* ============ 工具 ============ */
+function pad3(n){ n=Number(n); return n<10?'00'+n:(n<100?'0'+n:''+n); }
+function now(){ return fmt(new Date()); }
+function fmt(d){ var p=function(n){return (n<10?'0':'')+n}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function money(n){ return Number(n).toLocaleString('zh-CN',{minimumFractionDigits:2}); }
+var BADGE = {草稿:'gray',评审中:'blue',审批中:'blue',合同待补:'blue',验收中:'blue',已完结:'dgreen',已驳回:'red',待审批:'orange',已完成:'orange',已撤回:'gray',待接收:'orange',待授权签核:'orange',已退回:'red',已发送统一付款平台:'purple','已发送统一付款平台':'purple',生效:'dgreen',失效:'gray',已生效:'dgreen',已生成:'blue',已冲回:'red',已提交:'gray',未读:'orange',已读:'gray',通过:'green',不通过:'red'};
+function badge(st){ return '<span class="b '+(BADGE[st]||'gray')+'">'+esc(st)+'</span>'; }
+
+/* ============ 种子数据 ============ */
+function seedDB(){
+ var U = {
+  zhang:{name:'张接口',role:'业务接口人',dept:'生态合作部'},
+  wang:{name:'王审批',role:'审批人'},
+  li:{name:'李评审',role:'评审人'},
+  zhao:{name:'赵验收',role:'验收人'},
+  qian:{name:'钱授权签核',role:'授权签核人'},
+  wangb:{name:'王候补',role:'审批人'},
+  lib:{name:'李候补',role:'评审人'},
+  zhaob:{name:'赵候补',role:'验收人'},
+  admin:{name:'管理员',role:'系统管理员'},
+  chen:{name:'小陈',role:'社区开发者',external:true,uid:'u-chen'},
+  liu:{name:'小刘',role:'社区开发者',external:true,uid:'u-liu'}
+ };
+ return {
+  users:U, session:'zhang',
+  seq:{CP:9,INC:7,PAY:8,WT:5,WLC:4,H:200,N:30},
+  pools:{ '激励审批':['wang','wangb'], '激励验收':['zhao','zhaob'], '支付评审':['li','lib'], '支付授权签核':['qian'], '白名单审批':['wang'] },
+  roster:['zhang','wang','wangb','li','lib','zhao','zhaob','qian'],
+  coop:[
+   {id:'CP-001',name:'高校AI联合实验室',creator:'zhang',status:'草稿',partners:[{name:'高校A',type:'组织',cat:'高校人才',ident:'91350000JAVA0001XA',account:{name:'高校A财务处',no:'6222 0001 0001 0001',bank:'工行厦门分行'},quota:null,contract:null}]},
+   {id:'CP-002',name:'开源工具链共建',creator:'zhang',status:'评审中',reviewer:'li',approver:'wang',acceptor:'zhao',partners:[
+     {name:'高校A',type:'组织',cat:'高校人才',ident:'91350000JAVA0001XA',account:{name:'高校A财务处',no:'6222 0001 0001 0001',bank:'工行厦门分行'},quota:null,contract:{attach:'合作框架合同.pdf',no:'XY-2026-0118',amount:400000}},
+     {name:'老周',type:'个人',cat:'开发者',ident:'u-zhou',account:{name:'周某',no:'6222 0002 0002 0002',bank:'建行厦门分行'},quota:80000,contract:null}]},
+   {id:'CP-003',name:'芯片适配迁移',creator:'zhang',status:'审批中',reviewer:'li',approver:'wang',acceptor:'zhao',partners:[
+     {name:'老周',type:'个人',cat:'开发者',ident:'u-zhou',account:{name:'周某',no:'6222 0002 0002 0002',bank:'建行厦门分行'},quota:60000,contract:null}]},
+   {id:'CP-004',name:'高校数据平台共建',creator:'zhang',status:'合同待补',reviewer:'li',approver:'wang',acceptor:'zhao',partners:[
+     {name:'企业X',type:'组织',cat:'生态伙伴',ident:'91350000ENTP0001XB',account:{name:'企业X对公',no:'6222 0003 0003 0003',bank:'中行福州分行'},quota:null,contract:null}]},
+   {id:'CP-005',name:'社区生态运营支撑',creator:'zhang',status:'验收中',reviewer:'li',approver:'wang',acceptor:'zhao',partners:[
+     {name:'高校A',type:'组织',cat:'高校人才',ident:'91350000JAVA0001XA',account:{name:'高校A财务处',no:'6222 0001 0001 0001',bank:'工行厦门分行'},quota:null,contract:{attach:'生态支撑合同.pdf',no:'XY-2026-0201',amount:500000}}]},
+   {id:'CP-006',name:'网关组件改造',creator:'zhang',status:'已完结',reviewer:'li',approver:'wang',acceptor:'zhao',partners:[
+     {name:'老周',type:'个人',cat:'开源社区',ident:'u-zhou',account:{name:'周某',no:'6222 0002 0002 0002',bank:'建行厦门分行'},quota:100000,contract:null}]},
+   {id:'CP-007',name:'内部工具试点',creator:'zhang',status:'已驳回',reviewer:'li',approver:'wang',acceptor:'zhao',partners:[
+     {name:'高校A',type:'组织',cat:'高校人才',ident:'91350000JAVA0001XA',account:{name:'高校A财务处',no:'6222 0001 0001 0001',bank:'工行厦门分行'},quota:null,contract:null}]},
+   {id:'CP-008',name:'开源社区运营活动',creator:'zhang',status:'验收中',reviewer:'li',approver:'wang',acceptor:'zhao',partners:[
+     {name:'企业X',type:'组织',cat:'生态伙伴',ident:'91350000ENTP0001XB',account:{name:'企业X对公',no:'6222 0003 0003 0003',bank:'中行福州分行'},quota:null,contract:{attach:'活动合作协议.pdf',no:'XY-2026-0330',amount:300000}}]}
+  ],
+  inc:[
+   {id:'INC-001',dev:'chen',task:'揭榜任务 #1221 · 数据流水线组件',attach:'成果说明-v1.pdf',decl:20000,approved:null,approver:'wang',acceptor:'zhao',status:'待审批',account:{name:'陈某',no:'6222 0101 0101 0101',bank:'招行北京分行'}},
+   {id:'INC-002',dev:'chen',task:'开发者文档中文化 · 第二批',attach:'翻译交付清单.xlsx',decl:15000,approved:12000,approver:'wang',acceptor:'zhao',status:'验收中',account:{name:'陈某',no:'6222 0101 0101 0101',bank:'招行北京分行'}},
+   {id:'INC-003',dev:'chen',task:'揭榜任务 #0987 · 构建加速工具',attach:'成果包.zip',decl:30000,approved:30000,approver:'wang',acceptor:'zhao',status:'已完结',account:{name:'陈某',no:'6222 0101 0101 0101',bank:'招行北京分行'}},
+   {id:'INC-004',dev:'chen',task:'样例工程迁移',attach:'迁移报告.docx',decl:50000,approved:null,approver:'wang',acceptor:'zhao',status:'已驳回',account:{name:'陈某',no:'6222 0101 0101 0101',bank:'招行北京分行'}},
+   {id:'INC-005',dev:'chen',task:'揭榜任务 #1355 · SDK 示例补全',attach:'示例代码仓.pdf',decl:20000,approved:20000,approver:'wang',acceptor:'zhao',status:'已完结',account:{name:'陈某',no:'6222 0101 0101 0101',bank:'招行北京分行'}},
+   {id:'INC-006',dev:'chen',task:'活动讲师课酬申报（演示撤回）',attach:'课酬明细.xlsx',decl:8000,approved:null,approver:'wang',acceptor:'zhao',status:'待审批',account:{name:'陈某',no:'6222 0101 0101 0101',bank:'招行北京分行'},withdrawn:true}
+  ],
+  pay:[
+   {id:'PAY-001',fromType:'CP',fromId:'CP-005',payee:'高校A',cat:'高校人才',account:{name:'高校A财务处',no:'6222 0001 0001 0001',bank:'工行厦门分行'},amount:200000,basis:'验收记录 #1（通过）',contractNo:'XY-2026-0201',reviewer:'li',signee:'qian',by:'zhang',status:'待接收'},
+   {id:'PAY-002',fromType:'CP',fromId:'CP-005',payee:'高校A',cat:'高校人才',account:{name:'高校A财务处',no:'6222 0001 0001 0001',bank:'工行厦门分行'},amount:250000,basis:'验收记录 #2（通过）',contractNo:'XY-2026-0201',reviewer:'li',signee:'qian',by:'zhang',status:'评审中'},
+   {id:'PAY-003',fromType:'INC',fromId:'INC-005',payee:'小陈',cat:'开发者',account:{name:'陈某',no:'6222 0101 0101 0101',bank:'招行北京分行'},amount:20000,basis:'激励合并付款 · 审批通过金额',contractNo:'',reviewer:'li',signee:'qian',by:'wang',status:'待授权签核'},
+   {id:'PAY-004',fromType:'CP',fromId:'CP-008',payee:'企业X',cat:'生态伙伴',account:{name:'企业X对公（错误户名）',no:'6222 0003 9999 9999',bank:'中行福州分行'},amount:100000,basis:'验收记录 #1（通过）',contractNo:'XY-2026-0330',reviewer:'li',signee:'qian',by:'zhang',status:'已退回',prevId:''},
+   {id:'PAY-005',fromType:'CP',fromId:'CP-006',payee:'老周',cat:'开源社区',account:{name:'周某',no:'6222 0002 0002 0002',bank:'建行厦门分行'},amount:100000,basis:'验收记录 #1（通过）',contractNo:'',reviewer:'li',signee:'qian',by:'zhang',status:'已发送统一付款平台'},
+   {id:'PAY-006',fromType:'CP',fromId:'CP-008',payee:'企业X',cat:'生态伙伴',account:{name:'企业X对公',no:'6222 0003 0003 0003',bank:'中行福州分行'},amount:100000,basis:'验收记录 #1（通过）· 重发',contractNo:'XY-2026-0330',reviewer:'li',signee:'qian',by:'zhang',status:'待接收',prevId:'PAY-004'},
+   {id:'PAY-007',fromType:'INC',fromId:'INC-003',payee:'小陈',cat:'开发者',account:{name:'陈某',no:'6222 0101 0101 0101',bank:'招行北京分行'},amount:30000,basis:'激励合并付款 · 审批通过金额',contractNo:'',reviewer:'li',signee:'qian',by:'wang',status:'已发送统一付款平台'}
+  ],
+  wf:[
+   {id:'WF-001',refDoc:'CP-005',partner:'高校A',amount:200000,payId:'PAY-001',bal:300000,by:'zhang',time:'2026-10-12 09:30',state:'已生成',wlHit:'WT-002 高校A'},
+   {id:'WF-002',refDoc:'CP-005',partner:'高校A',amount:250000,payId:'PAY-002',bal:50000,by:'zhang',time:'2026-10-14 15:10',state:'已生成',wlHit:'WT-002 高校A'},
+   {id:'WF-003',refDoc:'CP-006',partner:'老周',amount:100000,payId:'PAY-005',bal:0,by:'zhang',time:'2026-10-10 11:00',state:'已生成',wlHit:'WT-004 老周'},
+   {id:'WF-004',refDoc:'CP-008',partner:'企业X',amount:100000,payId:'PAY-004',bal:200000,by:'zhang',time:'2026-10-15 10:00',state:'已冲回',wlHit:'WT-003 企业X'},
+   {id:'WF-005',refDoc:'INC-003',partner:'小陈',amount:30000,payId:'PAY-007',bal:0,by:'wang',time:'2026-10-11 16:20',state:'已生成',wlHit:'WT-001 小陈'},
+   {id:'WF-006',refDoc:'INC-005',partner:'小陈',amount:20000,payId:'PAY-003',bal:0,by:'wang',time:'2026-10-16 09:40',state:'已生成',wlHit:'WT-001 小陈'},
+   {id:'WF-007',refDoc:'CP-008',partner:'企业X',amount:100000,payId:'PAY-006',bal:200000,by:'zhang',time:'2026-10-17 09:00',state:'已生成',wlHit:'WT-003 企业X'}
+  ],
+  acc:[
+   {id:'AC-01',refDoc:'CP-005',n:1,user:'zhao',concl:'通过',fin:false,mat:'阶段验收报告.pdf',time:'2026-10-12 10:00'},
+   {id:'AC-02',refDoc:'CP-005',n:2,user:'zhao',concl:'通过',fin:false,mat:'第二期验收材料.zip',time:'2026-10-14 16:00'},
+   {id:'AC-03',refDoc:'CP-006',n:1,user:'zhao',concl:'通过',fin:true,mat:'终验报告.pdf',time:'2026-10-09 14:00'},
+   {id:'AC-04',refDoc:'CP-008',n:1,user:'zhao',concl:'通过',fin:false,mat:'活动总结.pdf',time:'2026-10-15 09:00'},
+   {id:'AC-05',refDoc:'INC-002',n:1,user:'zhao',concl:'通过',fin:false,mat:'第一批抽检.docx',time:'2026-10-15 11:00'},
+   {id:'AC-06',refDoc:'INC-003',n:1,user:'zhao',concl:'通过',fin:false,mat:'阶段确认.pdf',time:'2026-10-10 10:00'},
+   {id:'AC-07',refDoc:'INC-003',n:2,user:'zhao',concl:'通过',fin:true,mat:'终验确认.pdf',time:'2026-10-11 15:00'},
+   {id:'AC-08',refDoc:'INC-005',n:1,user:'zhao',concl:'通过',fin:true,mat:'验收确认单.pdf',time:'2026-10-16 09:00'}
+  ],
+  wt:[
+   {id:'WT-001',name:'小陈',type:'开发者',ident:'u-chen',state:'生效'},
+   {id:'WT-002',name:'高校A',type:'组织',ident:'91350000JAVA0001XA',state:'生效'},
+   {id:'WT-003',name:'企业X',type:'组织',ident:'91350000ENTP0001XB',state:'生效'},
+   {id:'WT-004',name:'老周',type:'开发者',ident:'u-zhou',state:'生效'}
+  ],
+  wlc:[
+   {id:'WLC-001',kind:'导入',by:'admin',approver:'wang',status:'待审批',time:'2026-10-17 10:00',lines:[{op:'新增',type:'组织',ident:'91350000JAVA0002XB',name:'高校B'}]},
+   {id:'WLC-002',kind:'新增',by:'admin',approver:'wang',status:'已生效',time:'2026-10-08 10:00',lines:[{op:'新增',type:'组织',ident:'91350000ENTP0001XB',name:'企业X'}]},
+   {id:'WLC-003',kind:'删除',by:'admin',approver:'wang',status:'已驳回',time:'2026-10-06 10:00',lines:[{op:'删除',type:'开发者',ident:'u-zhou',name:'老周'}]}
+  ],
+  his:[
+   {id:'H-01',ref:'CP-002',env:'发起',user:'张接口',act:'代填发起并提交',concl:'指定 评审=李评审 审批=王审批 验收=赵验收',time:'2026-10-13 09:00'},
+   {id:'H-02',ref:'CP-003',env:'评审',user:'李评审',act:'提交评审结论',concl:'通过：技术方案可行，迁移路径清晰',time:'2026-10-14 10:00'},
+   {id:'H-03',ref:'CP-003',env:'发起',user:'张接口',act:'代填发起并提交',concl:'指定 评审=李评审 审批=王审批 验收=赵验收',time:'2026-10-13 16:00'},
+   {id:'H-04',ref:'CP-004',env:'发起',user:'张接口',act:'代填发起并提交',concl:'指定 评审=李评审 审批=王审批 验收=赵验收',time:'2026-10-12 11:00'},
+   {id:'H-05',ref:'CP-004',env:'评审',user:'李评审',act:'提交评审结论',concl:'通过',time:'2026-10-12 15:00'},
+   {id:'H-06',ref:'CP-004',env:'审批',user:'王审批',act:'审批通过',concl:'同意，请尽快补齐合同',time:'2026-10-13 09:30'},
+   {id:'H-07',ref:'CP-005',env:'发起',user:'张接口',act:'代填发起并提交',concl:'—',time:'2026-10-09 09:00'},
+   {id:'H-08',ref:'CP-005',env:'评审',user:'李评审',act:'提交评审结论',concl:'通过',time:'2026-10-09 14:00'},
+   {id:'H-09',ref:'CP-005',env:'审批',user:'王审批',act:'审批通过',concl:'同意',time:'2026-10-09 17:00'},
+   {id:'H-10',ref:'CP-007',env:'评审',user:'李评审',act:'提交评审结论',concl:'不通过',time:'2026-10-07 10:00'},
+   {id:'H-11',ref:'CP-007',env:'审批',user:'王审批',act:'审批驳回',concl:'驳回理由：合作范围与本部门年度规划不符，建议调整后再报',time:'2026-10-07 15:00'},
+   {id:'H-12',ref:'PAY-004',env:'评审',user:'李评审',act:'评审不通过·退回',concl:'退回原因：收款账户户名与合同主体不符，请核实后重发',time:'2026-10-16 10:00'},
+   {id:'H-13',ref:'WLC-003',env:'白名单审批',user:'王审批',act:'审批驳回',concl:'驳回理由：老周为活跃贡献者，不予移除',time:'2026-10-06 15:00'},
+   {id:'H-14',ref:'WLC-001',env:'发起',user:'管理员',act:'Excel 导入提交审批',concl:'整单校验通过（1 行）',time:'2026-10-17 10:00'},
+   {id:'H-15',ref:'INC-002',env:'审批',user:'王审批',act:'审批通过·确认通过金额',concl:'通过金额下调 15000→12000：按交付清单核减 2 篇',time:'2026-10-14 09:00'},
+   {id:'H-16',ref:'INC-004',env:'审批',user:'王审批',act:'审批驳回',concl:'驳回理由：成果未达到任务验收标准，请整改后重新申请',time:'2026-10-05 10:00'},
+   {id:'H-17',ref:'CP-006',env:'项目完结',user:'系统',act:'额度核销完毕·自动完结',concl:'累计核销=额度上限 100000.00',time:'2026-10-10 11:01'},
+   {id:'H-18',ref:'CP-002',env:'发起',user:'张接口',act:'提交',concl:'互斥校验通过（GR-01）',time:'2026-10-13 09:00'},
+   {id:'H-19',ref:'INC-003',env:'发起',user:'小陈',act:'本人提交',concl:'白名单校验通过（WT-001）· 渠道 开源社区平台',time:'2026-10-09 10:00'},
+   {id:'H-20',ref:'INC-003',env:'审批',user:'王审批',act:'审批通过·确认通过金额',concl:'申报 30000.00 → 通过 30000.00',time:'2026-10-09 15:00'},
+   {id:'H-21',ref:'INC-003',env:'付款发起',user:'王审批',act:'合并发起付款（一次）',concl:'¥30000.00·生成 PAY-007',time:'2026-10-11 16:20'},
+   {id:'H-22',ref:'INC-001',env:'发起',user:'小陈',act:'本人提交',concl:'白名单校验通过（WT-001）· 渠道 开源社区平台',time:'2026-10-17 14:00'},
+   {id:'H-23',ref:'INC-005',env:'发起',user:'小陈',act:'本人提交',concl:'白名单校验通过（WT-001）· 渠道 开源社区平台',time:'2026-10-15 09:00'},
+   {id:'H-24',ref:'INC-005',env:'审批',user:'王审批',act:'审批通过·确认通过金额',concl:'申报 20000.00 → 通过 20000.00',time:'2026-10-15 11:00'},
+   {id:'H-25',ref:'INC-005',env:'付款发起',user:'王审批',act:'合并发起付款（一次）',concl:'¥20000.00·生成 PAY-003',time:'2026-10-16 09:40'},
+   {id:'H-26',ref:'INC-002',env:'发起',user:'小陈',act:'本人提交',concl:'白名单校验通过（WT-001）· 渠道 开源社区平台',time:'2026-10-13 09:00'},
+   {id:'H-27',ref:'INC-002',env:'审批',user:'王审批',act:'审批通过·确认通过金额',concl:'申报 15000.00 → 通过 12000.00：按交付清单核减',time:'2026-10-14 09:00'},
+   {id:'H-28',ref:'INC-006',env:'撤回',user:'小陈',act:'开发者撤回',concl:"待审批态撤回（D-021）",time:'2026-10-17 16:00'}
+  ],
+  ntf:[
+   {id:'N-01',to:'li',type:'待办产生',title:'CP-002 开源工具链共建 待您评审',ref:'CP-002',read:false,time:'2026-10-13 09:00'},
+   {id:'N-02',to:'wang',type:'待办产生',title:'CP-003 芯片适配迁移 待您审批（依据评审结论）',ref:'CP-003',read:false,time:'2026-10-14 10:01'},
+   {id:'N-03',to:'wang',type:'待办产生',title:'WLC-001 白名单变更单 待您审批',ref:'WLC-001',read:false,time:'2026-10-17 10:01'},
+   {id:'N-04',to:'qian',type:'待办产生',title:'PAY-003 待您授权签核',ref:'PAY-003',read:false,time:'2026-10-16 09:41'},
+   {id:'N-05',to:'zhang',type:'状态变更',title:'PAY-004 已退回：收款账户户名与合同主体不符（额度已释放，可重发）',ref:'PAY-004',read:false,time:'2026-10-16 10:00'},
+   {id:'N-06',to:'chen',type:'状态变更',title:'您的激励单已提交付款申请（INC-003）',ref:'INC-003',read:true,time:'2026-10-11 16:21'},
+   {id:'N-07',to:'zhao',type:'待办产生',title:'CP-005 社区生态运营支撑 可多次验收',ref:'CP-005',read:false,time:'2026-10-12 10:00'},
+   {id:'N-08',to:'chen',type:'处理结果',title:'INC-004 已驳回：成果未达到任务验收标准，请整改后重新申请',ref:'INC-004',read:true,time:'2026-10-05 10:01'}
+  ]
+ };
+}
+
+/* ============ DB ============ */
+var DB;
+function loadDB(){ var raw = localStorage.getItem('eco-ops-proto-v1'); if(raw){ try{ DB = JSON.parse(raw); return; }catch(e){} } DB = seedDB(); saveDB(); }
+function saveDB(){ localStorage.setItem('eco-ops-proto-v1', JSON.stringify(DB)); }
+function resetDB(){ if(confirm('恢复初始演示数据？当前操作将清空。')){ DB = seedDB(); saveDB(); location.hash = '#/todo'; render(); } }
+function me(){ return DB.users[DB.session]; }
+function uname(id){ return DB.users[id] ? DB.users[id].name : (id||'—'); }
+function toast(msg, bad){ var t = document.getElementById('toast'); if(!t){ t = document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:99'; document.body.appendChild(t); }
+ t.innerHTML = '<div class="msg '+(bad?'errm':'okm')+'">'+msg+'</div>'; clearTimeout(t._h); t._h = setTimeout(function(){ t.innerHTML=''; }, 4200); }
+function isRole(r){ return me().role === r; }
+function isExt(){ return !!me().external; }
+
+/* ============ 业务查询 ============ */
+function cp(id){ return DB.coop.find(function(x){return x.id===id}); }
+function inc(id){ return DB.inc.find(function(x){return x.id===id}); }
+function pay(id){ return DB.pay.find(function(x){return x.id===id}); }
+function his(ref){ return DB.his.filter(function(h){return h.ref===ref}); }
+function accs(ref){ return DB.acc.filter(function(a){return a.refDoc===ref}); }
+function wfs(doc, partner){ return DB.wf.filter(function(w){return w.refDoc===doc && (!partner || w.partner===partner)}); }
+function payToward(doc){ return DB.pay.filter(function(p){return p.fromId===doc}); }
+function inPay(doc){ return payToward(doc).filter(function(p){return ['待接收','评审中','待授权签核'].indexOf(p.status)>=0}); }
+function partnerQuota(c, p){ return p.type==='组织' ? (p.contract ? Number(p.contract.amount||0) : 0) : Number(p.quota||0); }
+function usedQuota(doc, partner){ return wfs(doc, partner).filter(function(w){return w.state==='已生成'}).reduce(function(s,w){return s+Number(w.amount)},0); }
+function autoFinishCheck(c){
+ if(c.status!=='验收中') return;
+ var done = c.partners.every(function(p){ return usedQuota(c.id,p.name) >= partnerQuota(c,p) && partnerQuota(c,p)>0; });
+ if(done && inPay(c.id).length===0){ c.status='已完结'; addHis(c.id,'项目完结','系统','额度核销完毕·自动完结','累计核销=额度上限'); }
+}
+function wlHit(type, ident){ return DB.wt.find(function(w){return w.state==='生效' && w.type===type && w.ident===ident}); }
+function addHis(ref,env,user,act,concl,bad){ DB.his.push({id:'H-'+(DB.seq.H++),ref:ref,env:env,user:user,act:act,concl:concl||'',time:now(),bad:!!bad}); }
+function notify(to,type,title,ref){ DB.ntf.push({id:'N-'+(DB.seq.N++),to:to,type:type,title:title,ref:ref,read:false,time:now()}); }
+
+/* 待办（按角色推导） */
+function todos(){
+ var u = DB.session, r = me().role, out = [];
+ if(r==='业务接口人'){
+  DB.coop.forEach(function(c){ if(c.creator===u){ if(c.status==='合同待补') out.push({ref:c.id,env:'合同',title:c.name+' 待提交合同信息（组织级合作方）',st:c.status});
+   var ret = payToward(c.id).filter(function(p){return p.status==='已退回'&&!payToward(c.id).some(function(q){return q.prevId===p.id})}); if(ret.length && c.status!=='已驳回') out.push({ref:c.id,env:'付款',title:c.name+' 存在退回支付单，可重新发起付款',st:'已退回'}); } });
+ }
+ if(r==='审批人'){
+  DB.coop.forEach(function(c){ if(c.status==='审批中'&&c.approver===u) out.push({ref:c.id,env:'审批',title:c.name+' 待审批（依据评审结论）',st:c.status}); });
+  DB.inc.forEach(function(i){ if(i.status==='待审批'&&!i.withdrawn&&i.approver===u) out.push({ref:i.id,env:'审批',title:i.task+' 社区激励待审批',st:i.status});
+   if(i.status==='验收中'&&i.approver===u&&mergeReady(i)) out.push({ref:i.id,env:'合并付款',title:i.task+' 验收已完结，可合并发起付款',st:i.status}); });
+  DB.wlc.forEach(function(w){ if(w.status==='待审批'&&w.approver===u) out.push({ref:w.id,env:'白名单审批',title:'白名单变更单 '+w.kind+' 待审批',st:w.status}); });
+ }
+ if(r==='评审人'){
+  DB.coop.forEach(function(c){ if(c.status==='评审中'&&c.reviewer===u) out.push({ref:c.id,env:'评审',title:c.name+' 待评审',st:c.status}); });
+  DB.pay.forEach(function(p){ if((p.status==='待接收'||p.status==='评审中')&&p.reviewer===u) out.push({ref:p.id,env:p.status==='待接收'?'接收':'评审',title:p.id+' 支付单（'+p.payee+'）待'+(p.status==='待接收'?'接收确认':'评审'),st:p.status}); });
+ }
+ if(r==='验收人'){
+  DB.coop.forEach(function(c){ if(c.status==='验收中'&&c.acceptor===u) out.push({ref:c.id,env:'验收',title:c.name+' 可验收（支持多次）',st:c.status}); });
+  DB.inc.forEach(function(i){ if(i.status==='验收中'&&!i.withdrawn&&i.acceptor===u) out.push({ref:i.id,env:'验收',title:i.task+' 可验收（支持多次/完结标记）',st:i.status}); });
+ }
+ if(r==='授权签核人'){ DB.pay.forEach(function(p){ if(p.status==='待授权签核'&&p.signee===u) out.push({ref:p.id,env:'授权签核',title:p.id+' 支付单（'+p.payee+'）待授权签核',st:p.status}); }); }
+ if(r==='社区开发者'){ DB.inc.forEach(function(i){ if(i.dev===u&&i.status==='待审批'&&!i.withdrawn) out.push({ref:i.id,title:i.task+' 审批中',st:i.status}); }); }
+ return out;
+}
+function mergeReady(i){ var a=accs(i.id); return a.some(function(x){return x.fin}) && a.some(function(x){return x.concl==='通过'}); }
+function myDone(){ return DB.his.filter(function(h){return h.user===me().name}); }
+function myApplied(){
+ var u = DB.session, out = [];
+ DB.coop.forEach(function(c){ if(c.creator===u) out.push({ref:c.id,title:c.name,st:c.status,kind:'合作立项'}); });
+ DB.inc.forEach(function(i){ if(i.dev===u) out.push({ref:i.id,title:i.task,st:i.withdrawn?'已撤回':i.status,kind:'社区激励'}); });
+ DB.wlc.forEach(function(w){ if(w.by===u) out.push({ref:w.id,title:'白名单变更单 · '+w.kind,st:w.status,kind:'白名单'}); });
+ return out;
+}
+
+/* ============ 通知 ============ */
+function notifyTransition(kind, docRef, upUser, extraDev){
+ // D-012 简化：状态变更→上游发起人；激励场景同步开发者
+ if(upUser) notify(upUser,'状态变更',docRef+' '+kind,docRef);
+ if(extraDev) notify(extraDev,'状态变更',docRef+' '+kind,docRef);
+}
+
+/* ============ 守卫 ============ */
+function guardMutexCP(c){
+ var ids = [c.reviewer,c.approver,c.acceptor];
+ if(ids[0]===ids[1]) return 'GR-01 互斥拦截：评审人与审批人不得为同一人（'+uname(ids[0])+'）';
+ if(ids[1]===ids[2]) return 'GR-01 互斥拦截：审批人与验收人不得为同一人（'+uname(ids[1])+'）';
+ return null;
+}
+function guardPayPeople(p, initiator){
+ if((p.reviewer===initiator)||(p.signee===initiator)) return 'GR-03 拦截：支付评审/授权签核不得为该单付款发起人（'+uname(initiator)+'）';
+ if(p.reviewer===p.signee) return 'GR-04 拦截：同一支付单上评审人≠授权签核人（'+uname(p.reviewer)+'）';
+ return null;
+}
+
+/* ============ 路由与框架 ============ */
+function route(){ var h = location.hash.replace(/^#\//,''); var seg = h.split('/'); return {page:seg[0]||'todo', id:seg[1]||''}; }
+function go(page,id){ var h='#/'+page+(id?('/'+id):''); if(location.hash===h){ render(); } else { location.hash=h; } }
+function switchUser(u){ DB.session=u; saveDB(); render(); toast('已切换为 '+me().name+'（'+me().role+(me().external?' · 外部':'')+'）'); }
+
+function navAllowed(page){
+ var r = me().role;
+ var pub = ['todo','applied','done','ntf'];
+ if(pub.indexOf(page)>=0){ if(page==='done'&&r==='社区开发者') return false; return true; }
+ var map = {
+  framework:['业务接口人','审批人','评审人','验收人','系统管理员'],
+  'cp-list':['业务接口人','审批人','评审人','验收人','系统管理员'],
+  'cp-create':['业务接口人'],
+  'cp-detail':['业务接口人','审批人','评审人','验收人','系统管理员'],
+  'inc-list':['社区开发者','审批人','验收人','系统管理员'],
+  'inc-create':['社区开发者'],
+  'inc-detail':['社区开发者','审批人','验收人','系统管理员'],
+  'pay-list':['业务接口人','审批人','评审人','验收人','授权签核人','系统管理员','社区开发者'],
+  'pay-detail':['业务接口人','审批人','评审人','验收人','授权签核人','系统管理员','社区开发者'],
+  perm:['系统管理员'], wl:['系统管理员'], 'wlc-detail':['审批人','系统管理员']
+ };
+ return (map[page]||[]).indexOf(r)>=0;
+}
+function renderNav(){
+ var r = route(), u = me();
+ var n = todos().length;
+ var ext = isExt();
+ var h = '<div class="lv1">我的工作空间</div>';
+ h += link('todo','我的待办', n>0?'<span class="cnt">'+n+'</span>':'');
+ h += link('applied','我的申请');
+ if(!ext) h += link('done','我的已办');
+ h += link('ntf','通知中心', (function(){var c=DB.ntf.filter(function(x){return x.to===DB.session&&!x.read}).length; return c>0?'<span class="cnt">'+c+'</span>':''})());
+ if(!ext){
+  var r = u.role;
+  h += '<div class="lv1">对外支付项目</div>';
+  if(['业务接口人','审批人','评审人','验收人','系统管理员'].indexOf(r)>=0){
+   h += link('framework','合作项目框架', null, true);
+   h += '<a class="sub" style="padding-left:38px;color:#3f3f46">合作项目</a>';
+   h += link('cp-list','高校外部合作项目（合作共创）', null, true, 38);
+  }
+  if(['审批人','验收人','系统管理员'].indexOf(r)>=0) h += link('inc-list','社区开发者激励', null, true, 38);
+  h += link('pay-list','非采对外支付');
+ }
+ if(ext){
+  h += '<div class="lv1">对外支付项目</div>';
+  h += link('inc-list','社区开发者激励');
+  h += link('pay-list','非采对外支付<span class="mut" style="font-size:11px">（本人派生）</span>');
+ }
+ if(r==='系统管理员'){
+  h += '<div class="lv1">系统管理</div>';
+  h += link('perm','权限管理');
+  h += link('wl','白名单管理');
+ }
+ document.getElementById('nav').innerHTML = h;
+ function link(p,label,badgeHtml,sub,pl){
+  var on = (r.page===p || (p==='cp-list'&&r.page==='cp-detail') || (p==='inc-list'&&r.page==='inc-detail') || (p==='pay-list'&&r.page==='pay-detail') || (p==='wl'&&r.page==='wlc-detail'));
+  return '<a href="#/'+p+'" class="'+(on?'on':'')+(sub?' sub':'')+'"'+(pl?' style="padding-left:'+pl+'px"':'')+'><span>'+label+'</span>'+(badgeHtml||'')+'</a>';
+ }
+}
+
+/* ============ 通用片段 ============ */
+function crumb(t){ return '<div class="crumb">'+t+'</div>'; }
+function tl(ref){
+ var hs = his(ref);
+ if(!hs.length) return '<div class="mut">暂无处理记录</div>';
+ return '<ul class="tl">'+hs.slice().reverse().map(function(h){
+  return '<li class="'+(h.bad||/(驳回|退回|不通过|作废)/.test(h.act+h.concl)?'bad':'')+'"><b>'+esc(h.env)+'</b> · '+esc(h.user)+' · '+esc(h.act)+(h.concl?'<br><span class="mut">'+esc(h.concl)+'</span>':'')+'<br><span class="mut">'+esc(h.time)+'</span></li>';
+ }).join('')+'</ul>';
+}
+function accTable(ref){
+ var a = accs(ref);
+ if(!a.length) return '<div class="mut">暂无验收记录</div>';
+ return '<table><tr><th>#</th><th>验收人</th><th>结论</th><th>完结标记</th><th>材料</th><th>时间</th></tr>'+
+ a.map(function(x){return '<tr><td>'+x.n+'</td><td>'+uname(x.user)+'</td><td>'+badge(x.concl)+'</td><td>'+(x.fin?'✓ 完结':'')+'</td><td>'+esc(x.mat)+'</td><td class="mut">'+x.time+'</td></tr>'}).join('')+'</table>';
+}
+function wfTable(doc){
+ var w = wfs(doc);
+ if(!w.length) return '<div class="mut">暂无核销记录</div>';
+ return '<table><tr><th>核销号</th><th>合作方</th><th>本次金额</th><th>关联支付单</th><th>核销后余额</th><th>白名单依据</th><th>状态</th><th>时间</th></tr>'+
+ w.map(function(x){return '<tr><td>'+x.id+'</td><td>'+esc(x.partner)+'</td><td>¥'+money(x.amount)+'</td><td>'+x.payId+'</td><td>¥'+money(x.bal)+'</td><td class="mut">'+esc(x.wlHit)+'</td><td>'+badge(x.state)+'</td><td class="mut">'+x.time+'</td></tr>'}).join('')+'</table>';
+}
+function payRows(list, opts){
+ if(!list.length) return '<div class="empty">暂无支付单</div>';
+ return '<table><tr><th>支付单</th><th>上游</th><th>付款对象</th><th>类别</th><th>金额</th><th>状态</th><th>操作</th></tr>'+
+ list.map(function(p){
+  var ro = (opts||{}).ro || !canActPay(p);
+  return '<tr><td>'+p.id+(p.prevId?'<br><span class="mut">重发自 '+p.prevId+'</span>':'')+'</td><td>'+p.fromId+'</td><td>'+esc(p.payee)+'</td><td>'+p.cat+'</td><td>¥'+money(p.amount)+'</td><td>'+badge(p.status==='已发送统一付款平台'?'已发送统一付款平台':p.status)+'</td><td><a href="#/pay-detail/'+p.id+'">'+(ro?'查看':'处理')+'</a></td></tr>';
+ }).join('')+'</table>';
+}
+function canActPay(p){
+ var r = me().role, u = DB.session;
+ if(r==='评审人'&&(p.status==='待接收'||p.status==='评审中')&&p.reviewer===u) return true;
+ if(r==='授权签核人'&&p.status==='待授权签核'&&p.signee===u) return true;
+ if(r==='系统管理员'&&['待接收','评审中','待授权签核'].indexOf(p.status)>=0) return true;
+ return false;
+}
+
+/* ============ 页面：工作空间 ============ */
+function pTodo(){
+ var t = todos();
+ var h = crumb('我的工作空间 > 我的待办') + '<h2>我的待办</h2><p class="mut">需本人处理的环节（按当前角色实时推导）</p>';
+ if(!t.length){ h += '<div class="empty">暂无待办'+(me().role==='社区开发者'?'，去 <a href="#/inc-create">发起激励申请 →</a>':'')+'</div>'; }
+ else h += '<table><tr><th>事项</th><th>环节</th><th>状态</th><th>到达时间</th><th>操作</th></tr>'+t.map(function(x){
+  var pg = x.ref.indexOf('CP-')===0?'cp-detail':(x.ref.indexOf('INC-')===0?'inc-detail':(x.ref.indexOf('PAY-')===0?'pay-detail':'wlc-detail'));
+  var lt = (his(x.ref).slice(-1)[0]||{}).time||'';
+  return '<tr><td>'+esc(x.title)+'</td><td>'+esc(x.env||'')+'</td><td>'+badge(x.st)+'</td><td class="mut">'+esc(lt)+'</td><td><a href="#/'+pg+'/'+x.ref+'">去处理</a></td></tr>'; }).join('')+'</table>';
+ return h;
+}
+function pApplied(){
+ var l = myApplied();
+ var h = crumb('我的工作空间 > 我的申请') + '<h2>我的申请</h2><p class="mut">本人发起的单据与进度</p>';
+ if(!l.length) h += '<div class="empty">暂无申请</div>';
+ else h += '<table><tr><th>类型</th><th>单据</th><th>状态</th><th>操作</th></tr>'+l.map(function(x){
+  var pg = x.ref.indexOf('CP-')===0?'cp-detail':(x.ref.indexOf('INC-')===0?'inc-detail':'wlc-detail');
+  return '<tr><td>'+x.kind+'</td><td>'+esc(x.title)+'</td><td>'+badge(x.st)+'</td><td><a href="#/'+pg+'/'+x.ref+'">查看</a></td></tr>'; }).join('')+'</table>';
+ return h;
+}
+function pDone(){
+ var d = myDone();
+ var h = crumb('我的工作空间 > 我的已办') + '<h2>我的已办</h2><p class="mut">本人处理过的记录（处理记录留痕回看）</p>';
+ if(!d.length) h += '<div class="empty">暂无已办</div>';
+ else h += '<table><tr><th>单据</th><th>环节</th><th>动作</th><th>结论/意见</th><th>时间</th></tr>'+d.slice().reverse().map(function(x){
+  var known = /^(CP-|INC-|PAY-|WLC-)/.test(x.ref);
+  var pg = x.ref.indexOf('CP-')===0?'cp-detail':(x.ref.indexOf('INC-')===0?'inc-detail':(x.ref.indexOf('PAY-')===0?'pay-detail':'wlc-detail'));
+  return '<tr><td>'+(known?'<a href="#/'+pg+'/'+x.ref+'">'+x.ref+'</a>':x.ref)+'</td><td>'+esc(x.env)+'</td><td>'+esc(x.act)+'</td><td class="mut">'+esc(x.concl)+'</td><td class="mut">'+esc(x.time)+'</td></tr>'; }).join('')+'</table>';
+ return h;
+}
+function pNtf(){
+ var mine = DB.ntf.filter(function(x){return x.to===DB.session}).slice().reverse();
+ var h = crumb('我的工作空间 > 通知中心') + '<h2>通知中心</h2><p class="mut">触发点：待办产生 / 状态变更 / 处理结果（D-012）</p>';
+ h += '<div style="margin-bottom:8px"><button onclick="readAll()">全部标记已读</button></div>';
+ if(!mine.length) h += '<div class="empty">暂无通知</div>';
+ else h += '<table><tr><th>类型</th><th>内容</th><th>时间</th><th>状态</th><th>操作</th></tr>'+mine.map(function(x){
+  var pg = x.ref.indexOf('CP-')===0?'cp-detail':(x.ref.indexOf('INC-')===0?'inc-detail':(x.ref.indexOf('PAY-')===0?'pay-detail':(x.ref.indexOf('WLC-')===0?'wlc-detail':'todo')));
+  return '<tr><td>'+esc(x.type)+'</td><td>'+(x.read?'':'<b>')+esc(x.title)+(x.read?'':'</b>')+'</td><td class="mut">'+esc(x.time)+'</td><td>'+badge(x.read?'已读':'未读')+'</td><td><a href="#/'+pg+'/'+x.ref+'" onclick="markRead(\''+x.id+'\')">查看</a>'+(x.read?'':' <button style="padding:2px 8px;font-size:12px" onclick="markRead(\''+x.id+'\');render()">标记已读</button>')+'</td></tr>'; }).join('')+'</table>';
+ return h;
+}
+function markRead(id){ var n = DB.ntf.find(function(x){return x.id===id}); if(n) n.read = true; saveDB(); renderNav(); }
+function readAll(){ DB.ntf.forEach(function(x){ if(x.to===DB.session) x.read=true; }); saveDB(); render(); }
+function gotoRef(id){ markReadByRef(id); }
+function markReadByRef(ref){ DB.ntf.forEach(function(x){ if(x.to===DB.session&&x.ref===ref) x.read=true; }); saveDB(); renderNav(); }
+
+/* ============ 页面：合作项目框架 ============ */
+function pFramework(){
+ var h = crumb('对外支付项目 > 合作项目框架') + '<h2>合作项目框架</h2><p class="mut">合作立项电子流的公共信息聚合页（D-001）</p>';
+ var total = DB.coop.length, act = DB.coop.filter(function(c){return ['评审中','审批中','合同待补','验收中'].indexOf(c.status)>=0}).length;
+ var done = DB.coop.filter(function(c){return c.status==='已完结'}).length;
+ var quotas = 0, used = 0;
+ DB.coop.forEach(function(c){ c.partners.forEach(function(p){ quotas += partnerQuota(c,p); used += usedQuota(c.id,p.name); }); });
+ h += '<div class="card"><div class="kv">'
+  +'<div>立项单总数</div><div>'+total+'（进行中 '+act+' · 已完结 '+done+' · 已驳回 '+DB.coop.filter(function(c){return c.status==='已驳回'}).length+'）</div>'
+  +'<div>付款额度总盘</div><div>¥'+money(quotas)+'</div>'
+  +'<div>累计核销</div><div>¥'+money(used)+'</div>'
+  +'<div>在途支付单</div><div>'+DB.pay.filter(function(p){return ['待接收','评审中','待授权签核'].indexOf(p.status)>=0}).length+' 张</div>'
+  +'</div></div>';
+ h += '<div class="card"><h3>框架说明</h3><p class="mut">合作项目（高校外部合作项目·合作共创 / 社区开发者激励）均挂靠本框架运营；框架页聚合立项规模、额度与支付在途态势。项目实例见「合作项目>高校外部合作项目（合作共创）」。</p></div>';
+ return h;
+}
+
+/* ============ 页面：合作立项 ============ */
+function pCpList(){
+ var h = crumb('对外支付项目 > 合作项目 > 高校外部合作项目（合作共创）') + '<h2>高校外部合作项目（合作共创）</h2>';
+ if(isRole('业务接口人')) h += '<p><button class="pri" onclick="go(\'cp-create\')">发起合作立项</button></p>';
+ h += '<table><tr><th>单号</th><th>项目名称</th><th>合作方</th><th>状态</th><th>操作</th></tr>'+
+ DB.coop.map(function(c){
+  return '<tr><td>'+c.id+'</td><td>'+esc(c.name)+'</td><td>'+c.partners.map(function(p){return esc(p.name)+'·'+p.type}).join('、')+'</td><td>'+badge(c.status)+'</td><td><a href="#/cp-detail/'+c.id+'">'+(isRole('系统管理员')?'查看/改派':'查看')+'</a></td></tr>';
+ }).join('')+'</table>';
+ return h;
+}
+var CATS = ['开发者','高校人才','开源社区','生态伙伴'];
+function pCpCreate(){
+ var edit = route().id, c = edit?cp(edit):null;
+ var h = crumb('对外支付项目 > 合作项目 > 发起合作立项') + '<h2>'+(edit?'编辑重提 · '+edit:'发起合作立项')+'</h2>';
+ h += '<p class="mut">示例企业内部接口人<b>代</b>外部合作方填单发起；提交时校验 GR-01 人员互斥。</p>';
+ if(edit && c.status!=='草稿'){ return h + '<div class="msg errm">仅「草稿」态可编辑重提（撤回后回到草稿）。</div>'; }
+ var pn = c? c.partners : [{name:'',type:'组织',cat:'高校人才',ident:'',account:{name:'',no:'',bank:''},quota:'',contract:null}];
+ h += '<div class="card"><div class="f"><label>项目名称</label><input id="f-name" value="'+esc(c?c.name:'')+'" style="width:420px"></div>'
+ + '<div class="f"><label>挂靠部门（人员候选范围）</label><input value="生态合作部（统一账号组织目录只读引用）" disabled style="width:320px"></div>'
+ + '<div class="row"><div class="f"><label>评审人</label><select id="f-rev">'+rosterOpts(c?c.reviewer:'li')+'</select></div>'
+ + '<div class="f"><label>审批人</label><select id="f-app">'+rosterOpts(c?c.approver:'wang')+'</select></div>'
+ + '<div class="f"><label>验收人</label><select id="f-acc">'+rosterOpts(c?c.acceptor:'zhao')+'</select></div>'
+ + '<div class="mut" style="padding-bottom:6px">同一单：评审≠审批、审批≠验收（GR-01），提交时校验</div></div></div>';
+ h += '<div class="card"><h3>合作方（项目 : 合作方 = 1:N）</h3><div id="pn-wrap">'+pn.map(partnerForm).join('')+'</div>'
+ + '<button onclick="addPartner()">+ 增加合作方</button></div>';
+ h += '<button class="pri" onclick="submitCP(\''+(edit||'')+'\')">提交（进入评审）</button> <button onclick="go(\'cp-list\')">取消</button>'
+ + '<div id="cp-msg"></div>';
+ return h;
+}
+function rosterOpts(sel, roleFilter){
+ var list = roleFilter? DB.roster.filter(function(u){return DB.users[u].role===roleFilter}) : DB.roster;
+ return list.map(function(u){ return '<option value="'+u+'"'+(u===sel?' selected':'')+'>'+uname(u)+'·'+DB.users[u].role+'</option>'; }).join('');
+}
+function envRole(env){ return ({reviewer:'评审人',approver:'审批人',acceptor:'验收人'})[env]; }
+function poolOpts(pool, sel){
+ return (DB.pools[pool]||[]).map(function(u){ return '<option value="'+u+'"'+(u===sel?' selected':'')+'>'+uname(u)+'</option>'; }).join('');
+}
+function partnerForm(p, i){
+ i = i||0;
+ return '<div class="pn" data-i="'+i+'" style="border:1px dashed var(--bd);border-radius:6px;padding:10px;margin:8px 0">'
+ +'<div class="row">'
+ +'<div class="f"><label>合作方名称</label><input class="p-name" value="'+esc(p.name)+'"></div>'
+ +'<div class="f"><label>类型</label><select class="p-type" onchange="pnType(this)"><option'+(p.type==='组织'?' selected':'')+'>组织</option><option'+(p.type==='个人'?' selected':'')+'>个人</option></select></div>'
+ +'<div class="f"><label>对象类别</label><select class="p-cat">'+CATS.map(function(x){return '<option'+(p.cat===x?' selected':'')+'>'+x+'</option>'}).join('')+'</select></div>'
+ +'<div class="f"><label>对象标识（付款白名单校验键）</label><input class="p-ident" placeholder="组织=统一社会信用代码 / 个人=统一账号ID" value="'+esc(p.ident)+'" style="width:280px"></div>'
+ +'</div><div class="row">'
+ +'<div class="f"><label>收款户名</label><input class="p-an" value="'+esc(p.account.name)+'"></div>'
+ +'<div class="f"><label>收款账号</label><input class="p-ano" value="'+esc(p.account.no)+'"></div>'
+ +'<div class="f"><label>开户行</label><input class="p-ab" value="'+esc(p.account.bank)+'"></div>'
+ +'<div class="f p-quota-f" style="display:'+(p.type==='个人'?'':'none')+'"><label>付款额度（个人免合同不免额度）</label><input class="p-quota" type="number" value="'+(p.quota||'')+'"></div>'
+ +'<div class="mut p-quota-tip" style="display:'+(p.type==='组织'?'':'none')+';padding-bottom:6px">组织级：合同规定金额在审批通过后的「合同待补」态录入合同</div>'
+ +'</div></div>';
+}
+function pnType(sel){ var box = sel.closest('.pn'); box.querySelector('.p-quota-f').style.display = sel.value==='个人'?'':'none'; box.querySelector('.p-quota-tip').style.display = sel.value==='组织'?'':'none'; }
+function addPartner(){ var w = document.getElementById('pn-wrap'); var div = document.createElement('div'); div.innerHTML = partnerForm({name:'',type:'组织',cat:'高校人才',ident:'',account:{name:'',no:'',bank:''},quota:''}, w.children.length); w.appendChild(div.firstChild); }
+function readPartners(){
+ return Array.prototype.map.call(document.querySelectorAll('#pn-wrap .pn'), function(box){
+  return { name:box.querySelector('.p-name').value.trim(), type:box.querySelector('.p-type').value, cat:box.querySelector('.p-cat').value,
+   ident:box.querySelector('.p-ident').value.trim(), account:{name:box.querySelector('.p-an').value.trim(), no:box.querySelector('.p-ano').value.trim(), bank:box.querySelector('.p-ab').value.trim()},
+   quota:box.querySelector('.p-quota').value? Number(box.querySelector('.p-quota').value):null, contract:null };
+ });
+}
+function submitCP(editId){
+ var name = document.getElementById('f-name').value.trim();
+ var c = { name:name, creator:DB.session, status:'评审中',
+  reviewer:val('f-rev'), approver:val('f-app'), acceptor:val('f-acc'), partners:readPartners() };
+ var errs = [];
+ if(!c.name) errs.push('项目名称必填');
+ c.partners.forEach(function(p,i){ if(!p.name||!p.ident||!p.account.name) errs.push('合作方'+(i+1)+'：名称/对象标识/收款户名必填');
+  if(p.type==='个人'&&!p.quota) errs.push('合作方'+(i+1)+'（个人）：须录入付款额度（免合同不免额度）'); });
+ var mu = guardMutexCP(c); if(mu) errs.push(mu);
+ var m = document.getElementById('cp-msg');
+ if(errs.length){ m.innerHTML = '<div class="msg errm">'+errs.join('<br>')+'</div>'; return; }
+ if(editId){ c.id = editId; var old = cp(editId); Object.assign(old, {name:c.name,reviewer:c.reviewer,approver:c.approver,acceptor:c.acceptor,partners:c.partners,status:'评审中'}); }
+ else { c.id = 'CP-'+pad3(DB.seq.CP++); DB.coop.push(c); }
+ addHis(c.id,'发起',me().name, editId?'编辑重提·提交':'代填发起并提交','互斥校验通过（GR-01）· 指定 评审='+uname(c.reviewer)+' 审批='+uname(c.approver)+' 验收='+uname(c.acceptor));
+ notify(c.reviewer,'待办产生',c.id+' '+c.name+' 待评审',c.id);
+ saveDB(); toast('已提交，进入「评审中」（互斥校验通过）'); go('cp-detail',c.id);
+}
+function val(id){ return document.getElementById(id).value; }
+
+function pCpDetail(){
+ var id = route().id, c = cp(id);
+ if(!c) return '<div class="msg errm">未找到 '+esc(id)+'</div>';
+ var u = DB.session, r = me().role;
+ var h = crumb('对外支付项目 > 合作项目 > 高校外部合作项目（合作共创） > 详情') + '<h2>'+esc(c.name)+' '+badge(c.status)+'<span class="mut" style="font-size:12px;margin-left:8px">'+c.id+'</span></h2>';
+ h += '<div class="card"><div class="kv"><div>发起接口人</div><div>'+uname(c.creator)+'（挂靠：生态合作部）</div><div>评审人</div><div>'+uname(c.reviewer)+'</div><div>审批人</div><div>'+uname(c.approver)+'</div><div>验收人</div><div>'+uname(c.acceptor)+'</div></div></div>';
+ h += '<div class="card"><h3>合作方（1:N）</h3><table><tr><th>名称</th><th>类型</th><th>类别</th><th>对象标识</th><th>收款账户</th><th>额度依据</th><th>合同</th></tr>'+
+ c.partners.map(function(p){
+  var q = partnerQuota(c,p), used = usedQuota(c.id,p.name);
+  return '<tr><td>'+esc(p.name)+'</td><td>'+p.type+'</td><td>'+p.cat+'</td><td class="mut">'+esc(p.ident)+'</td><td class="mut">'+esc(p.account.name)+' / '+esc(p.account.no)+'<br>'+esc(p.account.bank)+'</td>'
+  +'<td>¥'+money(q)+'<br><span class="mut">已核 ¥'+money(used)+' · 剩 ¥'+money(q-used)+'</span></td>'
+  +'<td>'+(p.contract? esc(p.contract.attach)+'<br><span class="mut">协议编号 '+esc(p.contract.no)+' · ¥'+money(p.contract.amount)+'</span>' : (p.type==='组织'?'<span class="mut">待合同</span>':'免合同'))+'</td></tr>';
+ }).join('')+'</table></div>';
+ // 动作区
+ var acts = [];
+ if(r==='业务接口人'&&c.creator===u){
+  if(c.status==='评审中'||c.status==='审批中') acts.push('<button class="dgr" onclick="cpWithdraw(\''+c.id+'\')">撤回（回草稿可编辑重提）</button>');
+  if(c.status==='草稿') acts.push('<button class="pri" onclick="go(\'cp-create/'+c.id+'\')">编辑重提</button>');
+  if(c.status==='合同待补') acts.push('<button class="pri" onclick="toggle(\'contract-form\')">提交合同信息</button>');
+  if(c.status==='验收中'){
+   acts.push('<button class="pri" onclick="toggle(\'pay-form\')">发起付款（选定合作方）</button>');
+   acts.push('<button onclick="cpFinish(\''+c.id+'\')">手动完结（无在途支付单）</button>');
+  }
+  if((c.status==='评审中'||c.status==='审批中'||(c.status==='验收中'&&accs(c.id).length===0)))
+   acts.push('<button onclick="toggle(\'reassign-me\')">更换处理人（接口人·未开始环节）</button>');
+ }
+ if(r==='评审人'&&u===c.reviewer&&c.status==='评审中') acts.push('<button class="pri" onclick="toggle(\'review-form\')">提交评审结论</button>');
+ if(r==='审批人'&&u===c.approver&&c.status==='审批中') acts.push('<button class="pri" onclick="toggle(\'approve-form\')">审批（依据评审结论）</button>');
+ if(r==='验收人'&&u===c.acceptor&&c.status==='验收中') acts.push('<button class="pri" onclick="toggle(\'accept-form\')">录入验收记录</button>');
+ if(r==='系统管理员'&&['评审中','审批中','合同待补','验收中'].indexOf(c.status)>=0) acts.push('<button onclick="toggle(\'reassign-admin\')">改派处理人（管理员·在途环节）</button>');
+ if(acts.length) h += '<div class="card"><h3>操作</h3><div class="row">'+acts.join('')+'</div>' + cpForms(c) + '</div>';
+ h += '<div class="card"><h3>验收记录（多次·只增不改）</h3>'+accTable(c.id)+'</div>';
+ var fullWait = '';
+ if(c.status==='验收中' && c.partners.every(function(p){return partnerQuota(c,p)>0 && usedQuota(c.id,p.name)>=partnerQuota(c,p)}) && inPay(c.id).length)
+  fullWait = '<div class="hint">额度已全额占用：待在途支付单到达终态后自动完结（无在途时也可手动完结）。</div>';
+ h += '<div class="card"><h3>付款与核销（按合作方，GR-02）</h3>'+wfTable(c.id)+fullWait+'<h3>派生支付单</h3>'+payRows(payToward(c.id))+'</div>';
+ h += '<div class="card"><h3>处理记录（留痕时间线）</h3>'+tl(c.id)+'</div>';
+ return h;
+}
+function toggle(id){ var el = document.getElementById(id); el.style.display = el.style.display==='none'?'':'none'; }
+function cpForms(c){
+ var h = '';
+ h += '<div id="review-form" style="display:none;margin-top:10px"><div class="f"><label>评审结论</label><label style="color:var(--fg)"><input type="radio" name="rv" value="通过"> 通过</label> <label style="color:var(--fg)"><input type="radio" name="rv" value="不通过"> 不通过</label></div><div class="f"><label>评审意见（写入处理记录，作为审批依据）</label><textarea id="rv-text" rows="2" style="width:520px"></textarea></div><button class="pri" onclick="cpReview(\''+c.id+'\')">提交结论</button></div>';
+ h += '<div id="approve-form" style="display:none;margin-top:10px"><div class="mut">评审结论：'+esc((his(c.id).filter(function(x){return x.env==='评审'}).pop()||{}).concl||'—')+'</div><div class="f"><label>审批意见（驳回必附理由）</label><textarea id="ap-text" rows="2" style="width:520px"></textarea></div><button class="pri" onclick="cpApprove(\''+c.id+'\',1)">通过</button> <button class="dgr" onclick="cpApprove(\''+c.id+'\',0)">驳回</button><div id="ap-msg"></div></div>';
+ h += '<div id="contract-form" style="display:none;margin-top:10px"><div class="row"><div class="f"><label>组织级合作方（逐家录入，1:N 各自合同）</label><select id="ct-partner">'+c.partners.map(function(p,i){return p.type==='组织'?'<option value="'+i+'">'+esc(p.name)+'</option>':''}).join('')+'</select></div><div class="f"><label>合同附件名（线下/协议平台签署后上传）</label><input id="ct-att" placeholder="如 合作协议.pdf"></div><div class="f"><label>协议编号（本期自由文本，不校验）</label><input id="ct-no"></div><div class="f"><label>合同规定金额（录入后锁定）</label><input id="ct-amt" type="number"></div></div><button class="pri" onclick="cpContract(\''+c.id+'\')">录入该合作方合同（全部齐备→验收中）</button><div id="ct-msg"></div></div>';
+ h += '<div id="accept-form" style="display:none;margin-top:10px"><div class="row"><div class="f"><label>验收结论</label><label style="color:var(--fg)"><input type="radio" name="ac" value="通过"> 通过</label> <label style="color:var(--fg)"><input type="radio" name="ac" value="不通过"> 不通过</label></div><div class="f"><label>验收材料</label><input id="ac-mat" placeholder="材料文件名"></div><div class="mut">完结标记仅用于激励流合并付款前置（D-013）；立项流完结由额度核销尽/手动完结驱动</div></div><button class="pri" onclick="cpAccept(\''+c.id+'\')">提交验收记录</button></div>';
+ // 付款表单
+ var opts = c.partners.map(function(p,i){ var q = partnerQuota(c,p), used = usedQuota(c.id,p.name); var wok = wlHit(p.type==='组织'?'组织':'开发者', p.ident)?'白名单✓':'白名单✗'; return '<option value="'+i+'">'+esc(p.name)+'（剩余 ¥'+money(q-used)+' / ¥'+money(q)+' · '+wok+'）</option>'; }).join('');
+ h += '<div id="pay-form" style="display:none;margin-top:10px"><div class="row"><div class="f"><label>选定合作方（付款对象）</label><select id="pf-partner">'+opts+'</select></div><div class="f"><label>本次付款金额</label><input id="pf-amt" type="number"></div></div><div class="mut" id="pf-info"></div>'
+ + '<button class="pri" onclick="cpPay(\''+c.id+'\')">发起付款（幂等）</button> <span class="mut">前置：≥1条「通过」验收；白名单按对象标识校验；超剩余额度拦截</span><div id="pf-msg"></div></div>';
+ // 换人/改派
+ h += reassignForm(c,'reassign-me','接口人更换（未开始环节）',false);
+ h += reassignForm(c,'reassign-admin','管理员改派（在途环节）',true);
+ return h;
+}
+function reassignForm(c, id, title, admin){
+ var envs = [];
+ if(c.reviewer) envs.push({k:'reviewer',label:'评审人',cur:c.reviewer});
+ if(c.approver) envs.push({k:'approver',label:'审批人',cur:c.approver});
+ if(c.acceptor) envs.push({k:'acceptor',label:'验收人',cur:c.acceptor});
+ var h = '<div id="'+id+'" style="display:none;margin-top:10px"><b>'+title+'</b><div class="row"><div class="f"><label>环节</label><select id="'+id+'-env" onchange="reassignEnv(\''+id+'\')">'
+ + envs.map(function(e){ return '<option value="'+e.k+'">'+e.label+'（当前 '+uname(e.cur)+'）</option>'; }).join('')+'</select></div>'
+ + '<div class="f"><label>改派为（同角色候选）</label><select id="'+id+'-who">'+rosterOpts('', envs.length?envRole(envs[0].k):'')+'</select></div>'
+ + '<button class="pri" onclick="doReassign(\''+c.id+'\',\''+id+'\','+admin+')">确认改派</button></div><div class="mut" id="'+id+'-msg"></div></div>';
+ return h;
+}
+function reassignEnv(formId){
+ var env = val(formId+'-env');
+ var sel = document.getElementById(formId+'-who');
+ if(sel) sel.innerHTML = rosterOpts('', envRole(env));
+}
+function doReassign(cid, formId, admin){
+ var c = cp(cid), env = val(formId+'-env'), who = val(formId+'-who'), msg = document.getElementById(formId+'-msg');
+ var envName = ({reviewer:'评审',approver:'审批',acceptor:'验收'})[env];
+ var envHadRecord = his(cid).some(function(x){ return x.env===envName && !/发起|提交$/.test(x.act); });
+ if(!admin && envHadRecord){ msg.innerHTML = '<span class="err">接口人仅可更换「未开始环节」（该环节已有处理记录）。</span>'; return; }
+ if(['已完结','已驳回'].indexOf(c.status)>=0){ msg.innerHTML = '<span class="err">终态单据不可改派（D-032 仅限在途环节）。</span>'; return; }
+ if(DB.users[who].role !== envRole(env)){ msg.innerHTML = '<span class="err">候选须具备该环节处理角色（'+envRole(env)+'），当前选择：'+uname(who)+'·'+DB.users[who].role+'。</span>'; return; }
+ var oldp = c[env];
+ if(oldp===who){ msg.innerHTML = '<span class="err">未变更：选择的人员与当前处理人相同。</span>'; return; }
+ var cand = {reviewer:c.reviewer,approver:c.approver,acceptor:c.acceptor}; cand[env] = who;
+ var mu = guardMutexCP(cand);
+ if(mu){ msg.innerHTML = '<span class="err">'+mu+'（未生效，请另选人员）</span>'; return; }
+ c[env] = who;
+ addHis(cid,envName,me().name, admin?'管理员改派':'接口人更换处理人', uname(oldp)+' → '+uname(who)+'·已重跑互斥校验（GR-01）');
+ notify(oldp,'状态变更',cid+' 已改派，您的原待办失效',cid);
+ notify(who,'待办产生',cid+' 环节已改派给您',cid);
+ saveDB(); toast('改派成功：'+({reviewer:'评审人',approver:'审批人',acceptor:'验收人'})[env]+' → '+uname(who)); go('cp-detail',cid);
+}
+function cpWithdraw(id){
+ var c = cp(id);
+ if(['评审中','审批中'].indexOf(c.status)<0){ toast('仅评审中/审批中可撤回（当前 '+c.status+'）', true); return; }
+ var holder = c.status==='评审中'? c.reviewer : c.approver;
+ c.status = '草稿';
+ notify(holder,'状态变更',id+' 已被发起人撤回，相关待办失效',id);
+ addHis(id,'撤回',me().name,'撤回','回草稿，可编辑重提（人员可换，重提重跑互斥）');
+ saveDB(); toast('已撤回至草稿，可编辑重提'); go('cp-detail',id);
+}
+function cpReview(id){
+ var c = cp(id);
+ if(c.status!=='评审中'){ toast('单据状态已变更（当前 '+c.status+'），请刷新后操作', true); return; }
+ var concl = (document.querySelector('input[name=rv]:checked')||{}).value, text = val('rv-text');
+ if(!text){ toast('评审意见必填', true); return; }
+ addHis(id,'评审',me().name,'提交评审结论',concl+'：'+text, concl==='不通过');
+ if(concl==='通过'){ c.status='审批中'; notify(c.approver,'待办产生',id+' 待审批（依据评审结论）',id); }
+ else { c.status='已驳回'; notifyTransition('已驳回（评审不通过）',id,c.creator); }
+ saveDB(); toast('评审结论已提交：'+concl); go('cp-detail',id);
+}
+function cpApprove(id, pass){
+ var c = cp(id);
+ if(c.status!=='审批中'){ toast('单据状态已变更（当前 '+c.status+'），请刷新后操作', true); return; }
+ var text = val('ap-text'), msg = document.getElementById('ap-msg');
+ if(!pass && !text){ msg.innerHTML = '<span class="err">驳回必附理由。</span>'; return; }
+ if(pass){
+  c.status = c.partners.some(function(p){return p.type==='组织'}) ? '合同待补' : '验收中';
+  addHis(id,'审批',me().name,'审批通过',text||'同意');
+  if(c.status==='合同待补') notify(c.creator,'待办产生',id+' 审批通过，待提交合同信息（组织级合作方）',id);
+  else notify(c.acceptor,'待办产生',id+' 已进入验收，可多次验收',id);
+ } else {
+  c.status = '已驳回'; addHis(id,'审批',me().name,'审批驳回',text,true);
+  notifyTransition('已驳回（审批）：'+text, id, c.creator);
+ }
+ saveDB(); toast(pass?'审批通过':'已驳回'); go('cp-detail',id);
+}
+function cpContract(id){
+ var c = cp(id);
+ if(c.status!=='合同待补'){ toast('单据状态已变更（当前 '+c.status+'），请刷新后操作', true); return; }
+ var att = val('ct-att'), no = val('ct-no'), amt = Number(val('ct-amt')), msg = document.getElementById('ct-msg');
+ var p = c.partners[Number(val('ct-partner')||0)];
+ if(!(p&&p.type==='组织')){ msg.innerHTML = '<span class="err">请选择组织级合作方。</span>'; return; }
+ if(!att||!no||!amt){ msg.innerHTML = '<span class="err">附件名/协议编号/合同规定金额均为必填。</span>'; return; }
+ p.contract = {attach:att,no:no,amount:amt};
+ addHis(id,'合同信息提交与金额录改',me().name,'提交合同信息（'+p.name+'）','附件 '+att+'·协议编号 '+no+'·合同规定金额 '+money(amt)+'（锁定）');
+ if(c.partners.every(function(x){return x.type!=='组织' || x.contract})){
+  c.status = '验收中';
+  notify(c.acceptor,'待办产生',id+' 已进入验收，可多次验收',id);
+  saveDB(); toast('全部组织级合作方合同齐备，进入「验收中」（金额已锁定）');
+ } else {
+  saveDB(); toast(p.name+' 合同已录入（金额锁定）；尚有其他组织级合作方待补');
+ }
+ go('cp-detail',id);
+}
+function cpAccept(id){
+ var c = cp(id);
+ if(c.status!=='验收中'){ toast('单据状态已变更（当前 '+c.status+'），请刷新后操作', true); return; }
+ var concl = (document.querySelector('input[name=ac]:checked')||{}).value, mat = val('ac-mat');
+ if(!mat){ toast('验收材料必填', true); return; }
+ var n = accs(id).length+1;
+ DB.acc.push({id:'AC-'+(DB.seq.H++),refDoc:id,n:n,user:DB.session,concl:concl,fin:false,mat:mat,time:now()});
+ addHis(id,'验收',me().name,'录入验收记录 #'+n,concl, concl==='不通过');
+ if(concl==='不通过') notify(c.creator,'处理结果',id+' 验收记录 #'+n+' 不通过（材料：'+mat+'）',id);
+ saveDB(); toast('验收记录 #'+n+' 已提交'); go('cp-detail',id);
+}
+function cpFinish(id){
+ var c = cp(id);
+ if(c.status!=='验收中'){ toast('单据状态已变更（当前 '+c.status+'）', true); return; }
+ var ip = inPay(id);
+ if(ip.length){ toast('存在在途支付单（'+ip.map(function(p){return p.id}).join('、')+'），不可手动完结', true); return; }
+ if(!confirm('手动完结后不可再付款，剩余额度将作废并留痕。确认完结？')) return;
+ c.status = '已完结';
+ var left = c.partners.reduce(function(s,p){return s + (partnerQuota(c,p)-usedQuota(c.id,p.name))},0);
+ addHis(id,'项目完结与额度作废',me().name,'接口人手动完结','剩余额度 ¥'+money(left)+' 作废（D-031）');
+ saveDB(); toast('项目已手动完结，剩余额度 ¥'+money(left)+' 作废留痕'); go('cp-detail',id);
+}
+function cpPay(id){
+ var c = cp(id);
+ if(c.status!=='验收中'){ toast('单据状态已变更（当前 '+c.status+'），请刷新后操作', true); return; }
+ var pi = Number(val('pf-partner')), p = c.partners[pi], amt = Number(val('pf-amt')), msg = document.getElementById('pf-msg');
+ var btn = event ? event.target : null;
+ if(btn && btn.disabled) return; // 幂等
+ if(btn) btn.disabled = true;
+ function done(){ if(btn) btn.disabled = false; }
+ var dup = inPay(id).filter(function(x){return x.payee===p.name});
+ if(dup.length){ msg.innerHTML = '<span class="err">该合作方已有在途支付单（'+dup.map(function(x){return x.id}).join('、')+'），请等待其终态后再发起。</span>'; done(); return; }
+ var a = accs(id);
+ if(!a.some(function(x){return x.concl==='通过'})){ msg.innerHTML = '<span class="err">付款前置：须存在≥1条「通过」验收记录（D-014）。</span>'; done(); return; }
+ var hit = wlHit(p.type==='组织'?'组织':'开发者', p.ident);
+ if(!hit){ msg.innerHTML = '<span class="err">NFR-03 白名单拦截：合作方 '+esc(p.name)+'（'+esc(p.ident)+'）不在生效名单内。可联系管理员导入白名单（指引：系统管理>白名单管理）。</span>'; done(); return; }
+ var q = partnerQuota(c,p), used = usedQuota(c.id,p.name), left = q-used;
+ if(!(amt>0)){ msg.innerHTML = '<span class="err">请输入有效金额（&gt;0）。</span>'; done(); return; }
+ if(amt>left){ msg.innerHTML = '<span class="err">GR-02 额度拦截：本次 ¥'+money(amt)+' 超出剩余额度 ¥'+money(left)+'（合同/额度 ¥'+money(q)+'，已核销 ¥'+money(used)+'），超出 ¥'+money(amt-left)+'。</span>'; done(); return; }
+ var rev = DB.pools['支付评审'][0], sig = DB.pools['支付授权签核'][0];
+ var ret = DB.pay.filter(function(x){return x.fromId===id&&x.payee===p.name&&x.status==='已退回'&&!DB.pay.some(function(y){return y.prevId===x.id})});
+ var prevId = ret.length? ret[ret.length-1].id : '';
+ var np = {id:'PAY-'+pad3(DB.seq.PAY++),fromType:'CP',fromId:id,payee:p.name,cat:p.cat,account:JSON.parse(JSON.stringify(p.account)),amount:amt,basis:'验收记录（通过）'+(prevId?'·重发自 '+prevId:''),contractNo:p.contract?p.contract.no:'',reviewer:rev,signee:sig,by:DB.session,status:'待接收',prevId:prevId};
+ var g = guardPayPeople(np, DB.session);
+ if(g){ msg.innerHTML = '<span class="err">'+g+'（请在权限管理调整人员池）</span>'; done(); return; }
+ DB.pay.push(np);
+ var bal = left-amt;
+ DB.wf.push({id:'WF-'+pad3(DB.wf.length+1),refDoc:id,partner:p.name,amount:amt,payId:np.id,bal:bal,by:DB.session,time:now(),state:'已生成',wlHit:hit.id+' '+hit.name});
+ addHis(id,'付款发起',me().name,'发起付款','选定 '+p.name+'·¥'+money(amt)+'·白名单依据 '+hit.id+'·核销后余额 ¥'+money(bal)+(prevId?'·重发自 '+prevId:''));
+ notify(rev,'待办产生',np.id+' 支付单（'+p.name+'）待接收确认',np.id);
+ autoFinishCheck(c);
+ saveDB(); toast('支付单 '+np.id+' 已生成（核销 ¥'+money(amt)+'），进入下游非采对外支付');
+ done(); go('cp-detail',id);
+}
+
+/* ============ 页面：社区激励 ============ */
+function pIncList(){
+ var h = crumb(isExt()?'对外支付项目 > 社区开发者激励':'对外支付项目 > 合作项目 > 社区开发者激励') + '<h2>社区开发者激励</h2>';
+ if(isExt()){ h += '<p><button class="pri" onclick="go(\'inc-create\')">发起激励申请</button> <span class="mut">仅白名单内开发者可发起（本期仅 开源社区平台）</span></p>'; }
+ var list = isExt()? DB.inc.filter(function(i){return i.dev===DB.session}) : DB.inc;
+ if(!list.length){ return h + '<div class="empty">暂无激励单，去 <a href="#/inc-create">发起激励申请 →</a></div>'; }
+ h += '<table><tr><th>单号</th><th>任务/成果</th><th>开发者</th><th>申报/通过金额</th><th>状态</th><th>操作</th></tr>'+
+ list.map(function(i){
+  var st = i.withdrawn?'已撤回':i.status;
+  var myPay = payToward(i.id);
+  return '<tr><td>'+i.id+'</td><td>'+esc(i.task)+'</td><td>'+uname(i.dev)+'</td><td>¥'+money(i.decl)+(i.approved?' / <b>¥'+money(i.approved)+'</b>':'')+'</td><td>'+badge(st)+'</td><td><a href="#/inc-detail/'+i.id+'">'+(isExt()?'查看（含付款进度）':'查看')+'</a></td></tr>';
+ }).join('')+'</table>';
+ return h;
+}
+function pIncCreate(){
+ var h = crumb(isExt()?'对外支付项目 > 社区开发者激励 > 发起':'对外支付项目 > 合作项目 > 社区开发者激励 > 发起') + '<h2>发起激励申请</h2>';
+ h += '<p class="mut">开发者本人发起（本期仅 开源社区平台 渠道）；提交时按会话身份校验白名单（NFR-03 硬约束）。</p>';
+ var wlSelf = wlHit('开发者', me().uid||'');
+ h += '<div class="hint">当前账号白名单资格：<b>'+(wlSelf?'名单内（'+esc(wlSelf.id)+'）':'名单外')+'</b> · 演示：当前账号 <b>'+me().name+'</b>（'+(me().uid||'内部')+'）。切换到「小刘（名单外）」再提交，可体验拦截+指引。</div>';
+ h += '<div class="card"><div class="f"><label>任务/成果描述</label><input id="i-task" style="width:460px" placeholder="如：揭榜任务 #xxxx · 组件开发"></div>'
+ + '<div class="f"><label>成果附件（完成证明）</label><input id="i-att" placeholder="文件名，如 成果说明.pdf"></div>'
+ + '<div class="row"><div class="f"><label>收款户名</label><input id="i-an"></div><div class="f"><label>收款账号</label><input id="i-ano"></div><div class="f"><label>开户行</label><input id="i-ab"></div></div>'
+ + '<div class="f"><label>申报金额（元）</label><input id="i-decl" type="number"></div></div>'
+ + '<button class="pri" onclick="submitInc()">提交（白名单校验→待审批）</button><div id="i-msg"></div>';
+ return h;
+}
+function submitInc(){
+ var task = val('i-task'), att = val('i-att'), decl = Number(val('i-decl')), msg = document.getElementById('i-msg');
+ var acc = {name:val('i-an'),no:val('i-ano'),bank:val('i-ab')};
+ if(!task||!att||!decl||!acc.name){ msg.innerHTML = '<div class="msg errm">任务描述/成果附件/收款账户/申报金额必填。</div>'; return; }
+ var hit = wlHit('开发者', me().uid||'');
+ if(!hit){
+  msg.innerHTML = '<div class="msg errm">NFR-03 白名单拦截：当前账号（'+esc(me().uid||'—')+'）不在生效名单内，未生成单据。<br>指引：请联系接口人或管理员加入白名单（系统管理>白名单管理，Excel 导入→审批生效）。</div>';
+  return;
+ }
+ var i = {id:'INC-'+pad3(DB.seq.INC++),dev:DB.session,task:task,attach:att,decl:decl,approved:null,approver:DB.pools['激励审批'][0],acceptor:DB.pools['激励验收'][0],status:'待审批',account:acc};
+ DB.inc.push(i);
+ addHis(i.id,'发起',me().name,'本人提交','白名单校验通过（'+hit.id+'）· 渠道 开源社区平台');
+ notify(i.approver,'待办产生',i.id+' '+task+' 待审批',i.id);
+ saveDB(); toast('已提交，进入「待审批」'); go('inc-detail',i.id);
+}
+function pIncDetail(){
+ var id = route().id, i = inc(id);
+ if(!i) return '<div class="msg errm">未找到 '+esc(id)+'</div>';
+ var r = me().role, u = DB.session;
+ if(isExt() && i.dev!==u) return '<div class="msg errm">NFR-02 数据边界：外部用户仅可查看本人申请单。</div>';
+ var h = crumb(isExt()?'对外支付项目 > 社区开发者激励 > 详情':'对外支付项目 > 合作项目 > 社区开发者激励 > 详情') + '<h2>'+esc(i.task)+' '+badge(i.withdrawn?'已撤回':i.status)+'<span class="mut" style="font-size:12px;margin-left:8px">'+i.id+'</span></h2>';
+ h += '<div class="card"><div class="kv"><div>开发者</div><div>'+uname(i.dev)+'（开源社区平台）</div><div>成果附件</div><div>'+esc(i.attach)+'</div>'
+ +'<div>申报金额</div><div>¥'+money(i.decl)+'</div><div>审批通过金额</div><div>'+(i.approved?'<b>¥'+money(i.approved)+'</b>（额度上限，GR-02）':'—')+'</div>'
+ +'<div>审批人</div><div>'+uname(i.approver)+'（池绑定）</div><div>验收人</div><div>'+uname(i.acceptor)+'（池绑定·≠审批人）</div>'
+ +'<div>收款账户</div><div>'+esc(i.account.name)+' / '+esc(i.account.no)+'<br><span class="mut">'+esc(i.account.bank)+'（验收中锁定）</span></div></div></div>';
+ var acts = [];
+ if(isExt()&&i.dev===u&&i.status==='待审批'&&!i.withdrawn) acts.push('<button class="dgr" onclick="incWithdraw(\''+i.id+'\')">撤回申请</button>');
+ if(r==='审批人'&&u===i.approver&&i.status==='待审批'&&!i.withdrawn) acts.push('<button class="pri" onclick="toggle(\'iap-form\')">审批（确认通过金额/核对账户）</button>');
+ if(r==='验收人'&&u===i.acceptor&&i.status==='验收中') acts.push('<button class="pri" onclick="toggle(\'iac-form\')">录入验收记录</button>');
+ if(r==='审批人'&&u===i.approver&&i.status==='验收中'){
+  if(mergeReady(i)) acts.push('<button class="pri" onclick="setImpMode(\'merge\');toggle(\'imp-form\')">合并发起付款（一次）</button>');
+  else acts.push('<span class="mut">合并付款未解锁：需存在「验收完结」标记且 ≥1 条通过验收（D-013）</span>');
+ }
+ if(r==='审批人'&&u===i.approver&&i.status==='已完结'){
+  var retOpen = payToward(i.id).filter(function(x){return x.status==='已退回'&&!payToward(i.id).some(function(y){return y.prevId===x.id})});
+  if(retOpen.length) acts.push('<button class="pri" onclick="setImpMode(\'reissue\');toggle(\'imp-form\')">重新合并发起付款（重发自 '+retOpen[retOpen.length-1].id+'）</button>');
+ }
+ if(r==='系统管理员'&&['待审批','验收中'].indexOf(i.status)>=0&&!i.withdrawn) acts.push('<button onclick="toggle(\'ire-form\')">改派处理人（管理员·在途环节）</button>');
+ if(acts.length) h += '<div class="card"><h3>操作</h3><div class="row">'+acts.join('')+'</div>'+incForms(i)+'</div>';
+ h += '<div class="card"><h3>验收记录（多次）</h3>'+accTable(i.id)+'</div>';
+ h += '<div class="card"><h3>付款进度（本人派生支付单 · 只读）</h3>'+payRows(payToward(i.id),{ro:true})+'<h3>核销记录</h3>'+wfTable(i.id)+'</div>';
+ h += '<div class="card"><h3>处理记录</h3>'+tl(i.id)+'</div>';
+ return h;
+}
+function incForms(i){
+ var h = '<div id="iap-form" style="display:none;margin-top:10px"><div class="row"><div class="f"><label>审批通过金额（默认=申报，可下调不可上调）</label><input id="iap-amt" type="number" value="'+i.decl+'"></div></div>'
+ + '<div class="mut">收款账户核对：'+esc(i.account.name)+' / '+esc(i.account.no)+'</div>'
+ + '<div class="f"><label>审批意见（驳回必附理由）</label><textarea id="iap-text" rows="2" style="width:520px"></textarea></div>'
+ + '<button class="pri" onclick="incApprove(\''+i.id+'\',1)">通过</button> <button class="dgr" onclick="incApprove(\''+i.id+'\',0)">驳回</button><div id="iap-msg"></div></div>';
+ h += '<div id="iac-form" style="display:none;margin-top:10px"><div class="row"><div class="f"><label>验收结论</label><label style="color:var(--fg)"><input type="radio" name="iav" value="通过"> 通过</label> <label style="color:var(--fg)"><input type="radio" name="iav" value="不通过"> 不通过</label></div><div class="f"><label>材料</label><input id="iac-mat"></div><div class="f"><label><input type="checkbox" id="iac-fin"> 验收完结标记（合并付款前置 D-013）</label></div></div><button class="pri" onclick="incAccept(\''+i.id+'\')">提交验收记录</button></div>';
+ h += '<div id="imp-form" style="display:none;margin-top:10px"><input type="hidden" id="imp-mode" value="merge"><div class="row"><div class="f"><label>付款金额（≤审批通过金额；多次验收合并一次）</label><input id="imp-amt" type="number" value="'+(i.approved||0)+'"></div>'
+ + '<button class="pri" onclick="incPay(\''+i.id+'\')">发起付款（幂等）</button></div><div class="mut" id="imp-msg"></div></div>';
+ var envs = [{k:'approver',label:'审批人',cur:i.approver},{k:'acceptor',label:'验收人',cur:i.acceptor}];
+ h += '<div id="ire-form" style="display:none;margin-top:10px"><b>管理员改派（在途环节）</b><div class="row"><div class="f"><label>环节</label><select id="ire-env">'+envs.map(function(e){return '<option value="'+e.k+'">'+e.label+'（当前 '+uname(e.cur)+'）</option>'}).join('')+'</select></div>'
+ + '<div class="f"><label>改派为（池内同角色候选）</label><select id="ire-who" onchange="incReenv()">'+poolOpts('激励审批', i.approver)+'</select></div><button class="pri" onclick="incReassign(\''+i.id+'\')">确认改派</button></div><div class="mut" id="ire-msg"></div></div>';
+ return h;
+}
+function incWithdraw(id){
+ var i = inc(id);
+ if(i.status!=='待审批'||i.withdrawn){ toast('仅待审批态可撤回（当前 '+i.status+'）', true); return; }
+ i.withdrawn = true;
+ notify(i.approver,'状态变更',id+' 已被发起人撤回，待办失效',id);
+ addHis(id,'撤回',me().name,'开发者撤回','待审批态撤回（D-021）'); saveDB(); toast('已撤回'); go('inc-detail',id); }
+function incApprove(id, pass){
+ var i = inc(id);
+ if(i.status!=='待审批'||i.withdrawn){ toast('单据状态已变更，请刷新后操作', true); return; }
+ var amt = Number(val('iap-amt')), text = val('iap-text'), msg = document.getElementById('iap-msg');
+ if(pass){
+  if(amt<=0||amt>i.decl){ msg.innerHTML = '<span class="err">通过金额须 &gt;0 且 ≤申报金额（'+money(i.decl)+'），不可上调。</span>'; return; }
+  i.approved = amt; i.status = '验收中';
+  addHis(id,'审批',me().name,'审批通过·确认通过金额','申报 '+money(i.decl)+' → 通过 '+money(amt)+(text?'：'+text:''));
+  notify(i.acceptor,'待办产生',id+' 进入验收（可多次/完结标记）',id);
+ } else {
+  if(!text){ msg.innerHTML = '<span class="err">驳回必附理由。</span>'; return; }
+  i.status = '已驳回'; addHis(id,'审批',me().name,'审批驳回',text,true);
+  notifyTransition('已驳回：'+text, id, null, i.dev);
+ }
+ saveDB(); toast(pass?'审批通过':'已驳回'); go('inc-detail',id);
+}
+function incAccept(id){
+ var i = inc(id);
+ if(i.status!=='验收中'||i.withdrawn){ toast('单据状态已变更（当前 '+i.status+'），请刷新后操作', true); return; }
+ var concl = (document.querySelector('input[name=iav]:checked')||{}).value, mat = val('iac-mat'), fin = document.getElementById('iac-fin').checked;
+ if(!mat){ toast('验收材料必填', true); return; }
+ var n = accs(id).length+1;
+ DB.acc.push({id:'AC-'+(DB.seq.H++),refDoc:id,n:n,user:DB.session,concl:concl,fin:fin,mat:mat,time:now()});
+ addHis(id,'验收',me().name,'录入验收记录 #'+n,concl+(fin?'·勾选验收完结':''), concl==='不通过');
+ if(concl==='不通过') notify(i.dev,'处理结果',id+' 验收记录 #'+n+' 不通过',id);
+ saveDB(); toast('验收记录 #'+n+' 已提交'); go('inc-detail',id);
+}
+function incPay(id){
+ var i = inc(id), amt = Number(val('imp-amt')), msg = document.getElementById('imp-msg');
+ var mode = val('imp-mode')||'merge';
+ var btn = event ? event.target : null; if(btn&&btn.disabled) return; if(btn) btn.disabled = true;
+ function done(){ if(btn) btn.disabled = false; }
+ var a = accs(id);
+ var ret = DB.pay.filter(function(x){return x.fromId===id&&x.status==='已退回'&&!DB.pay.some(function(y){return y.prevId===x.id})});
+ if(mode==='merge'){
+  if(i.status!=='验收中'){ msg.innerHTML = '<span class="err">单据状态已变更（当前 '+i.status+'），不能重复发起。</span>'; done(); return; }
+  if(!a.some(function(x){return x.fin})){ msg.innerHTML = '<span class="err">合并付款前置：须存在「验收完结」标记（D-013）。</span>'; done(); return; }
+ } else {
+  if(i.status!=='已完结'){ msg.innerHTML = '<span class="err">仅已完结（付款被退回）可重发。</span>'; done(); return; }
+  if(!ret.length){ msg.innerHTML = '<span class="err">无待重发的退回支付单。</span>'; done(); return; }
+ }
+ if(!a.some(function(x){return x.concl==='通过'})){ msg.innerHTML = '<span class="err">付款前置：≥1条「通过」验收（D-014）。</span>'; done(); return; }
+ if(!(amt>0)){ msg.innerHTML = '<span class="err">请输入有效金额（&gt;0）。</span>'; done(); return; }
+ if(amt>(i.approved||0)){ msg.innerHTML = '<span class="err">GR-02 额度拦截：合并付款 ≤审批通过金额 ¥'+money(i.approved||0)+'。</span>'; done(); return; }
+ var dev = DB.users[i.dev], rev = DB.pools['支付评审'][0], sig = DB.pools['支付授权签核'][0];
+ var hit = wlHit('开发者', dev.uid);
+ if(!hit){ msg.innerHTML = '<span class="err">NFR-03 白名单拦截：开发者 '+esc(dev.name)+'（'+esc(dev.uid||'—')+'）已不在生效名单内。请联系管理员处理（指引：系统管理&gt;白名单管理）。</span>'; done(); return; }
+ var prevId = mode==='reissue'? ret[ret.length-1].id : '';
+ var np = {id:'PAY-'+pad3(DB.seq.PAY++),fromType:'INC',fromId:id,payee:dev.name,cat:'开发者',account:JSON.parse(JSON.stringify(i.account)),amount:amt,basis:'激励合并付款 · 审批通过金额'+(prevId?'·重发自 '+prevId:''),contractNo:'',reviewer:rev,signee:sig,by:DB.session,status:'待接收',prevId:prevId};
+ var g = guardPayPeople(np, DB.session);
+ if(g){ msg.innerHTML = '<span class="err">'+g+'</span>'; done(); return; }
+ DB.pay.push(np);
+ DB.wf.push({id:'WF-'+pad3(DB.wf.length+1),refDoc:id,partner:dev.name,amount:amt,payId:np.id,bal:((i.approved||0)-amt),by:DB.session,time:now(),state:'已生成',wlHit:(hit?hit.id+' '+hit.name:'—')});
+ if(mode==='merge'){ i.status = '已完结'; }
+ addHis(id,'付款发起',me().name, mode==='merge'?'合并发起付款（一次）':'重新合并发起付款（重发）','¥'+money(amt)+'·白名单依据 '+hit.id+'·生成 '+np.id+(prevId?'·重发自 '+prevId:''));
+ notify(rev,'待办产生',np.id+' 待接收确认',np.id);
+ notify(i.dev,'状态变更',id+' 已提交付款申请（'+np.id+'）',id);
+ saveDB(); toast('付款已发起：'+np.id); done(); go('inc-detail',id);
+}
+function setImpMode(v){ var el = document.getElementById('imp-mode'); if(el) el.value = v; }
+function incReenv(){
+ var env = val('ire-env');
+ var sel = document.getElementById('ire-who');
+ if(sel) sel.innerHTML = poolOpts(env==='approver'?'激励审批':'激励验收', sel.value);
+}
+function incReassign(id){
+ var i = inc(id), env = val('ire-env'), who = val('ire-who'), msg = document.getElementById('ire-msg');
+ if(['待审批','验收中'].indexOf(i.status)<0||i.withdrawn){ msg.innerHTML = '<span class="err">仅在途单可改派（D-032）。</span>'; return; }
+ var oldp = i[env];
+ var cand = {approver:i.approver,acceptor:i.acceptor}; cand[env] = who;
+ if(cand.approver===cand.acceptor){ msg.innerHTML = '<span class="err">GR-01 拦截：审批人与验收人不得为同一人（未生效，请另选）。</span>'; return; }
+ i[env] = who;
+ addHis(id,({approver:'审批',acceptor:'验收'})[env],me().name,'管理员改派',uname(oldp)+' → '+uname(who)+'·重跑互斥校验（GR-01）');
+ notify(oldp,'状态变更',id+' 已改派，您的原待办失效',id);
+ notify(who,'待办产生',id+' 环节已改派给您',id);
+ saveDB(); toast('改派成功'); go('inc-detail',id);
+}
+
+/* ============ 页面：非采对外支付 ============ */
+function pPayList(){
+ var h = crumb('对外支付项目 > 非采对外支付') + '<h2>非采对外支付</h2><p class="mut">不独立发起，由上游电子流付款动作生成；固定流程：接收上游信息（可拒收）→ 评审 → 授权签核 → 发送统一付款平台（本期界面目标态呈现）</p>';
+ var list = DB.pay;
+ if(isExt()) list = list.filter(function(p){ var i = p.fromType==='INC'? inc(p.fromId):null; return i && i.dev===DB.session; });
+ h += payRows(list);
+ if(isExt()) h += '<p class="mut">仅显示本人激励单派生的支付单（NFR-02）；「已发送统一付款平台」为目标态呈现，本期无系统对接。</p>';
+ return h;
+}
+function pPayDetail(){
+ var id = route().id, p = pay(id);
+ if(!p) return '<div class="msg errm">未找到 '+esc(id)+'</div>';
+ var r = me().role, u = DB.session;
+ if(isExt()){ var i = p.fromType==='INC'? inc(p.fromId):null; if(!i||i.dev!==u) return '<div class="msg errm">NFR-02 数据边界：仅本人派生支付单可见。</div>'; }
+ var h = crumb('对外支付项目 > 非采对外支付 > 详情') + '<h2>'+p.id+' '+badge(p.status)+'<span class="mut" style="font-size:12px;margin-left:8px">'+(p.prevId?'· 重发自 '+p.prevId:'')+'</span></h2>';
+ h += '<div class="card"><h3>付款信息快照（生成后不可逆派生）</h3><div class="kv">'
+ +'<div>上游单据</div><div>'+p.fromId+'（'+(p.fromType==='CP'?'合作立项付款':'社区激励合并付款')+'）· 发起人 '+uname(p.by)+'</div>'
+ +'<div>付款对象</div><div>'+esc(p.payee)+'（'+p.cat+'）</div>'
+ +'<div>收款账户</div><div>'+esc(p.account.name)+' / '+esc(p.account.no)+'<br><span class="mut">'+esc(p.account.bank)+'</span></div>'
+ +'<div>金额</div><div><b>¥'+money(p.amount)+'</b></div>'
+ +'<div>付款依据</div><div>'+esc(p.basis)+(p.contractNo?' · 协议编号 '+esc(p.contractNo):'')+'</div>'
+ +'<div>流程人员</div><div>接收/评审 '+uname(p.reviewer)+'（池）· 授权签核 '+uname(p.signee)+'（池·≠评审 GR-04·≠发起人 GR-03）</div></div></div>';
+ var steps = ['待接收','评审中','待授权签核','已发送统一付款平台'];
+ var si = p.status==='已发送统一付款平台'?3:steps.indexOf(p.status);
+ h += '<div class="card"><h3>固定四步流转</h3><div class="row">'
+ + steps.map(function(s,idx){ var cls = idx<si?'green':(idx===si?(p.status==='已发送统一付款平台'?'purple':'orange'):'gray');
+   return '<span class="b '+cls+'">'+(idx+1)+'. '+s+(p.status==='已退回'&&idx===3?'':'')+'</span>'; }).join(' <span class="mut">→</span> ')
+ + (p.status==='已退回'?' <span class="b red">已退回（'+(p.retFrom||'')+'·核销已冲回·额度已释放）</span>':'')
+ + '</div>';
+ if(p.status==='已发送统一付款平台') h += '<div class="msg okm">✅ 已向统一付款平台提交付款申请<span class="mut">（目标态呈现 · 本期 NFR-04 零系统对接，度量=对统一付款平台网络调用数 0）</span></div>';
+ h += '</div>';
+ var acts = [];
+ if(r==='评审人'&&u===p.reviewer){
+  if(p.status==='待接收'){ acts.push('<button class="pri" onclick="payReceive(\''+id+'\',1)">接收确认</button>'); acts.push('<button class="dgr" onclick="toggle(\'prj-form\')">拒收（必附原因）</button>'); }
+  if(p.status==='评审中') acts.push('<button class="pri" onclick="toggle(\'prev-form\')">提交评审结论</button>');
+ }
+ if(r==='授权签核人'&&u===p.signee&&p.status==='待授权签核') acts.push('<button class="pri" onclick="toggle(\'psg-form\')">授权签核</button>');
+ if(r==='系统管理员'&&['待接收','评审中','待授权签核'].indexOf(p.status)>=0) acts.push('<button onclick="toggle(\'pre-form\')">改派处理人（管理员·在途环节）</button>');
+ if(acts.length) h += '<div class="card"><h3>操作</h3><div class="row">'+acts.join('')+'</div>'+payForms(p)+'</div>';
+ h += '<div class="card"><h3>处理记录（含退回原因）</h3>'+tl(id)+'</div>';
+ return h;
+}
+function payForms(p){
+ var h = '<div id="prj-form" style="display:none;margin-top:10px"><div class="f"><label>拒收原因（必填，随通知送达上游）</label><textarea id="prj-text" rows="2" style="width:520px"></textarea></div><button class="dgr" onclick="payReject(\''+p.id+'\',\'拒收\')">确认拒收→已退回（核销冲回）</button><div id="prj-msg"></div></div>';
+ h += '<div id="prev-form" style="display:none;margin-top:10px"><div class="f"><label>评审结论</label><label style="color:var(--fg)"><input type="radio" name="pv" value="通过" checked> 通过</label> <label style="color:var(--fg)"><input type="radio" name="pv" value="不通过"> 不通过（必附原因）</label></div><div class="f"><label>意见</label><textarea id="pv-text" rows="2" style="width:520px"></textarea></div><button class="pri" onclick="payReview(\''+p.id+'\')">提交评审结论</button><div id="pv-msg"></div></div>';
+ h += '<div id="psg-form" style="display:none;margin-top:10px"><div class="f"><label>授权签核意见（不通过必附原因）</label><textarea id="psg-text" rows="2" style="width:520px"></textarea></div><button class="pri" onclick="paySign(\''+p.id+'\',1)">授权签核通过→已发送统一付款平台</button> <button class="dgr" onclick="paySign(\''+p.id+'\',0)">不通过→退回评审</button><div id="psg-msg"></div></div>';
+ h += '<div id="pre-form" style="display:none;margin-top:10px"><div class="row"><div class="f"><label>环节</label><select id="pre-env" onchange="payReenv()"><option value="reviewer">评审（当前 '+uname(p.reviewer)+'）</option><option value="signee">授权签核（当前 '+uname(p.signee)+'）</option></select></div><div class="f"><label>改派为（同角色/池内候选）</label><select id="pre-who" onchange="payReenv()">'+rosterOpts('','评审人')+'</select></div><button class="pri" onclick="payReassign(\''+p.id+'\')">确认改派</button></div><div class="mut" id="pre-msg"></div></div>';
+ return h;
+}
+function rejectPay(p, reason, env){
+ p.status = '已退回'; p.retFrom = env==='拒收'?'第1步·接收':'第2步·评审';
+ DB.wf.forEach(function(w){ if(w.payId===p.id && w.state==='已生成'){ w.state='已冲回'; } });
+ var incUp = null, dev = null;
+ if(p.fromType==='INC'){ var ii = inc(p.fromId); incUp = ii.approver; dev = ii.dev; }
+ var up = p.fromType==='CP'? cp(p.fromId).creator : incUp;
+ addHis(p.id, env, me().name, env==='拒收'?'拒收→已退回':'评审不通过·退回', '原因：'+reason+'·核销已冲回·额度已释放·可重发', true);
+ notifyTransition('支付单已退回（'+p.retFrom+'）：'+reason+'。额度已释放，可重新发起付款', p.id, up, dev);
+ if(p.fromType==='CP'){ var c = cp(p.fromId); if(c.status==='已完结'){ c.status='验收中'; addHis(c.id,'状态变更','系统','已完结→验收中回退','支付单退回·核销冲回（D-029 并发兜底）',true); } autoFinishCheck(c); }
+ if(p.fromType==='INC'){ notify(incUp,'待办产生','激励付款被退回，可重新合并发起（'+p.id+'）',p.fromId); }
+}
+function payReceive(id, ok){
+ var p = pay(id);
+ if(p.status!=='待接收'){ toast('单据状态已变更（当前 '+p.status+'），请刷新后操作', true); return; }
+ p.status='评审中'; addHis(id,'接收',me().name,'接收确认','上游信息核对无误'); saveDB(); toast('已接收，进入评审'); go('pay-detail',id);
+}
+function payReject(id){
+ var p = pay(id);
+ if(p.status!=='待接收'){ toast('单据状态已变更（当前 '+p.status+'），请刷新后操作', true); return; }
+ var t = val('prj-text'), msg = document.getElementById('prj-msg');
+ if(!t){ msg.innerHTML = '<span class="err">拒收原因必填。</span>'; return; }
+ rejectPay(p, t, '拒收');
+ saveDB(); toast('已拒收：核销冲回、额度释放，上游已通知'); go('pay-detail',id);
+}
+function payReview(id){
+ var p = pay(id);
+ if(p.status!=='评审中'){ toast('单据状态已变更（当前 '+p.status+'），请刷新后操作', true); return; }
+ var concl = (document.querySelector('input[name=pv]:checked')||{}).value, t = val('pv-text'), msg = document.getElementById('pv-msg');
+ if(concl==='通过'){ p.status='待授权签核'; addHis(id,'评审',me().name,'评审通过',t||'同意'); notify(p.signee,'待办产生',id+' 待授权签核',id); }
+ else { if(!t){ msg.innerHTML = '<span class="err">不通过必附原因。</span>'; return; } rejectPay(p, t, '评审'); }
+ saveDB(); toast('评审结论已提交：'+concl); go('pay-detail',id);
+}
+function paySign(id, pass){
+ var p = pay(id);
+ if(p.status!=='待授权签核'){ toast('单据状态已变更（当前 '+p.status+'），请刷新后操作', true); return; }
+ var t = val('psg-text'), msg = document.getElementById('psg-msg');
+ if(u_recheck(p)) { msg.innerHTML = '<span class="err">GR-04 拦截：授权签核人与评审人不得为同一人（可能被改派冲突）。</span>'; return; }
+ if(pass){
+  p.status = '已发送统一付款平台';
+  addHis(id,'授权签核',me().name,'授权签核通过','界面呈现「已向统一付款平台提交付款申请」（目标态·本期零对接）');
+  if(p.fromType==='CP') autoFinishCheck(cp(p.fromId));
+  var up = p.fromType==='CP'? cp(p.fromId).creator : inc(p.fromId).approver;
+  var dev = p.fromType==='INC'? inc(p.fromId).dev : null;
+  if(up) notify(up,'处理结果',id+' 已向统一付款平台提交付款申请（目标态）',id);
+ if(dev) notify(dev,'处理结果',id+' 已向统一付款平台提交付款申请（目标态）',id);
+ } else {
+  if(!t){ msg.innerHTML = '<span class="err">不通过必附原因。</span>'; return; }
+  p.status = '评审中';
+  addHis(id,'授权签核',me().name,'授权签核不通过·退回评审','原因：'+t+'（在途·核销不冲回）',true);
+  notify(p.reviewer,'待办产生',id+' 授权签核不通过，退回评审',id);
+ }
+ saveDB(); toast(pass?'授权签核通过，支付单到达终态':'已退回评审'); go('pay-detail',id);
+}
+function u_recheck(p){ return p.reviewer===p.signee; }
+function payReenv(){
+ var env = val('pre-env');
+ var sel = document.getElementById('pre-who');
+ if(sel) sel.innerHTML = env==='reviewer'? rosterOpts('','评审人') : poolOpts('支付授权签核', sel.value);
+}
+function payReassign(id){
+ var p = pay(id), env = val('pre-env'), who = val('pre-who'), msg = document.getElementById('pre-msg');
+ if(['待接收','评审中','待授权签核'].indexOf(p.status)<0){ msg.innerHTML = '<span class="err">终态单据不可改派（D-032）。</span>'; return; }
+ var oldp = p[env];
+ var cand = {reviewer:p.reviewer,signee:p.signee}; cand[env] = who;
+ var g = guardPayPeople(cand, p.by);
+ if(g){ msg.innerHTML = '<span class="err">'+g+'（未生效，请另选人员）</span>'; return; }
+ p[env] = who;
+ addHis(id, env==='reviewer'?'评审':'授权签核', me().name, '管理员改派', uname(oldp)+' → '+uname(who)+'·重跑 GR-03/GR-04');
+ notify(oldp,'状态变更',id+' 已改派，您的原待办失效',id);
+ notify(who,'待办产生',id+' 环节已改派给您',id);
+ saveDB(); toast('改派成功'); go('pay-detail',id);
+}
+
+/* ============ 页面：系统管理 ============ */
+function pPerm(){
+ var h = crumb('系统管理 > 权限管理') + '<h2>权限管理</h2>';
+ h += '<div class="card"><h3>角色与权限（内部五类+管理员 · 外部开发者）</h3>'
+ + '<table><tr><th>角色</th><th>可见范围（scope）</th><th>关键权限</th></tr>'
+ + '<tr><td>业务接口人</td><td>本人立项单及派生单据（支付只读）</td><td class="mut">project:create/submit/withdraw/reassign · contract:upload · payment:initiate</td></tr>'
+ + '<tr><td>审批人</td><td>分派环节单据；白名单变更单审批（≠提交人）；激励合并付款发起</td><td class="mut">approval:process · payment:initiate</td></tr>'
+ + '<tr><td>评审人</td><td>分派环节单据；支付接收/评审（池解析）</td><td class="mut">review:process · payment:receive</td></tr>'
+ + '<tr><td>验收人</td><td>分派环节单据</td><td class="mut">acceptance:process</td></tr>'
+ + '<tr><td>授权签核人</td><td>分派支付单元据</td><td class="mut">payment:countersign</td></tr>'
+ + '<tr><td>系统管理员</td><td>全平台配置数据+业务单据只读（改派兜底）</td><td class="mut">role:config · pool:config · whitelist:* · flow:view · task:reassign</td></tr>'
+ + '<tr><td>社区开发者</td><td>仅本人激励单及派生支付单只读</td><td class="mut">incentive:create/withdraw</td></tr></table>'
+ + '<p class="mut">用户首次登录自动建档；目录与人员候选来自统一账号组织目录（D-020）。GR-01/03/04 互斥校验为服务端写入规则。</p></div>';
+ h += '<div class="card"><h3>人员池配置（五类；保存校验：池非空、激励审批∩激励验收=∅；GR-04 为支付单内单内绑定校验，两池允许重叠、生成时拦截）</h3><table><tr><th>池</th><th>成员</th></tr>'
+ + Object.keys(DB.pools).map(function(k){
+   return '<tr><td>'+k+'</td><td>'+DB.roster.map(function(u){ var on = DB.pools[k].indexOf(u)>=0;
+     return '<label style="margin-right:12px"><input type="checkbox" data-pool="'+k+'" data-user="'+u+'"'+(on?' checked':'')+'> '+uname(u)+'</label>'; }).join('')+'</td></tr>'; }).join('')
+ + '</table><button class="pri" onclick="savePools()">保存人员池</button> <span class="mut">保存即生效并写入处理记录（配置变更）</span><div id="pool-msg"></div></div>';
+ h += '<div class="card"><h3>流程定义（本期开发预置 · 只读 D-026）</h3><table><tr><th>流程</th><th>节点序列</th><th>人员解析</th></tr>'
+ + '<tr><td>合作立项</td><td>发起→评审→审批→(合同)→验收→付款</td><td>发起时指定（挂靠部门·GR-01）</td></tr>'
+ + '<tr><td>社区激励</td><td>审批→验收→合并付款</td><td>系统配置池按单绑定（GR-01）</td></tr>'
+ + '<tr><td>非采对外支付</td><td>接收→评审→授权签核→发送统一付款平台（固定链）</td><td>配置池解析（GR-03/04）</td></tr>'
+ + '<tr><td>白名单变更</td><td>提交→审批→写回</td><td>白名单审批池（≠提交人 GR-03）</td></tr></table></div>';
+ return h;
+}
+function savePools(){
+ var next = {}; Object.keys(DB.pools).forEach(function(k){ next[k] = []; });
+ document.querySelectorAll('input[data-pool]').forEach(function(cb){ if(cb.checked) next[cb.getAttribute('data-pool')].push(cb.getAttribute('data-user')); });
+ var errs = [];
+ if(next['激励审批'].length===0||next['激励验收'].length===0||next['支付评审'].length===0||next['支付授权签核'].length===0||next['白名单审批'].length===0) errs.push('各类池不可为空');
+ next['激励审批'].forEach(function(u){ if(next['激励验收'].indexOf(u)>=0) errs.push('GR-01：'+uname(u)+' 同时在激励审批池与验收池'); });
+ if(errs.length){ document.getElementById('pool-msg').innerHTML = '<span class="err">'+errs.join('；')+'</span>'; return; }
+ var warn = [];
+ var expect = {'激励审批':'审批人','激励验收':'验收人','支付评审':'评审人','支付授权签核':'授权签核人','白名单审批':'审批人'};
+ Object.keys(next).forEach(function(k){ next[k].forEach(function(u){ if(DB.users[u] && DB.users[u].role!==expect[k]) warn.push(uname(u)+'（'+DB.users[u].role+'）与「'+k+'」职能不一致'); }); });
+ var ovl = next['支付评审'].filter(function(u){return next['支付授权签核'].indexOf(u)>=0});
+ if(ovl.length) warn.push('支付评审池与授权签核池重叠（'+ovl.map(uname).join('、')+'）：GR-04 将在单内绑定校验时拦截，建议分池');
+ DB.pools = next;
+ addHis('SYS-POOL','配置变更',me().name,'保存人员池','五类池已更新（校验通过）'+(warn.length?'·警告：'+warn.join('；'):''));
+ saveDB(); toast('人员池已保存生效'+(warn.length?'（含 '+warn.length+' 条警告，见处理记录）':'')); render();
+}
+function pWl(){
+ var h = crumb('系统管理 > 白名单管理') + '<h2>白名单管理</h2><p class="mut">支付资格硬约束（NFR-03）；匹配键：开发者=统一账号ID / 组织=统一社会信用代码；变更须审批后生效（导入不直接生效）。</p>';
+ h += '<div class="card"><h3>名单条目</h3><table><tr><th>编号</th><th>名称</th><th>类型</th><th>对象标识</th><th>状态</th></tr>'
+ + DB.wt.map(function(w){ return '<tr><td>'+w.id+'</td><td>'+esc(w.name)+'</td><td>'+w.type+'</td><td class="mut">'+esc(w.ident)+'</td><td>'+badge(w.state)+'</td></tr>'; }).join('')+'</table></div>';
+ h += '<div class="card"><h3>Excel 导入（整单校验）/ 手工变更</h3>'
+ + '<div class="f"><label>粘贴行（格式：类型,对象标识,名称 —— 类型=开发者/组织；删除行在行尾加第 4 列「删除」；失败行列出原因，全部通过方可提交）</label>'
+ + '<textarea id="wl-text" rows="3" style="width:640px" placeholder="开发者,u-wang2,王某&#10;组织,91350000NEW00001X,某机构"></textarea></div>'
+ + '<button class="pri" onclick="wlImport()">校验并生成变更单（提交审批）</button><div id="wl-msg"></div></div>';
+ h += '<div class="card"><h3>变更单</h3><table><tr><th>单号</th><th>类型</th><th>明细</th><th>提交人</th><th>审批人</th><th>状态</th><th>操作</th></tr>'
+ + DB.wlc.slice().reverse().map(function(w){ return '<tr><td>'+w.id+'</td><td>'+w.kind+'</td><td>'+w.lines.map(function(l){return l.op+' '+l.type+' '+esc(l.name)}).join('；')+'</td><td>'+uname(w.by)+'</td><td>'+uname(w.approver)+'</td><td>'+badge(w.status)+'</td><td><a href="#/wlc-detail/'+w.id+'">'+(w.status==='待审批'&&me().role==='审批人'?'审批':'查看')+'</a></td></tr>'; }).join('')+'</table></div>';
+ return h;
+}
+function wlImport(){
+ var raw = val('wl-text').trim(), msg = document.getElementById('wl-msg');
+ if(!raw){ msg.innerHTML = '<span class="err">请粘贴导入行。</span>'; return; }
+ var lines = raw.split('\n').map(function(x){return x.trim()}).filter(Boolean);
+ var parsed = [], errs = [];
+ lines.forEach(function(ln,i){
+  var parts = ln.split(',').map(function(x){return x.trim()});
+  if(parts.length<3){ errs.push('第'+(i+1)+'行：列数不足（类型,对象标识,名称）'); return; }
+  var type = parts[0], ident = parts[1], name = parts[2];
+  if(['开发者','组织'].indexOf(type)<0){ errs.push('第'+(i+1)+'行：类型须为 开发者/组织'); return; }
+  if(type==='开发者' && !/^u-/.test(ident)) errs.push('第'+(i+1)+'行：开发者标识须为统一账号ID（u-开头）');
+  if(type==='组织' && ident.length<8) errs.push('第'+(i+1)+'行：组织标识须为统一社会信用代码');
+  if(DB.wt.some(function(w){return w.ident===ident&&w.state==='生效'}) && !['删除'].includes(parts[3]||'')) errs.push('第'+(i+1)+'行：标识已存在（'+ident+'）');
+  parsed.push({op:parts[3]==='删除'?'删除':'新增',type:type,ident:ident,name:name});
+ });
+ if(errs.length){ msg.innerHTML = '<div class="msg errm">整单校验失败（全部通过方可提交）：<br>'+errs.join('<br>')+'</div>'; return; }
+ var w = {id:'WLC-'+pad3(DB.seq.WLC++),kind:'导入',by:DB.session,approver:DB.pools['白名单审批'][0],status:'待审批',time:now(),lines:parsed};
+ DB.wlc.push(w);
+ addHis(w.id,'发起',me().name,'Excel 导入提交审批','整单校验通过（'+parsed.length+' 行）· 审批人 '+uname(w.approver)+'（≠提交人 GR-03）');
+ notify(w.approver,'待办产生',w.id+' 白名单变更单待审批',w.id);
+ saveDB(); toast('变更单 '+w.id+' 已生成并提交审批'); go('wlc-detail',w.id);
+}
+function pWlcDetail(){
+ var id = route().id, w = DB.wlc.find(function(x){return x.id===id});
+ if(!w) return '<div class="msg errm">未找到 '+esc(id)+'</div>';
+ var h = crumb('系统管理 > 白名单管理 > 变更单详情') + '<h2>'+w.id+' '+badge(w.status)+'</h2>';
+ h += '<div class="card"><div class="kv"><div>类型</div><div>'+w.kind+'</div><div>提交人</div><div>'+uname(w.by)+'</div><div>审批人</div><div>'+uname(w.approver)+'（白名单审批池·≠提交人 GR-03）</div><div>提交时间</div><div>'+esc(w.time)+'</div></div></div>';
+ h += '<div class="card"><h3>变更明细</h3><table><tr><th>操作</th><th>类型</th><th>对象标识</th><th>名称</th></tr>'
+ + w.lines.map(function(l){ return '<tr><td>'+l.op+'</td><td>'+l.type+'</td><td class="mut">'+esc(l.ident)+'</td><td>'+esc(l.name)+'</td></tr>'; }).join('')+'</table></div>';
+ if(w.status==='待审批' && me().role==='审批人' && DB.session!==w.by){
+  h += '<div class="card"><h3>审批</h3><div class="f"><label>审批意见（驳回必附理由）</label><textarea id="wlc-text" rows="2" style="width:520px"></textarea></div>'
+  + '<button class="pri" onclick="wlcApprove(\''+id+'\',1)">通过（串行写回生效）</button> <button class="dgr" onclick="wlcApprove(\''+id+'\',0)">驳回</button><div id="wlc-msg"></div></div>';
+ } else if(w.status==='待审批'){
+  h += '<div class="mut">待 '+uname(w.approver)+' 审批（提交人不可自批，GR-03）。</div>';
+ }
+ h += '<div class="card"><h3>处理记录</h3>'+tl(id)+'</div>';
+ return h;
+}
+function wlcApprove(id, pass){
+ var w = DB.wlc.find(function(x){return x.id===id}), t = val('wlc-text'), msg = document.getElementById('wlc-msg');
+ if(!pass && !t){ msg.innerHTML = '<span class="err">驳回必附理由。</span>'; return; }
+ if(pass){
+  w.lines.forEach(function(l){
+   if(l.op==='删除'){ var x = DB.wt.find(function(y){return y.ident===l.ident}); if(x) x.state='失效'; }
+   else { var e = DB.wt.find(function(y){return y.ident===l.ident}); if(e) e.state='生效'; else DB.wt.push({id:'WT-'+pad3(DB.seq.WT++),name:l.name,type:l.type,ident:l.ident,state:'生效'}); }
+  });
+  w.status = '已生效';
+  addHis(id,'白名单审批',me().name,'审批通过','串行写回条目并生效（'+w.lines.length+' 行）');
+  notify(w.by,'处理结果',id+' 白名单变更单已审批通过并生效',id);
+ } else {
+  w.status = '已驳回';
+  addHis(id,'白名单审批',me().name,'审批驳回',t,true);
+  notify(w.by,'处理结果',id+' 白名单变更单被驳回：'+t,id);
+ }
+ saveDB(); toast(pass?'变更单已生效':'变更单已驳回'); go('wlc-detail',id);
+}
+
+/* ============ 渲染入口 ============ */
+var PAGES = {todo:pTodo,applied:pApplied,done:pDone,ntf:pNtf,framework:pFramework,'cp-list':pCpList,'cp-create':pCpCreate,'cp-detail':pCpDetail,'inc-list':pIncList,'inc-create':pIncCreate,'inc-detail':pIncDetail,'pay-list':pPayList,'pay-detail':pPayDetail,perm:pPerm,wl:pWl,'wlc-detail':pWlcDetail};
+function render(){
+ var r = route();
+ loadWho();
+ renderNav();
+ var m = document.getElementById('main');
+ if(!navAllowed(r.page)){
+  m.innerHTML = '<div class="msg errm">当前角色（'+me().role+'）无权访问该页面（NFR-07 页面×角色可见性矩阵控制）</div>'
+  + '<p><a href="#/todo">返回我的待办</a></p>';
+  return;
+ }
+ m.innerHTML = (PAGES[r.page]||pTodo)();
+ window.scrollTo(0,0);
+}
+function loadWho(){
+ var sel = document.getElementById('who');
+ var opts = Object.keys(DB.users).map(function(u){ return '<option value="'+u+'"'+(u===DB.session?' selected':'')+'>'+DB.users[u].name+' · '+DB.users[u].role+(DB.users[u].external?'（外部）':'')+'</option>'; }).join('');
+ if(sel.innerHTML!==opts) sel.innerHTML = opts;
+}
+window.addEventListener('hashchange', render);
+loadDB();
+render();
+</script>
+</body>
+</html>
