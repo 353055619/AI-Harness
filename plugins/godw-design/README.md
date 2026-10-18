@@ -35,45 +35,29 @@ godw 设计流水线域插件（v0.2.0，2026-10-15 创建；10-18 首轮真实�
 
 核心机制一句话：**换评委的壳、不换基准的魂**（锚定卡）+ **探索期沸腾、收敛期降温**（两期节奏）+ **ID 贯穿全链**（FR/NFR/GR → 追踪表 → detail trace → 原型）。
 
-## 分段手动启动 prompt 模板
+## 分段手动启动 prompt 模板（三档制）
 
-在目标项目目录开 agent 会话，按顺序粘贴（每段=手动启动该步的无人值守迭代，段间检查产物后放行；每段可独立重跑）。假设实例已定稿需求（无则先跑前置段）：
+在目标项目目录开 agent 会话，按顺序粘贴三档 prompt——**档间放行权在你，档内无人值守跑到收敛**；每档可独立重跑，agent 每步结束会输出结构化「下一步」衔接卡片。
 
-**前置 · 需求定稿**（首次）：
-
-```
-加载 godw-design 插件的 godw-design-requirement-formalize 技能：输入 .agents/GOAL.md，产出 design/change/<日期>_<设计名>/ 下的 原始需求.md（FR/NFR 编号）与 术语.md，实例名由你提议我确认。完备性关卡不过就停下报缺口。完成后删除源 GOAL.md。停下等我检查。
-```
-
-**1a · 需求分解**：
+**第 1 档 · start**（📋 普通粘贴；前置需求定稿 + 1a 需求分解；人在环：实例名确认、待澄清表态）：
 
 ```
-加载 godw-design 插件的 godw-design-start 技能，按其执行粒度只跑 1a 备料：调 godw-design-requirement-split 对实例原始需求.md 做双腿分解（history/需求-架构输入.md + 需求-原型输入.md），只分解不发明。完成后汇报两腿要点与「待澄清」清单，停下等我检查。
+加载 godw-design 插件的 godw-design-start 技能，执行 start 档：前置调 godw-design-requirement-formalize（输入 .agents/GOAL.md，产出 design/change/<日期>_<设计名>/ 的 原始需求.md〔FR/NFR 编号〕+ 术语.md；有参考资料（参考原型/业务流程文档/上级架构文档）我会给路径，请归位到实例 参考资料/ 并建索引；完备性关卡不过就停下报缺口；完成后删除源 GOAL.md），实例名由你提议我确认。随后调 godw-design-requirement-split 做双腿分解（history/ 两腿）。每步完成停下等我检查并给下一步卡片。
 ```
 
-**1b · 四文档成文**：
+**第 2 档 · document**（🤖 **必须以 /goal 启动**——粘贴时在最前面加 `/goal `；1b 四文档成文 + 1c 门1 验收迭代到收敛）：
 
 ```
-加载 godw-design 插件的 godw-design-start 技能，只跑 1b 成文：按 references/arch-templates.md 产出 4A架构/ 四文档 + detail.json + 实例根需求追踪.md（先建骨架逐 FR 挂链，节标题挂 FR 标注；图走 godw-toolkit:design-doc-mermaid；字段明细只进 detail.json）。完成即跑 godw-design-check（--phase arch）自检后停，等我检查。
+/goal 加载 godw-design 插件的 godw-design-start 技能，执行 document 档：1b 按 references/arch-templates.md 产出 4A架构/ 四文档 + detail.json + 需求追踪.md（先建骨架逐 FR 挂链；图走 godw-toolkit:design-doc-mermaid；字段明细只进 detail.json；完成后跑 godw-design-check --phase arch 自检）；1c 调 godw-design-gate doc 模式（锚定卡+两期节奏+三固定评委；FAIL 按三轨修订→check→重验，界内 gaps 走回流协议）。档内无人值守迭代到门1 PASS 或 5 轮上限，PASS 存快照后停下汇报并给下一步卡片。
 ```
 
-**1c · 门1 验收（无人值守循环）**：
+**第 3 档 · prototype**（🤖 **必须以 /goal 启动**；2a 原型生产 + 2b 门2 验收 + 2c 收口归档）：
 
 ```
-加载 godw-design 插件的 godw-design-start 技能，只跑 1c 门1：调 godw-design-gate doc 模式（动态用户走查+三固定评委；锚定卡+两期节奏）。FAIL 按三轨修订（界内 gaps 走回流协议）→ godw-design-check → 重验，循环到 PASS 或 5 轮上限，无人值守不要问我。PASS 存快照后停下汇报各轮判定，等我检查。
+/goal 加载 godw-design 插件的 godw-design-start 技能，执行 prototype 档：2a 只消费 4A架构/detail.json + history/需求-原型输入.md，先过 godw-html:workbench-conventions（工作台类），写 brief 后委托 godw-html lo-fi 线出多文件原型（index.html + pages/ + data.js + assets/，JSON 模拟库+跳转全通+状态真实流转+角色切换可见性），填满追踪表原型列并跑 godw-design-check --phase proto；2b 调 godw-design-gate prototype 模式（FAIL 三层修订：改原型同步改文档，动了 4A架构 则 check 必跑+受影响链附带验证）；2c 收口（两门成绩/产物/DECISIONS/backlog 呈报/建议并入原始需求的 gap 清单）并自动归档 design/archive/。档内无人值守迭代到门2 PASS 或 5 轮上限。
 ```
 
-**2a · 原型生产**：
-
-```
-加载 godw-design 插件的 godw-design-start 技能，只跑 2a 生产：只消费 4A架构/detail.json + history/需求-原型输入.md，先过 godw-html:workbench-conventions（工作台类），写 brief 后委托 godw-html lo-fi 线出 原型系统/prototype.html（JSON 模拟库+跳转全通+状态真实流转+角色切换可见性），并填满需求追踪表原型列，跑 godw-design-check（--phase proto）自检。停下汇报覆盖面，等我检查。
-```
-
-**2b+2c · 门2 验收与收口（无人值守循环）**：
-
-```
-加载 godw-design 插件的 godw-design-start 技能，跑 2b 门2（godw-design-gate prototype 模式；FAIL 三层修订：改低保真同步改文档，动了 4A架构 则 check 必跑+受影响链附带验证）与 2c 收口（两门成绩/产物路径/DECISIONS/backlog 呈报/建议并入原始需求的 gap 清单呈报），PASS 后自动归档 design/archive/。循环到 PASS 或 5 轮上限，无人值守不要问我。
-```
+**启动方式速查**：start 档📋普通粘贴（人在环：实例名、完备性关卡、待澄清）；document/prototype 档🤖必须 /goal（自主迭代到收敛，goal 完成审计是无人值守载体）。
 
 ## 边界与依赖
 
