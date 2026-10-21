@@ -119,6 +119,60 @@ if (detail) {
   if (noTrace.length) warn.push(`${noTrace.length} 个 detail 元素无 trace 且未标 deferred（语义级核对是否发明）`);
 }
 
+// ---- 7. 身份卡.md 在位（1a 后必备）----
+const cardPath = join(instance, '身份卡.md');
+if (!existsSync(cardPath)) {
+  fail('identity-card-missing', '实例根缺 身份卡.md（1a 备料产物，gate 的角色/考题唯一来源）');
+} else {
+  const card = readFileSync(cardPath, 'utf8');
+  if (!/身份卡组/.test(card) || !/考题/.test(card) || !/矩阵/.test(card)) {
+    fail('identity-card-incomplete', '身份卡.md 缺身份卡组/考题/矩阵三部分之一');
+  }
+}
+
+// ---- 8. 业务架构时序图参与者名 ⊆ 角色名 ∪ 系统名（启发式，解析不到只警告）----
+if (detail) {
+  const roleNames = (detail.roles || []).map(r => r.name);
+  const bizPath = join(archDir, '业务架构.md');
+  if (existsSync(bizPath)) {
+    const biz = readFileSync(bizPath, 'utf8');
+    const systems = new Set();
+    for (const m of biz.matchAll(/\b(?:System|System_Ext|SystemDb|SystemQueue|Person|SoftwareSystem)\w*\s*\(\s*"([^"]+)"/g)) systems.add(m[1]);
+    let participants = 0;
+    for (const block of biz.matchAll(/```mermaid\n([\s\S]*?)```/g)) {
+      const b = block[1];
+      if (!/^\s*sequenceDiagram/m.test(b)) continue;
+      for (const p of b.matchAll(/^\s*(?:participant|actor)\s+(?:"([^"]+)"|(\S+))(?:\s+as\s+(.+))?$/gm)) {
+        participants++;
+        const name = (p[3] || p[1] || p[2] || '').trim();
+        if (name && !roleNames.includes(name) && !systems.has(name)) {
+          fail('seq-participant-unknown', `业务架构时序图参与者 "${name}" 不在角色名或系统名清单中`);
+        }
+      }
+    }
+    if (!participants) warn.push('业务架构未解析到时序图参与者（无图或语法未覆盖）——语义级复核');
+  }
+
+  // ---- 9. 应用架构页面流转图节点名 ⊆ detail pages（id/title，启发式）----
+  const appPath = join(archDir, '应用架构.md');
+  if (existsSync(appPath)) {
+    const app = readFileSync(appPath, 'utf8');
+    const pageNames = new Set((detail.pages || []).flatMap(p => [p.id, p.title].filter(Boolean)));
+    let nodes = 0;
+    for (const block of app.matchAll(/```mermaid\n([\s\S]*?)```/g)) {
+      const b = block[1];
+      if (!/^\s*(flowchart|graph)\b/m.test(b)) continue;
+      for (const n of b.matchAll(/\["([^"]+)"\]|\("([^"]+)"\)/g)) {
+        const label = (n[1] || n[2] || '').trim();
+        if (!label) continue;
+        nodes++;
+        if (!pageNames.has(label)) fail('page-node-unknown', `应用架构页面流转图节点 "${label}" 不在 detail.json pages（id/title）中`);
+      }
+    }
+    if (!nodes) warn.push('应用架构未解析到页面流转图节点（无图或语法未覆盖）——语义级复核');
+  }
+}
+
 // ---- 结果 ----
 const result = { instance: basename(instance), phase, failures, warnings: warn, pass: failures.length === 0 };
 console.log(JSON.stringify(result, null, 2));
