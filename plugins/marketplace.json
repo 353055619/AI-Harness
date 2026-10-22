@@ -11,7 +11,7 @@
         "zh-CN": "Godw Toolkit：Godw自研Agent工具箱"
       },
       "description_i18n": {
-        "zh-CN": "Session 契约 + 交付呈现（status.html 每轮看板 + impeccable 门）+ vendored 14 件（含 humanizer-zh 中文去 AI 味）；2026-10-11 起 godw-goal（含 grilling）与 godw-html（html 制作，含 frontend-design/archify）为独立插件；循环在 godw-loop、搜索在 godw-finder。"
+        "zh-CN": "Session 契约 + 交付呈现（status.html 每轮看板 + impeccable 门）+ vendored 15 件（含 humanizer-zh 中文去 AI 味）；2026-10-11 起 godw-goal（含 grilling）与 godw-html（html 制作，含 frontend-design/archify）为独立插件；循环在 godw-loop、搜索在 godw-finder。"
       },
       "category": "productivity"
     },
@@ -95,7 +95,7 @@
         "zh-CN": "explainer-video-skills"
       },
       "description_i18n": {
-        "zh-CN": "解说视频五件套：白板、等轴测、图示动画、年度回顾、全流程解说。"
+        "zh-CN": "解说视频四件套：白板、等轴测、图示动画、全流程解说。"
       },
       "category": "productivity"
     },

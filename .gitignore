@@ -5,3 +5,4 @@
 /reference/*
 !/reference/case-studies/
 node_modules/
+__pycache__/
