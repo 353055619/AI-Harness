@@ -2,7 +2,7 @@
 // godw-design-check 机械级校验脚本
 // 用法: node check.mjs <实例路径> --phase arch|proto
 // exit 0 = 全部通过; exit 1 = 失败(逐条输出 JSON failures)
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, basename } from 'node:path';
 
 const args = process.argv.slice(2);
@@ -173,7 +173,13 @@ if (detail) {
   }
 }
 
-// ---- 结果 ----
-const result = { instance: basename(instance), phase, failures, warnings: warn, pass: failures.length === 0 };
+// ---- 结果（带真跑凭证：ranAt + 被检文件最新修改时刻，编排层核对防"声称跑过"）----
+const inspected = [reqPath, tracePath, detailPath, cardPath, ...docs.map(d => join(archDir, d))].filter(p => existsSync(p));
+const newestMtime = inspected.reduce((m, p) => { const t = statSync(p).mtimeMs; return t > m ? t : m; }, 0);
+const result = { instance: basename(instance), phase,
+  ranAt: new Date().toISOString(),
+  newestSourceMtime: newestMtime ? new Date(newestMtime).toISOString() : null,
+  note: '本输出必须原样贴进修订记录；编排层核对 ranAt 晚于被检文件当前最新修改时间，否则视为未真跑',
+  failures, warnings: warn, pass: failures.length === 0 };
 console.log(JSON.stringify(result, null, 2));
 process.exit(failures.length ? 1 : 0);

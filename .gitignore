@@ -4,3 +4,4 @@
 /.agents/
 /reference/*
 !/reference/case-studies/
+node_modules/

@@ -34,7 +34,7 @@ godw 设计流水线域插件（v0.3.0，2026-10-15 创建；两轮真实试跑�
 | c4-architecture | vendored：C4 语法参考（图主工具为 godw-toolkit:design-doc-mermaid） |
 | **agents/**：arch-reviewer / simplicity-officer / dev-reproducer | 三固定评叶子智能体（tools 锁只读；打分保留；动态上下文调用时传入） |
 
-核心机制一句话：**换评委的壳、不换基准的魂**（锚定卡+冻结身份卡）+ **探索期沸腾、收敛期降温**（两期节奏）+ **能判对错的题优先**（答卷表：卡住/靠猜比分数实在）+ **ID 贯穿全链**（FR/NFR/GR → 追踪表 → detail trace → 原型）。
+核心机制一句话：**换评委的壳、不换基准的魂**（锚定卡+冻结身份卡）+ **探索期沸腾、收敛期降温**（两期节奏）+ **能判对错的题优先**（答卷表：卡住/靠猜比分数实在）+ **证据即验收**（原型门真跑 Playwright 走查器：每步截图+runId，无证据答卷作废重派，主 agent 只核对不代笔）+ **ID 贯穿全链**（FR/NFR/GR → 追踪表 → detail trace → 原型）。
 
 ## 启动方式（三档 + 一句续跑）
 
@@ -49,13 +49,13 @@ godw 设计流水线域插件（v0.3.0，2026-10-15 创建；两轮真实试跑�
 **第 2 档 · document**（🤖 **必须以 /goal 启动**；1b 四文档成文 + 1c 门1 验收迭代到收敛）：
 
 ```
-/goal 加载 godw-design 插件的 godw-design-orchestrator 技能，执行 document 档：1b 按 references/arch-templates.md 产出 4A架构/ 四文档 + detail.json + 需求追踪.md（先建骨架逐 FR 挂链；图走 godw-toolkit:design-doc-mermaid 且每图一问；字段明细只进 detail.json；完成后跑 godw-design-check --phase arch 自检）；1c 调 godw-design-gate doc 模式（身份卡派动态评委答卷表+三固定评委；FAIL 按三轨修订→check→重验，界内 gaps 走回流协议）。档内无人值守迭代到门1 PASS 或 5 轮上限，PASS 存快照后停下汇报并给下一步卡片。
+/goal 加载 godw-design 插件的 godw-design-orchestrator 技能，执行 document 档：1b 按 references/arch-templates.md 产出 4A架构/ 四文档 + detail.json + 需求追踪.md（先建骨架逐 FR 挂链；图走 godw-toolkit:design-doc-mermaid 且每图一问；字段明细只进 detail.json；完成后 bash 真跑 godw-design-check --phase arch 并原样保留 JSON 输出——ranAt 是真跑凭证）；1c 调 godw-design-gate doc 模式（身份卡派动态评委答卷表+三固定评委；FAIL 按三轨修订→check→重验，界内 gaps 走回流协议）。档内无人值守迭代到门1 PASS 或 5 轮上限，PASS 存快照后停下汇报并给下一步卡片。
 ```
 
 **第 3 档 · prototype**（🤖 **必须以 /goal 启动**；2a 原型生产 + 2b 门2 验收 + 2c 收口归档）：
 
 ```
-/goal 加载 godw-design 插件的 godw-design-orchestrator 技能，执行 prototype 档：2a 只消费 4A架构/detail.json + history/需求-原型输入.md，先过 godw-html:workbench-conventions（工作台类），写 brief 后委托 godw-html lo-fi 线出多文件原型（index.html + pages/ + data.js + assets/，JSON 模拟库+跳转全通+状态真实流转+角色切换可见性），填满追踪表原型列并跑 godw-design-check --phase proto；2b 调 godw-design-gate prototype 模式（动态评委实操答卷；FAIL 三层修订：改原型同步改文档，动了 4A架构 则 check 必跑+受影响链附带验证）；2c 收口（两门成绩/产物/DECISIONS/backlog 呈报/建议并入原始需求的 gap 清单/参考资料未内化项）并自动归档 design/archive/。档内无人值守迭代到门2 PASS 或 5 轮上限。
+/goal 加载 godw-design 插件的 godw-design-orchestrator 技能，执行 prototype 档：2a 只消费 4A架构/detail.json + history/需求-原型输入.md，先过 godw-html:workbench-conventions（工作台类），写 brief 后委托 godw-html lo-fi 线出多文件原型（index.html + pages/ + data.js + assets/，JSON 模拟库+跳转全通+状态真实流转+角色切换可见性），填满追踪表原型列并跑 godw-design-check --phase proto（真跑留 JSON）；2b 开工先跑 node <godw-design-gate>/scripts/walk.mjs doctor 环境预检（缺 playwright 就停下提示我执行 npm i playwright，不降级），再调 godw-design-gate prototype 模式（动态评委写场景真跑走查器出截图+runId 证据后答卷，无证据答卷作废重派；FAIL 三层修订：改原型同步改文档，动了 4A架构 则 check 必跑+受影响链附带验证）；2c 收口（两门成绩/产物/DECISIONS/backlog 呈报/建议并入原始需求的 gap 清单/参考资料未内化项）并自动归档 design/archive/。档内无人值守迭代到门2 PASS 或 5 轮上限。
 ```
 
 **续跑**（任意中断后）：`/goal 继续执行 godw-design-orchestrator`（唯一实例自动定位；多实例时注明实例名）。
@@ -64,5 +64,6 @@ godw 设计流水线域插件（v0.3.0，2026-10-15 创建；两轮真实试跑�
 
 - 只管「设计流水线怎么走、质量门怎么守」。GOAL.md 定稿归 godw-goal（formalize 是入实例的唯一通道）；HTML 制作方法学归 godw-html（lo-fi 线）；Mermaid 图规范归 godw-toolkit（design-doc-mermaid）。
 - 依赖按名调用的兄弟插件（须已安装启用）：godw-goal、godw-html、godw-toolkit。
+- 原型门走查器（godw-design-gate/scripts/walk.mjs）依赖 playwright：在目标项目根 `npm i playwright` 即可（浏览器优先用机器已装 Chrome/Edge，没有才 `npx playwright install chromium`）；2b 的 doctor 预检缺了会停线提示。
 - vendored 件（c4-architecture）整装不拆改，更新 = 按 `.origin.json` 整装重拉。
 - 骨架裁决记录：2026-10-15 定 4A 骨架+C4；10-18 四独立文档+detail.json 唯一源+收敛机制+预制评委（两轮实测驱动）；2026-10-21 三阶段编排器+state.md+身份卡+考题答卷表+参考资料内化（详见 .agents/godw-design-modify-plan.md，实施后随档）。
