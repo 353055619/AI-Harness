@@ -1,6 +1,6 @@
 ---
 name: godw-design-check
-description: 一致性校验原子技能（godw-design 家族，修订循环的机械门）：对 design 实例做两级校验——机械级（脚本：detail.json 合法性与内部自洽、需求追踪表链路分阶段校验、文档头版本行、FR/NFR/GR 不杜撰、身份卡在位、时序图参与者/页面流转图节点名与角色·系统·pages 清单对齐、输出 ranAt/newestSourceMtime 真跑凭证）+ 语义级（agent 核对：追踪表登记的节号/元素真实存在且内容匹配防假链、detail 元素 trace 指向合法 ID 或 Deferred 防发明、文档间互引节号有效、用词与术语.md 一致、答卷靠猜已逐条登记且不得 backlog、用例总览表每个用例可在流程步骤中找到）。触发时机：每次按评审意见修订文档后、进重验评委前必跑——必须 Bash 真跑并原样引用输出（防"声称跑过"）；不过打回修订不耗评委轮次；门2 改架构后必跑；也可独立调用。
+description: 一致性校验原子技能（godw-design 家族，修订循环的机械门）：对 design 实例做两级校验——机械级（脚本：detail.json 合法性与内部自洽、需求追踪表链路分阶段校验〔含 PRD 列〕、文档头版本行、FR/NFR/GR 不杜撰、身份卡与 model.c4 在位、likec4 validate 集成、时序图参与者/页面流转图节点名对齐、PRD 校验〔目录与总览在位/EARS lint/AC 唯一且 ≤30 每模块/禁词/页面双向覆盖/总览链接/NEEDS CLARIFICATION 计数〕、输出 ranAt/newestSourceMtime 真跑凭证）+ 语义级（agent 核对：追踪表登记的节号/元素真实存在且内容匹配防假链、detail 元素 trace 指向合法 ID 或 Deferred 防发明、文档间互引节号有效、用词与术语.md 一致、答卷靠猜已逐条登记且不得 backlog、用例总览与身份卡考题对齐、AC 可判对错抽查、PRD 双写红线）。触发时机：每次按评审意见修订文档后、进重验评委前必跑——必须 Bash 真跑并原样引用输出（防"声称跑过"）；不过打回修订不耗评委轮次；门2 改架构后必跑；也可独立调用。
 ---
 
 # 一致性校验 → 校验报告（机械门，秒级，不耗评委轮次）
@@ -8,24 +8,26 @@ description: 一致性校验原子技能（godw-design 家族，修订循环的�
 ## 输入（强制）
 
 - 实例路径（`design/change/<实例>/`；唯一实例自动定位，多实例须指明）。
-- 校验阶段：`arch`（架构阶段：1b/1c 及其后修订）或 `proto`（原型阶段：2a 完成后）——决定追踪表校验口径。
+- 校验阶段：`arch`（架构阶段：2-b/2-c 及其后修订）、`prd`（PRD 阶段：3-a/3-b 及其后修订）或 `proto`（原型阶段：4-a 完成后）——决定追踪表 PRD 列与原型列校验口径。
 
 ## 执行：先机械级（脚本），后语义级（agent 核对）
 
 ### 第一步：机械级（跑 [scripts/check.mjs](scripts/check.mjs)）
 
 ```bash
-node <技能目录>/scripts/check.mjs <实例路径> --phase arch|proto
+node <技能目录>/scripts/check.mjs <实例路径> --phase arch|prd|proto
 ```
 
 脚本输出 JSON 结果（exit 0=过 / 1=失败清单）。脚本检查项：
 
 - `4A架构/detail.json`：JSON 合法（jq 等价校验）、顶层 `_version`/`_updated` 存在、内部自洽——pages[].roles ⊆ roles[].name、flows[].actor ∈ roles[].name、entities[].states 非空、每个元素的 trace 引用合法 ID。
-- `需求追踪.md`：每个 FR-xx/NFR-xx（对照原始需求.md 提取）都有行；行内五格非空——**arch 阶段原型页面列允许「待原型」占位，proto 阶段必须填满**。
+- `需求追踪.md`：每个 FR-xx/NFR-xx（对照原始需求.md 提取）都有行；行内五格（业务架构/应用架构/detail 元素/PRD/原型页面）分阶段校验——**arch：PRD 可「待PRD」、原型可「待原型」；prd：PRD 必填、原型可「待原型」；proto：全填满**。
 - 四文档：每篇头部版本行存在（`版本 vN · 日期 · 摘要`格式）。
 - ID 杜撰检查：四文档正文与 detail.json 中出现的 FR-/NFR-/GR- 编号 ⊆ 合法集合（原始需求.md 的 FR/NFR + gate-registry.md 已登记的 GR）。
-- `身份卡.md`：实例根在位（1a 后必备），含身份卡组/考题/矩阵三部分。
+- `身份卡.md`：实例根在位（2-a 后必备），含身份卡组/考题/矩阵三部分。
+- `4A架构/model.c4`：在位；`likec4 validate` 集成（CLI 在 PATH 即真跑，非零=失败；CLI 缺失→警告提示安装，语义级复核）。
 - 配图名单对齐：业务架构.md 时序图参与者 ∈ §2 角色名 ∪ §5 系统名；应用架构.md 页面流转图节点 ∈ detail.json pages（id/title）——脚本启发式解析，解析不到记警告交语义级复核。
+- **PRD（prd/proto 阶段）**：`PRD/` 目录与总览 `PRD-<设计名>.md` 在位；每文件版本行；**EARS lint**（`AC-<模块名>-NNN |` 行必须含 WHEN/IF/WHILE/WHERE + SHALL）；AC 编号全实例唯一、单模块 ≤30；禁词扫描（效率高/交互完美/优雅/流畅/fast/easy/intuitive）；总览链接的模块文件存在；页面双向覆盖（PRD 提及 ⊆ detail pages 且 pages ⊆ PRD 提及，启发式）；`[NEEDS CLARIFICATION]` 计数输出（不报失败，供阶段3-b 呈报）。
 
 脚本失败 → 输出逐条失败清单，**直接打回修订**（不进语义级）。
 
@@ -40,6 +42,9 @@ node <技能目录>/scripts/check.mjs <实例路径> --phase arch|proto
 5. **交叉索引核对**：文档节标题挂的 [FR-xx] 标注 ⊆ 追踪表该 FR 行登记的承载节（防漏登）；反向表登记节 ⊆ 文档实际节（防假登，与 1 重叠时以文档实读为准）。
 6. **靠猜对账**：gate 报告附录答卷 JSON 的每个「靠猜」都已在登记表登记（G-xx 标「靠猜」），且无一条被标 backlog——靠猜必须补写清零。
 7. **用例总览对齐**：业务架构§3.0 用例总览表每个用例能在某条流程步骤中找到；身份卡考题在总览表找不到对应用例 = 设计漏了用户目标（报失败）。
+8. **AC 可判对错抽查**：禁词之外的语义歧义——一条 AC 被两种合理实现都满足即失败（「提示友好」类改写为具体界面行为）。
+9. **PRD 双写红线**：PRD 出现与 detail.json 同构的字段级表格 = 失败（字段只允许引用式提及）。
+10. **考题 ↔ PRD 对齐**：每道身份卡考题 T-xx 在 PRD 有功能落点（或明确 Non-Goals）；无落点 = 设计漏了用户目标（报失败）。
 
 ## 输出：校验报告（追加到当前修订轮的 gate 报告前，或独立 `history/check-N.md`）
 
