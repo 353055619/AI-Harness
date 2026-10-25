@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>悬赏厅 · 悬赏详情回答</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<header id="topbar"></header>
+<main id="app"></main>
+<div id="toast"></div>
+<footer>悬赏厅完整卷原型 · 悬赏详情回答页 · 回答与采纳入口按角色与状态收敛</footer>
+<script src="../data.js"></script>
+<script src="../app.js"></script>
+<script>
+'use strict';
+const app = document.querySelector('#app');
+const id = new URLSearchParams(location.search).get('id');
+
+function render() {
+  mountHeader('bounty-detail', '../');
+  const t0 = performance.now();
+  const role = currentRole();
+  const b = DB.悬赏单.find((x) => x.id === id);
+  if (!b) {
+    app.innerHTML = '<div class="empty">该悬赏已结案或不存在，<a href="bounty-list.html">返回列表</a>。</div>';
+    return;
+  }
+  const list = answersOf(b.id);
+  const expired = isExpired(b);
+  let h = '';
+  if (b.状态 === '已下架') {
+    h += '<div class="banner">该悬赏已被平台下架：' + esc(b.下架原因 || '治理复核') + '。冻结积分已退回楼主，本页只读。</div>';
+  }
+  h += '<section class="panel"><div class="row1"><h3 style="margin:0">' + esc(b.标题) + '</h3><span class="points">' + b.积分 + ' 积分</span></div>'
+    + '<p class="muted" style="margin:6px 0">' + esc(b.描述 || '（无描述）') + '</p>'
+    + '<div><span class="badge ' + b.状态 + '">' + b.状态 + '</span> <span class="muted">发布于 ' + fmtTime(b.hoursAgo) + ' · 采纳截止 ' + fmtTime(b.hoursAgo + WINDOW_HOURS)
+    + (expired && b.状态 === '进行中' ? ' · 采纳窗口已关闭' : '') + '</span></div>'
+    + '<p class="muted">本次渲染耗时 ' + Math.max(1, Math.round(performance.now() - t0)) + ' 毫秒 · <a href="bounty-list.html">返回列表</a></p></section>';
+  h += '<section class="panel"><h3 style="margin-top:0">回答（' + list.length + '）</h3>';
+  if (!list.length) {
+    h += '<div class="empty">还没有回答，来做第一个。</div>';
+  } else {
+    for (const a of list) {
+      h += '<div class="answer ' + a.状态 + '"><div class="meta"><span>' + esc(a.回答者) + ' · ' + fmtTime(a.hoursAgo) + '</span><span class="badge ' + a.状态 + '">' + a.状态 + '</span></div>'
+        + '<p style="margin:6px 0 2px">' + esc(a.内容) + '</p>'
+        + (b.状态 === '进行中' ? '<button type="button" class="ghost" data-adopt="' + a.id + '"' + (expired ? ' disabled' : '') + '>采纳</button>' : '')
+        + '</div>';
+    }
+  }
+  h += '</section>';
+  if (role === '回答者' && b.状态 === '进行中') {
+    h += '<section class="panel"><h3 style="margin-top:0">提交回答</h3>'
+      + '<label>回答内容<textarea id="a-content" maxlength="300"></textarea></label>'
+      + '<div class="err" id="a-err"></div>'
+      + '<button type="button" class="primary" id="a-submit">提交回答</button></section>';
+  }
+  h += '<div id="confirm-holder"></div>';
+  app.innerHTML = h;
+  bind(b, expired);
+}
+
+function bind(b, expired) {
+  const role = currentRole();
+  const sub = document.querySelector('#a-submit');
+  if (sub) sub.addEventListener('click', () => {
+    const content = document.querySelector('#a-content').value.trim();
+    const err = document.querySelector('#a-err');
+    if (!content) { err.textContent = '回答不能为空'; document.querySelector('#a-content').focus(); return; }
+    sub.disabled = true;
+    sub.textContent = '提交中';
+    setTimeout(() => {
+      DB.回答单.push({ id: 'A-' + (4300 + Math.floor(Math.random() * 600)), 所属悬赏: b.id, 回答者: '回答者', 内容: content, hoursAgo: 0, 状态: '已提交' });
+      addMsg('新回答', '您的悬赏「' + b.标题 + '」收到 1 条新回答。', '楼主', b.id);
+      toast('回答已提交，已通知楼主');
+      render();
+    }, 250);
+  });
+  document.querySelectorAll('[data-adopt]').forEach((btn) => btn.addEventListener('click', () => {
+    if (role !== '楼主') { toast('仅楼主可采纳，当前角色：' + role); return; }
+    if (expired) { toast('采纳窗口已关闭（发布超过 ' + WINDOW_HOURS + ' 小时），悬赏状态保持不变'); return; }
+    askAdopt(b, btn.dataset.adopt);
+  }));
+}
+
+function askAdopt(b, aid) {
+  const holder = document.querySelector('#confirm-holder');
+  holder.innerHTML = '<div class="confirmbar"><span>确认采纳该回答并结算 ' + b.积分 + ' 积分给回答者？</span>'
+    + '<button type="button" class="primary" id="adopt-yes" style="margin-top:0">确认采纳</button>'
+    + '<button type="button" class="ghost" id="adopt-no">取消</button></div>';
+  document.querySelector('#adopt-yes').addEventListener('click', () => {
+    for (const a of answersOf(b.id)) a.状态 = a.id === aid ? '已采纳' : '未采纳';
+    b.状态 = '已结悬赏';
+    DB.账户.回答者 += b.积分;
+    addMsg('采纳结果', '悬赏「' + b.标题 + '」已完成采纳结算，转入已结悬赏。', '楼主', b.id);
+    addMsg('积分到账', '您在「' + b.标题 + '」的回答被采纳，' + b.积分 + ' 积分已到账。', '回答者', b.id);
+    toast('已采纳结算：回答者 +' + b.积分 + ' 积分，悬赏单转为已结悬赏');
+    render();
+  });
+  document.querySelector('#adopt-no').addEventListener('click', () => { holder.innerHTML = ''; });
+}
+
+render();
+</script>
+</body>
+</html>

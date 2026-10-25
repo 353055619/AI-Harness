@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>悬赏厅 · 消息通知</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<header id="topbar"></header>
+<main id="app"></main>
+<div id="toast"></div>
+<footer>悬赏厅完整卷原型 · 消息通知页 · 新回答、采纳结果、积分到账、下架结果四类消息</footer>
+<script src="../data.js"></script>
+<script src="../app.js"></script>
+<script>
+'use strict';
+const app = document.querySelector('#app');
+
+function render() {
+  mountHeader('notify', '../');
+  const t0 = performance.now();
+  const role = currentRole();
+  if (role === '平台运营') {
+    app.innerHTML = '<div class="denied"><h2>无权限</h2>'
+      + '<p class="muted">「消息通知」仅楼主与回答者可进入；当前角色：平台运营（治理动作在悬赏列表完成）。</p>'
+      + '<p><a href="bounty-list.html">返回悬赏列表</a></p></div>';
+    return;
+  }
+  const mine = DB.消息记录.filter((m) => m.接收角色 === role).sort((a, b) => a.hoursAgo - b.hoursAgo);
+  const unread = mine.filter((m) => m.状态 === '未读').length;
+  let h = '<div class="stats"><span>未读 <b>' + unread + '</b> 条</span><span>共 ' + mine.length + ' 条</span>'
+    + '<span class="muted">本次渲染耗时 ' + Math.max(1, Math.round(performance.now() - t0)) + ' 毫秒</span>'
+    + (unread ? '<button type="button" class="ghost" id="read-all" style="margin-top:0">全部标记已读</button>' : '') + '</div>';
+  if (!mine.length) {
+    h += '<div class="empty">暂无消息：新回答、采纳结果、积分到账与下架结果都会出现在这里。</div>';
+  } else {
+    for (const m of mine) {
+      h += '<div class="msg' + (m.状态 === '未读' ? ' unread' : '') + '" data-id="' + m.id + '">'
+        + (m.状态 === '未读' ? '<span class="dot"></span>' : '')
+        + '<div style="flex:1"><div class="meta" style="font-size:13px;color:#6b7280;display:flex;justify-content:space-between">'
+        + '<span><span class="badge ' + m.类型 + '">' + m.类型 + '</span> ' + esc(m.关联单据) + '</span><span>' + fmtTime(m.hoursAgo) + '</span></div>'
+        + '<div class="content" style="margin-top:4px">' + esc(m.内容) + '</div></div>'
+        + (m.状态 === '未读' ? '<button type="button" class="ghost" data-read="' + m.id + '" style="margin-top:0">标记已读</button>' : '')
+        + '</div>';
+    }
+  }
+  app.innerHTML = h;
+  const ra = document.querySelector('#read-all');
+  if (ra) ra.addEventListener('click', () => {
+    for (const m of DB.消息记录) if (m.接收角色 === role && m.状态 === '未读') m.状态 = '已读';
+    toast('已全部标记为已读');
+    render();
+  });
+  document.querySelectorAll('[data-read]').forEach((btn) => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    markRead(btn.dataset.read);
+  }));
+  document.querySelectorAll('.msg.unread').forEach((el) => el.addEventListener('click', () => markRead(el.dataset.id)));
+}
+
+function markRead(mid) {
+  const m = DB.消息记录.find((x) => x.id === mid);
+  if (m && m.状态 === '未读') {
+    m.状态 = '已读';
+    toast('已标记为已读');
+  }
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

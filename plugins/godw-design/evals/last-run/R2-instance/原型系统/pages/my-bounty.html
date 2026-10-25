@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>悬赏厅 · 我的悬赏</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<header id="topbar"></header>
+<main id="app"></main>
+<div id="toast"></div>
+<footer>悬赏厅完整卷原型 · 我的悬赏页 · 仅楼主可进入</footer>
+<script src="../data.js"></script>
+<script src="../app.js"></script>
+<script>
+'use strict';
+const app = document.querySelector('#app');
+let filter = '全部';
+
+function render() {
+  mountHeader('my-bounty', '../');
+  const t0 = performance.now();
+  const role = currentRole();
+  if (role !== '楼主') {
+    app.innerHTML = '<div class="denied"><h2>无权限</h2>'
+      + '<p class="muted">「我的悬赏」仅楼主可进入；当前角色：' + esc(role) + '。切换角色后即可查看名下悬赏。</p>'
+      + '<p><a href="bounty-list.html">返回悬赏列表</a></p></div>';
+    return;
+  }
+  const mine = DB.悬赏单.filter((b) => b.楼主 === '楼主');
+  const shown = filter === '全部' ? mine : mine.filter((b) => b.状态 === filter);
+  let h = '<div class="stats"><span>名下悬赏 <b>' + mine.length + '</b> 张</span>'
+    + '<span class="muted">本次渲染耗时 ' + Math.max(1, Math.round(performance.now() - t0)) + ' 毫秒</span></div>';
+  h += '<div class="tabs">';
+  for (const t of ['全部', '进行中', '已结悬赏', '已下架']) {
+    h += '<button type="button" data-filter="' + t + '"' + (t === filter ? ' class="on"' : '') + '>' + t + '</button>';
+  }
+  h += '</div>';
+  if (!shown.length) {
+    h += '<div class="empty">该状态下暂无悬赏。</div>';
+  } else {
+    for (const b of [...shown].sort((a, x) => a.hoursAgo - x.hoursAgo)) h += bountyCard(b, true);
+  }
+  app.innerHTML = h;
+  document.querySelectorAll('.tabs button').forEach((btn) => btn.addEventListener('click', () => { filter = btn.dataset.filter; render(); }));
+  document.querySelectorAll('.card.clickable').forEach((c) => {
+    c.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      location.href = 'bounty-detail.html?id=' + c.dataset.id;
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>

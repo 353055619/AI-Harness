@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>悬赏厅 · 悬赏列表</title>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<header id="topbar"></header>
+<main id="app"></main>
+<div id="toast"></div>
+<footer>悬赏厅完整卷原型 · 悬赏列表页 · 发布与治理动作在本页就地展开</footer>
+<script src="../data.js"></script>
+<script src="../app.js"></script>
+<script>
+'use strict';
+const app = document.querySelector('#app');
+let takedownOpen = null; // 当前展开下架原因面板的悬赏 id
+
+function render() {
+  mountHeader('bounty-list', '../');
+  const t0 = performance.now();
+  const role = currentRole();
+  const open = DB.悬赏单.filter((b) => b.状态 === '进行中');
+  const closed = DB.悬赏单.filter((b) => b.状态 === '已结悬赏');
+  const down = DB.悬赏单.filter((b) => b.状态 === '已下架');
+  let h = '<div class="stats"><span>进行中 <b>' + open.length + '</b> 张</span><span>已结悬赏 <b>' + closed.length + '</b> 张</span><span>已下架 <b>' + down.length + '</b> 张</span>'
+    + '<span class="muted">本次渲染耗时 ' + Math.max(1, Math.round(performance.now() - t0)) + ' 毫秒</span></div>';
+  if (role === '楼主') {
+    h += '<button type="button" class="ghost" id="btn-publish">发布悬赏</button><div id="publish-holder"></div>';
+  }
+  if (!DB.悬赏单.length) {
+    h += '<div class="empty">还没有悬赏，楼主点上方「发布悬赏」发出第一单。</div>';
+  }
+  const sorted = [...DB.悬赏单].sort((a, b) => a.hoursAgo - b.hoursAgo);
+  for (const b of sorted) {
+    h += bountyCard(b, takedownOpen !== b.id);
+    if (takedownOpen === b.id) {
+      h += '<div class="panel" id="tk-panel"><h3 style="margin-top:0">下架违规悬赏：' + esc(b.标题) + '</h3>'
+        + '<label>下架原因（必填，将通知楼主并留痕）<input id="tk-reason" maxlength="60"></label>'
+        + '<div class="err" id="tk-err"></div>'
+        + '<button type="button" class="danger" id="tk-yes">确认下架</button> '
+        + '<button type="button" class="ghost" id="tk-no">取消</button>'
+        + '<p class="muted">确认后：悬赏单转为已下架，冻结的 ' + b.积分 + ' 积分退回楼主，并向楼主生成下架结果消息。</p></div>';
+    }
+  }
+  app.innerHTML = h;
+  bind(t0);
+}
+
+function bind(t0) {
+  document.querySelectorAll('.card.clickable').forEach((c) => {
+    c.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      location.href = 'bounty-detail.html?id=' + c.dataset.id;
+    });
+  });
+  const pb = document.querySelector('#btn-publish');
+  if (pb) pb.addEventListener('click', renderPublishForm);
+  document.querySelectorAll('[data-takedown]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentRole() !== '平台运营') { toast('仅平台运营可下架'); return; }
+      takedownOpen = btn.dataset.takedown;
+      render();
+    });
+  });
+  const yes = document.querySelector('#tk-yes');
+  if (yes) {
+    const bid = takedownOpen;
+    yes.addEventListener('click', () => {
+      const b = DB.悬赏单.find((x) => x.id === bid);
+      const reason = document.querySelector('#tk-reason').value.trim();
+      if (!reason) { document.querySelector('#tk-err').textContent = '下架原因为空：需填写原因才能确认'; return; }
+      yes.disabled = true;
+      setTimeout(() => {
+        b.状态 = '已下架';
+        b.下架原因 = reason;
+        DB.账户.楼主 += b.积分;
+        addMsg('下架结果', '您的悬赏「' + b.标题 + '」已被平台下架：' + reason + '，冻结积分 ' + b.积分 + ' 已退回。', '楼主', b.id);
+        takedownOpen = null;
+        toast('已下架并留痕，退回楼主冻结积分 ' + b.积分);
+        render();
+      }, 250);
+    });
+    document.querySelector('#tk-no').addEventListener('click', () => { takedownOpen = null; render(); });
+  }
+}
+
+function renderPublishForm() {
+  const holder = document.querySelector('#publish-holder');
+  const btn = document.querySelector('#btn-publish');
+  if (holder.innerHTML) { holder.innerHTML = ''; btn.textContent = '发布悬赏'; return; }
+  btn.textContent = '收起表单';
+  holder.innerHTML = '<form class="panel" id="pub-form">'
+    + '<h3 style="margin:0 0 4px">发布悬赏</h3>'
+    + '<label>标题（至少 5 个字）<input id="f-title" maxlength="40"></label>'
+    + '<label>描述（可选）<textarea id="f-desc" maxlength="200"></textarea></label>'
+    + '<label>积分（10 至 500 的整数）<input id="f-points" size="6"></label>'
+    + '<div class="err" id="f-err"></div>'
+    + '<button type="submit" class="primary" id="f-submit">提交悬赏</button></form>';
+  document.querySelector('#pub-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = document.querySelector('#f-title').value.trim();
+    const desc = document.querySelector('#f-desc').value.trim();
+    const pts = Number(document.querySelector('#f-points').value);
+    const err = document.querySelector('#f-err');
+    if (title.length < 5) { err.textContent = '标题至少 5 个字，当前 ' + title.length + ' 个'; return; }
+    if (!Number.isInteger(pts) || pts < 10 || pts > 500) { err.textContent = '积分必须是 10 至 500 的整数'; return; }
+    if (pts > DB.账户.楼主) { err.textContent = '余额不足：可用 ' + DB.账户.楼主 + ' 积分，不够冻结 ' + pts + ' 积分，表单已保留'; return; }
+    const sub = document.querySelector('#f-submit');
+    sub.disabled = true;
+    sub.textContent = '提交中';
+    setTimeout(() => {
+      DB.账户.楼主 -= pts;
+      DB.悬赏单.unshift({ id: 'B-' + (3200 + Math.floor(Math.random() * 700)), 标题: title, 描述: desc, 积分: pts, 状态: '进行中', 楼主: '楼主', hoursAgo: 0 });
+      toast('悬赏已发布，冻结 ' + pts + ' 积分');
+      render();
+    }, 250);
+  });
+}
+
+render();
+</script>
+</body>
+</html>

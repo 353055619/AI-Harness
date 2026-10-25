@@ -1,0 +1,82 @@
+{
+  "ranAt": "2026-10-25T09:45:15.116Z",
+  "goodFalseKills": {
+    "2099-01-01_悬赏厅最小卷": [],
+    "2099-01-02_悬赏厅完整卷": []
+  },
+  "mechanicalMines": {
+    "R1": {
+      "caught": true,
+      "expect": "ac-fr-missing",
+      "check": [
+        {
+          "rule": "prd-overview-missing",
+          "detail": "缺总览文件 PRD-<设计名>.md",
+          "bucket": "L1"
+        },
+        {
+          "rule": "ac-fr-missing",
+          "detail": "PRD-运营治理.md AC-运营治理-001 未挂关联 FR/GR（AC 表末列）",
+          "bucket": "L2"
+        }
+      ]
+    },
+    "R2": {
+      "caught": true,
+      "expect": "trace-fake-ref",
+      "check": [
+        {
+          "rule": "trace-fake-ref",
+          "detail": "FR-01 追踪表引用 §9.9 在业务架构与应用架构中均不存在（假链）",
+          "bucket": "L2"
+        }
+      ]
+    },
+    "R3": {
+      "caught": true,
+      "expect": "uc-flow-ref",
+      "check": [
+        {
+          "rule": "uc-flow-ref",
+          "detail": "用例 UC-01 挂的流程 3.2 不存在（业务架构无 ### 3.2 节）",
+          "bucket": "L2"
+        },
+        {
+          "rule": "uc-flow-ref",
+          "detail": "用例 UC-02 挂的流程 3.2 不存在（业务架构无 ### 3.2 节）",
+          "bucket": "L2"
+        },
+        {
+          "rule": "uc-flow-ref",
+          "detail": "用例 UC-03 挂的流程 3.2 不存在（业务架构无 ### 3.2 节）",
+          "bucket": "L2"
+        }
+      ]
+    }
+  },
+  "judgeMines": {
+    "R4": {
+      "judge": "godw-design:dev-reproducer",
+      "expect": "答卷 blockers/「只能猜」条目点名 应用架构 §9 或「自行处理」模糊处——照图复现必须能指出哪一步走不下去",
+      "answerFile": "last-run/judge-answers/R4.md",
+      "ready": true
+    },
+    "R5": {
+      "judge": "godw-design:simplicity-officer",
+      "expect": "砍单确认：点名「全网热度预测/AI 情感分析/推送站外」为过度设计（PRD-悬赏发布 模块）",
+      "answerFile": "last-run/judge-answers/R5.md",
+      "ready": true
+    },
+    "R6": {
+      "judge": "godw-design:arch-reviewer",
+      "expect": "按锚定卡纪律处理业务架构 §1 的空泛自评：无反例不给高分，须点名该句无证据支撑并要求量化口径",
+      "answerFile": "last-run/judge-answers/R6.md",
+      "ready": true
+    }
+  },
+  "verdict": {
+    "falseKills": 0,
+    "mechanicalCaught": 3,
+    "hardGatePass": true
+  }
+}

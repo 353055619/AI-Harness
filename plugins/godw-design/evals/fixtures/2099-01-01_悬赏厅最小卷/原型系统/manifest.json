@@ -1,0 +1,20 @@
+{
+  "name": "悬赏厅最小卷原型",
+  "entry": "prototype.html",
+  "pages": [
+    {
+      "id": "bounty-list",
+      "file": "prototype.html",
+      "route": "#/bounty-list",
+      "roles": ["楼主", "回答者"],
+      "ucIds": ["UC-01", "UC-02"]
+    },
+    {
+      "id": "bounty-detail",
+      "file": "prototype.html",
+      "route": "#/bounty-detail/B-1001",
+      "roles": ["楼主", "回答者"],
+      "ucIds": ["UC-03", "UC-04", "UC-05"]
+    }
+  ]
+}

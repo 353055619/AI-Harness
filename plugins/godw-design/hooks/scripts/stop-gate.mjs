@@ -2,7 +2,7 @@
 // godw-design 收工门（Stop）
 // Agent 声称「阶段完成/已过门/PASS/已冻结」时，核对对应凭证在位（快照目录/冻结标志）；
 // 只做存在性核对，不重跑检查。无活跃实例或无完成声明 → 秒放行。凭证缺 → exit 2 打回附缺口。
-import { readFileSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const raw = await new Promise(r => { let s = ''; process.stdin.on('data', d => s += d); process.stdin.on('end', () => r(s)); });
@@ -35,8 +35,41 @@ if (!instances.length) process.exit(0);
 
 const deny = (reason) => { console.error(`[godw-design 收工门] ${reason}`); process.exit(2); };
 
+// 0.7.0 补强：check 新鲜度核对（fail-open）——声明过门/通过时，若实例存有 check 凭证（history/check-*.json），
+// 最新凭证 ranAt 必须晚于实例内源文件最新修改时间；否则=「改完文档没重跑 check 就宣布收工」打回。
+// 无任何 check 凭证时不因此拦（存在性凭证由下方快照核对兜底）——保持 fail-open。
+function checkFreshness(inst) {
+  let files = [];
+  try { files = readdirSync(join(inst, 'history')).filter(f => /^check-.*\.json$/.test(f)); } catch { return; }
+  if (!files.length) return;
+  let ranAt = 0;
+  for (const f of files) {
+    try {
+      const j = JSON.parse(readFileSync(join(inst, 'history', f), 'utf8'));
+      const t = Date.parse(j.ranAt || '');
+      if (t > ranAt) ranAt = t;
+    } catch { /* 损坏凭证交存在性核对，此处忽略 */ }
+  }
+  if (!ranAt) return;
+  let newest = 0;
+  const scan = (dir) => {
+    let ents = []; try { ents = readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of ents) {
+      const fp = join(dir, e.name);
+      if (e.isDirectory()) { if (!/snapshots|evidence|node_modules/.test(e.name)) scan(fp); continue; }
+      if (/\.(md|json|html|js|c4)$/.test(e.name)) {
+        try { const m = statSync(fp).mtimeMs; if (m > newest) newest = m; } catch {}
+      }
+    }
+  };
+  scan(inst);
+  if (newest > ranAt)
+    deny(`实例 ${inst} 源文件在最近一次 check 凭证（${new Date(ranAt).toISOString()}）之后被改过——先重跑 godw-design-check 并存 history/check-<phase>.json，再宣称完成`);
+}
+
 // 声明 → 凭证映射核对（任一命中声明而无凭证 = 打回）
 for (const inst of instances) {
+  checkFreshness(inst);
   const state = (() => { try { return readFileSync(join(inst, 'state.md'), 'utf8'); } catch { return ''; } })();
   const claims = {
     '阶段2/4A架构 过门': /阶段\s*(2|二)|4A|架构/.test(raw) && /过门|通过|PASS|完成/.test(raw),

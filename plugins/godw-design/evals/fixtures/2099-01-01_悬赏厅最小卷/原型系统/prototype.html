@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>悬赏厅 · 最小卷原型</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "PingFang SC", "Hiragino Sans GB", sans-serif; color: #1f2430; background: #f5f6f8; }
+  header { display: flex; align-items: center; gap: 16px; padding: 12px 24px; background: #1f2430; color: #fff; flex-wrap: wrap; }
+  header h1 { font-size: 18px; margin: 0; }
+  header nav a { color: #9fd0ff; margin-right: 12px; text-decoration: none; }
+  header nav a.active { color: #fff; border-bottom: 2px solid #9fd0ff; }
+  #rolebar { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  #rolebar button { border: 1px solid #9fd0ff; background: transparent; color: #9fd0ff; border-radius: 6px; padding: 3px 12px; cursor: pointer; }
+  #rolebar button.on { background: #9fd0ff; color: #1f2430; font-weight: 600; }
+  main { max-width: 860px; margin: 20px auto; padding: 0 16px; }
+  .muted { color: #6b7280; font-size: 13px; }
+  .stats { display: flex; gap: 18px; align-items: baseline; margin: 10px 0 14px; flex-wrap: wrap; }
+  .badge { display: inline-block; border-radius: 10px; padding: 1px 10px; font-size: 12px; }
+  .badge.进行中 { background: #e0f2e9; color: #137a44; }
+  .badge.已结悬赏 { background: #eceef2; color: #55607a; }
+  .card { background: #fff; border: 1px solid #e3e6ec; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; cursor: pointer; }
+  .card:hover { border-color: #9fd0ff; }
+  .card .row1 { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .card h3 { margin: 0 0 6px; font-size: 16px; }
+  .points { font-weight: 700; color: #b45309; white-space: nowrap; }
+  form.panel, section.panel { background: #fff; border: 1px solid #e3e6ec; border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+  label { display: block; font-size: 13px; color: #55607a; margin: 10px 0 4px; }
+  input, textarea { width: 100%; border: 1px solid #c9cfd8; border-radius: 6px; padding: 8px 10px; font-size: 14px; font-family: inherit; }
+  textarea { min-height: 84px; resize: vertical; }
+  .err { color: #b42318; font-size: 13px; min-height: 18px; margin-top: 4px; }
+  button.primary { background: #1652f0; border: none; color: #fff; border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer; margin-top: 10px; }
+  button.primary:disabled { background: #93a7e8; cursor: not-allowed; }
+  button.ghost { background: #fff; border: 1px solid #c9cfd8; border-radius: 8px; padding: 6px 14px; font-size: 13px; cursor: pointer; }
+  .answer { border-top: 1px dashed #e3e6ec; padding: 10px 0; }
+  .answer .meta { display: flex; justify-content: space-between; font-size: 13px; color: #6b7280; }
+  .answer.已采纳 { background: #f2fbf5; border-radius: 8px; padding: 10px 12px; border-top: none; margin-top: 8px; }
+  .confirmbar { display: flex; gap: 10px; align-items: center; background: #fff7e6; border: 1px solid #f0c36d; border-radius: 8px; padding: 8px 12px; margin: 10px 0; }
+  #toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 28px; background: #1f2430; color: #fff; padding: 9px 18px; border-radius: 8px; font-size: 14px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 80vw; }
+  #toast.show { opacity: 1; }
+  footer { text-align: center; color: #98a1b3; font-size: 12px; padding: 26px 0 34px; }
+  .empty { text-align: center; color: #6b7280; padding: 34px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>悬赏厅（最小卷）</h1>
+  <nav>
+    <a href="#/bounty-list" id="nav-list">悬赏列表</a>
+  </nav>
+  <div id="rolebar">
+    <span>角色</span>
+    <button type="button" data-role="楼主">楼主</button>
+    <button type="button" data-role="回答者">回答者</button>
+    <span id="balance"></span>
+  </div>
+</header>
+<main id="app"></main>
+<div id="toast"></div>
+<footer>悬赏厅最小卷原型 · 种子数据来自 data.js · 采纳窗口按 WINDOW_HOURS 口径计算</footer>
+<script src="data.js"></script>
+<script>
+'use strict';
+// 采纳窗口（小时）。考题 T-05 会把 72 改成 24 验证过期拦截
+const WINDOW_HOURS = 72;
+const DB = window.DB;
+const state = { role: '楼主' };
+const $ = (sel) => document.querySelector(sel);
+const app = $('#app');
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function pad(n) { return String(n).padStart(2, '0'); }
+function fmtTime(hoursAgo) {
+  const d = new Date(Date.now() - hoursAgo * 3600 * 1000);
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+function isExpired(b) { return b.hoursAgo >= WINDOW_HOURS; }
+function answersOf(bid) { return DB.回答单.filter((a) => a.所属悬赏 === bid); }
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._h);
+  toast._h = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function setRole(r) {
+  state.role = r;
+  render();
+}
+function renderChrome() {
+  document.querySelectorAll('#rolebar button').forEach((b) => {
+    b.classList.toggle('on', b.dataset.role === state.role);
+  });
+  $('#balance').textContent = state.role + ' 可用积分 ' + DB.账户[state.role];
+  $('#nav-list').classList.toggle('active', location.hash !== '#/bounty-list');
+}
+
+function render() {
+  renderChrome();
+  const t0 = performance.now();
+  const hash = location.hash || '#/bounty-list';
+  const m = hash.match(/^#\/bounty-detail\/(.+)$/);
+  if (m) renderDetail(m[1], t0);
+  else renderList(t0);
+}
+
+function renderList(t0) {
+  const open = DB.悬赏单.filter((b) => b.状态 === '进行中');
+  const closed = DB.悬赏单.filter((b) => b.状态 === '已结悬赏');
+  let h = '';
+  h += '<div class="stats"><span>进行中 <b>' + open.length + '</b> 张</span><span>已结悬赏 <b>' + closed.length + '</b> 张</span>'
+    + '<span class="muted">本次渲染耗时 ' + Math.max(1, Math.round(performance.now() - t0)) + ' 毫秒</span></div>';
+  if (state.role === '楼主') {
+    h += '<button type="button" class="ghost" id="btn-publish">发布悬赏</button><div id="publish-holder"></div>';
+  }
+  if (!DB.悬赏单.length) {
+    h += '<div class="empty">还没有悬赏，楼主点上方「发布悬赏」发出第一单。</div>';
+  }
+  const sorted = [...DB.悬赏单].sort((a, b) => a.hoursAgo - b.hoursAgo);
+  for (const b of sorted) {
+    const n = answersOf(b.id).length;
+    h += '<div class="card" data-id="' + b.id + '"><div class="row1"><h3>' + esc(b.标题) + '</h3><span class="points">' + b.积分 + ' 积分</span></div>'
+      + '<div><span class="badge ' + b.状态 + '">' + b.状态 + (isExpired(b) && b.状态 === '进行中' ? '（已过采纳窗口）' : '') + '</span>'
+      + '<span class="muted"> 回答 ' + n + ' 条 · 发布于 ' + fmtTime(b.hoursAgo) + ' · 采纳截止 ' + fmtTime(b.hoursAgo + WINDOW_HOURS) + '</span></div></div>';
+  }
+  app.innerHTML = h;
+  document.querySelectorAll('.card').forEach((c) => c.addEventListener('click', () => { location.hash = '#/bounty-detail/' + c.dataset.id; }));
+  const pb = $('#btn-publish');
+  if (pb) pb.addEventListener('click', renderPublishForm);
+}
+
+function renderPublishForm() {
+  const holder = $('#publish-holder');
+  const btn = $('#btn-publish');
+  if (holder.innerHTML) { holder.innerHTML = ''; return; }
+  btn.textContent = '收起表单';
+  holder.innerHTML = '<form class="panel" id="pub-form">'
+    + '<h3 style="margin:0 0 4px">发布悬赏</h3>'
+    + '<label>标题（至少 5 个字）<input id="f-title" maxlength="40"></label>'
+    + '<label>描述（可选）<textarea id="f-desc" maxlength="200"></textarea></label>'
+    + '<label>积分（10 至 500 的整数）<input id="f-points" size="6"></label>'
+    + '<div class="err" id="f-err"></div>'
+    + '<button type="submit" class="primary" id="f-submit">提交悬赏</button></form>';
+  $('#pub-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = $('#f-title').value.trim();
+    const desc = $('#f-desc').value.trim();
+    const pts = Number($('#f-points').value);
+    const err = $('#f-err');
+    if (title.length < 5) { err.textContent = '标题至少 5 个字，当前 ' + title.length + ' 个'; return; }
+    if (!Number.isInteger(pts) || pts < 10 || pts > 500) { err.textContent = '积分必须是 10 至 500 的整数'; return; }
+    if (pts > DB.账户.楼主) { err.textContent = '余额不足：可用 ' + DB.账户.楼主 + ' 积分，不够冻结 ' + pts + ' 积分，表单已保留'; return; }
+    const sub = $('#f-submit');
+    sub.disabled = true;
+    sub.textContent = '提交中';
+    setTimeout(() => {
+      DB.账户.楼主 -= pts;
+      DB.悬赏单.unshift({ id: 'B-' + (1000 + DB.悬赏单.length + Math.floor(Math.random() * 90)), 标题: title, 描述: desc, 积分: pts, 状态: '进行中', 楼主: '楼主', hoursAgo: 0 });
+      toast('悬赏已发布，冻结 ' + pts + ' 积分');
+      render();
+    }, 250);
+  });
+}
+
+function renderDetail(id, t0) {
+  const b = DB.悬赏单.find((x) => x.id === id);
+  if (!b) { app.innerHTML = '<div class="empty">该悬赏已结案或不存在，<a href="#/bounty-list">返回列表</a>。</div>'; return; }
+  const list = answersOf(b.id);
+  const expired = isExpired(b);
+  let h = '<section class="panel"><div class="row1"><h3 style="margin:0">' + esc(b.标题) + '</h3><span class="points">' + b.积分 + ' 积分</span></div>'
+    + '<p class="muted" style="margin:6px 0">' + esc(b.描述 || '（无描述）') + '</p>'
+    + '<div><span class="badge ' + b.状态 + '">' + b.状态 + '</span> <span class="muted">发布于 ' + fmtTime(b.hoursAgo) + ' · 采纳截止 ' + fmtTime(b.hoursAgo + WINDOW_HOURS)
+    + (expired && b.状态 === '进行中' ? ' · 采纳窗口已关闭' : '') + '</span></div>'
+    + '<p class="muted">本次渲染耗时 ' + Math.max(1, Math.round(performance.now() - t0)) + ' 毫秒 · <a href="#/bounty-list">返回列表</a></p></section>';
+  h += '<section class="panel"><h3 style="margin-top:0">回答（' + list.length + '）</h3>';
+  if (!list.length) {
+    h += '<div class="empty">还没有回答，来做第一个。</div>';
+  } else {
+    for (const a of list) {
+      h += '<div class="answer ' + a.状态 + '"><div class="meta"><span>' + esc(a.回答者) + ' · ' + fmtTime(a.hoursAgo) + '</span><span class="badge ' + a.状态 + '">' + a.状态 + '</span></div>'
+        + '<p style="margin:6px 0 2px">' + esc(a.内容) + '</p>'
+        + (b.状态 === '进行中' ? '<button type="button" class="ghost" data-adopt="' + a.id + '"' + (expired ? ' disabled' : '') + '>采纳</button>' : '')
+        + '</div>';
+    }
+  }
+  h += '</section>';
+  if (state.role === '回答者' && b.状态 === '进行中') {
+    h += '<section class="panel"><h3 style="margin-top:0">提交回答</h3>'
+      + '<label>回答内容<textarea id="a-content" maxlength="300"></textarea></label>'
+      + '<div class="err" id="a-err"></div>'
+      + '<button type="button" class="primary" id="a-submit">提交回答</button></section>';
+  }
+  h += '<div id="confirm-holder"></div>';
+  app.innerHTML = h;
+  const sub = $('#a-submit');
+  if (sub) sub.addEventListener('click', () => {
+    const content = $('#a-content').value.trim();
+    const err = $('#a-err');
+    if (!content) { err.textContent = '回答不能为空'; $('#a-content').focus(); return; }
+    sub.disabled = true;
+    sub.textContent = '提交中';
+    setTimeout(() => {
+      DB.回答单.push({ id: 'A-' + (2000 + DB.回答单.length + Math.floor(Math.random() * 90)), 所属悬赏: b.id, 回答者: '回答者', 内容: content, hoursAgo: 0, 状态: '已提交' });
+      toast('回答已提交');
+      render();
+    }, 250);
+  });
+  document.querySelectorAll('[data-adopt]').forEach((btn) => btn.addEventListener('click', () => {
+    if (state.role !== '楼主') { toast('仅楼主可采纳，当前角色：' + state.role); return; }
+    if (expired) { toast('采纳窗口已关闭（发布超过 ' + WINDOW_HOURS + ' 小时），悬赏状态保持不变'); return; }
+    askAdopt(b.id, btn.dataset.adopt);
+  }));
+}
+
+function askAdopt(bid, aid) {
+  const b = DB.悬赏单.find((x) => x.id === bid);
+  const holder = $('#confirm-holder');
+  holder.innerHTML = '<div class="confirmbar"><span>确认采纳该回答并结算 ' + b.积分 + ' 积分给回答者？</span>'
+    + '<button type="button" class="primary" id="adopt-yes" style="margin-top:0">确认采纳</button>'
+    + '<button type="button" class="ghost" id="adopt-no">取消</button></div>';
+  $('#adopt-yes').addEventListener('click', () => {
+    for (const a of answersOf(bid)) a.状态 = a.id === aid ? '已采纳' : '未采纳';
+    b.状态 = '已结悬赏';
+    DB.账户.回答者 += b.积分;
+    toast('已采纳结算：回答者 +' + b.积分 + ' 积分，悬赏单转为已结悬赏');
+    render();
+  });
+  $('#adopt-no').addEventListener('click', () => { holder.innerHTML = ''; });
+}
+
+document.querySelectorAll('#rolebar button').forEach((b) => b.addEventListener('click', () => setRole(b.dataset.role)));
+window.addEventListener('hashchange', render);
+render();
+</script>
+</body>
+</html>

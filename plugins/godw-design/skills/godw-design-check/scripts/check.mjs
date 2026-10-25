@@ -26,7 +26,9 @@ const crawlPath = val('--crawl');
 const doRegistry = args.includes('--registry');
 const failures = [];
 const warn = [];
-const fail = (rule, detail) => failures.push({ rule, detail });
+// 分桶（0.7.0）：L1 机械/结构规则 vs L2 语义/引用一致性规则——gate 报告按桶统计，拖后腿的桶一眼可见
+const BUCKET_L2 = new Set(['id-fabricated', 'detail-trace-invalid', 'detail-trace-missing', 'trace-missing-row', 'trace-fake-ref', 'trace-prd-pending', 'trace-proto-pending', 'uc-fr-coverage', 'uc-role-coverage', 'uc-diagram-consistency', 'uc-diagram-missing', 'uc-flow-ref', 'nfr-scenario-missing', 'state-diagram-consistency', 'page-node-unknown', 'seq-participant-unknown', 'gen-drift', 'manifest-page-mismatch', 'prd-page-unknown', 'prd-page-missing', 'role-unaccounted', 'leg-role-unknown', 'card-matrix-refs', 'card-fault-fr', 'likec4-invalid', 'crawl-deadlink', 'crawl-lazy', 'ac-fr-coverage', 'ac-fr-missing']);
+const fail = (rule, detail) => failures.push({ rule, detail, bucket: BUCKET_L2.has(rule) ? 'L2' : 'L1' });
 
 const hasDocPhase = phase === 'document' || phase === 'prd' || phase === 'proto';
 const hasPrdPhase = phase === 'prd' || phase === 'proto';
@@ -515,6 +517,24 @@ if (hasDocPhase && detail) {
   }
 }
 
+// ---------- 追踪表假链（0.7.0 L2：业务/应用架构格的节号引用必须真实存在）----------
+if (hasDocPhase) {
+  const traceRowsAll = tableRows(readText(tracePath) || '').filter(r => /\b(FR|NFR|GR)-\d{2,}\b/.test(r));
+  const bizHeadNums = new Set([...(bizText || '').matchAll(/^#{2,4}\s*(\d+(?:\.\d+)*)/gm)].map(m => m[1]));
+  const appTextLite = readText(appPath);
+  const appHeadNums = new Set([...(appTextLite || '').matchAll(/^#{2,4}\s*(\d+(?:\.\d+)*)/gm)].map(m => m[1]));
+  for (const row of traceRowsAll) {
+    const cells = row.split('|').map(c => c.trim());
+    const rid = (cells[1] || '').match(/\b(FR|NFR|GR)-\d{2,}\b/)?.[0];
+    if (!rid) continue;
+    for (const ref of [...((cells[3] || '') + '\n' + (cells[4] || '')).matchAll(/(\d+\.\d+)/g)].map(m => m[1])) {
+      const inBiz = bizHeadNums.has(ref);
+      const inApp = appHeadNums.has(ref);
+      if (!inBiz && !inApp) fail('trace-fake-ref', `${rid} 追踪表引用 §${ref} 在业务架构与应用架构中均不存在（假链）`);
+    }
+  }
+}
+
 // ---------- PRD（prd/proto 阶段）----------
 const prdDir = join(instance, 'PRD');
 const designName = (basename(instance).match(/^\d{4}-\d{2}-\d{2}_(.+)$/) || [])[1] || null;
@@ -743,6 +763,7 @@ const result = { instance: basename(instance), phase,
   ranAt: new Date().toISOString(),
   newestSourceMtime: newestMtime ? new Date(newestMtime).toISOString() : null,
   needsClarification: ncCount,
+  buckets: { L1: failures.filter(f => f.bucket === 'L1').length, L2: failures.filter(f => f.bucket === 'L2').length },
   ...(registryStats ? { registry: registryStats } : {}),
   note: '本输出必须原样贴进修订记录；编排层核对 ranAt 晚于被检文件当前最新修改时间，否则视为未真跑',
   failures, warnings: warn, pass: failures.length === 0 };

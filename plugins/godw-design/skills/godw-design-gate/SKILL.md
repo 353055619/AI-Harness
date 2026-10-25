@@ -72,7 +72,7 @@ description: 验收闭环原子技能（godw-design 家族）：用子智能体�
 > **必须真跑浏览器作答，没有「读代码推演」这个选项**：
 > 1. 把每道考题写成操作步骤，合成一个场景 JSON（一次覆盖你全部考题）：{"prototype":"<原型路径>","evidence":"<证据根>/<角色名>","role":"<角色>","exams":[{"qid":"T-xx","covers":["UC-xx"],"steps":[…]}]}。动作词表仅七种：goto{url}/click{target}/fill{target,value}/select{target,value}/expect-text{target?,contains}/expect-count{target,count}/screenshot{name}；target 用 CSS 选择器或 `text=文本`。**每题必带 covers 数组**=该题实际演示的用例编号（对照 原型系统/manifest.json 的 ucIds 与业务架构§3.0）——编排层收卷后用 `walk.mjs coverage` 机器核对：每页 ≥1 goto、每角色的 UC 全集被覆盖，缺口即 FAIL 补场景。
 > 2. Bash 执行：`node <走查器路径> <场景JSON>`。按钮点不动、期望文本选不到，会在对应步如实失败——**这正是「卡住」的证据，保留原样，禁止为通过而改写期望或放宽断言**。
-> 3. 用 Read 逐张查看证据目录截图（step-NN.png / page-NN-full.png）与 trace 的 DOM 摘要后再作答。每步结果三选一：**能做** / **卡住**（步骤失败或行为与文档矛盾）/ **靠猜**（场景要靠脑补设计意图才写得出来）。
+> 3. 以 trace JSON 的运行成败与 DOM 摘要作答（**行为层**；注意：普通 agent 的 Read 收不到截图像素，不得假装看图——样式/高亮/布局等**视觉层**判定由 3c 视觉验收官独立承担）。每步结果三选一：**能做** / **卡住**（步骤失败或行为与文档矛盾）/ **靠猜**（场景要靠脑补设计意图才写得出来）。
 > 4. 答卷每道题必须带 "evidence"（本题证据目录绝对路径）与 "runId"（trace 里的运行编号）——缺任一这份答卷整体作废。
 > 管理员/运维角色走管理面运维面（用户管理/配置/日志/异常处理），没有对应页面本身就是 gap（记 gaps）。
 > 只输出以下 JSON（不要其他文字）：
@@ -113,12 +113,18 @@ description: 验收闭环原子技能（godw-design 家族）：用子智能体�
 
 3. **答卷有效性核对（防推演与代笔，机械核对）**：动态评委（prototype 模式）答卷必须带 runId 与 evidence——编排层核对：证据目录存在、截图张数 ≥ 答卷 steps 数、trace 时间戳在本轮内、runId 与 trace.json 一致；任一不过 = **答卷作废，登记「待补派」下轮重派，不算消耗安全上限轮次**。主线程不代笔答卷（见纪律·评委独立）。
 3b. **覆盖核对（0.6.0，prototype 模式收卷后）**：bash 跑 `node <本技能目录>/scripts/walk.mjs coverage <原型系统/manifest.json> <history/evidence/>`——每 manifest 页 ≥1 次 goto、每角色的 UC 全集被场景 covers 覆盖、covers 无未定义 UC；缺口即 FAIL，按缺口补场景重派（不算消耗安全上限轮次）。
+3c. **视觉断言（0.7.0，prototype 模式，覆盖核对过后）**：机械断言管文本状态，视觉断言管样式布局——双轨。做法：
+   - **抽题**：从 `PRD/` 抽界面可观察 AC 子集（THE 系统 SHALL <界面呈现/提示/状态变化> 类，每模块 ≤5 条、总量 ≤20 条，优先核心流程与状态可见性）。
+   - **派发**：调 `Agent(subagent_type='godw-design:visual-judge')`（视觉验收官），任务传入：AC 清单 + 证据根（各角色 trace 目录）+ 每条 AC 对应截图指引（按各场景 steps 的 step-NN.png）。**视觉通道纪律**：判定必须由带视觉通道的 agent 执行——若本 host 的插件 agent 收不到图像像素（验收官输出 `visionChannel:false` 即暴露），改派 host 可用的视觉评委类型（标准 ZCode 为 `pdf:visual-judge`），并在登记表记一条 open（视觉通道待修）。
+   - **落证**：verdict 原样存 `history/evidence/gate-proto-N/visual-verdicts.json`（与 runId 绑定；`visionChannel:false` 本身视为该轮视觉断言未完成，不得默填 pass）。
+   - **准出**：视觉 verdict 无 fail 才可判 PASS；fail 项按性质分流登记表（样式/提示缺失→blockers；PRD 未写但界面出现→靠猜类）进修订循环。
 4. **答卷登记规则**：核心考题「卡住」= blocker（B-xx，注明题号）；「靠猜」逐条登记 `G-xx（靠猜）`——靠猜是文档欠账，**必须补写文档清零，不得 backlog**；非核心题的卡住按 gap 分流。
 5. **gap 三分流**（编排层判）：核心路径缺失且界内 → 回流（调 godw-design-orchestrator 的回流协议 v2：架构腿与 PRD 吸收+GR 编号+DECISIONS 出处，登记表标「已吸收→GR-xx」）；锦上添花/边缘场景 → backlog；新用户群/新价值主张 → 越界（停止呈报用户）。
 6. **blocker 准入**（评委任务书已定义）：阻断 = 核心流程走不通（含核心考题卡住）/ 数据错误 / 安全问题；其余按 gap/suggestion 报，编排层分流。升级须给理由（对照锚定卡）。
 7. **判定线（0.6.0 起机械计算）**：
    - 首轮 = 建档轮（不判 PASS/FAIL）。
-   - 收敛轮：bash 真跑 `node <godw-design-check 技能目录>/scripts/check.mjs <实例> --phase <对应阶段> --registry` 原样贴 JSON——`registry.passCandidate`（open blockers/界内 gaps/靠猜 三清零）是判定线的机器底座；**PASS** = passCandidate=true + 本轮新 blockers = 0（**不论哪个评委发现，含新鲜评委**）+ 回归评委核心考题重跑答卷**卡住=0 且无新靠猜**。**新鲜评委的答卷结果不进判定**（第一印象天然苛刻，其卡住/靠猜进登记表但不阻断），backlog 非空不影响。
+   - 收敛轮：bash 真跑 `node <godw-design-check 技能目录>/scripts/check.mjs <实例> --phase <对应阶段> --registry` 原样贴 JSON，**并存档 `history/check-<phase>.json`**（Stop 收工门按其 ranAt 核对新鲜度）——`registry.passCandidate`（open blockers/界内 gaps/靠猜 三清零）是判定线的机器底座；**PASS** = passCandidate=true + 本轮新 blockers = 0（**不论哪个评委发现，含新鲜评委**）+ 回归评委核心考题重跑答卷**卡住=0 且无新靠猜** + （prototype 模式）视觉 verdict 无 fail。**新鲜评委的答卷结果不进判定**（第一印象天然苛刻，其卡住/靠猜进登记表但不阻断），backlog 非空不影响。
+   - **FAIL 分桶统计（0.7.0）**：本轮全部 FAIL 条目按来源分桶——**L1 check 机械/结构**（check failures bucket=L1）/ **L2 check 语义**（bucket=L2：假链、覆盖缺口、引用不一致）/ **L3 评委内容**（答卷卡住/靠猜/blockers/gaps）——桶计数写进本轮报告。**收敛基线（0.7.0）**：初始基线 3 轮（攒满 5 个真实实例后校准为轮次中位数）；实例轮次 **超基线 +2 → 编排器停线呈报**，附分桶统计指出哪类问题在拖（L1 多=修订自动化失效；L2 多=追踪/一致性欠账；L3 多=文档质量或评委口径问题），不许闷头磨。
    - **prd 模式同口径**（PRD 卡住=0、靠猜清零）；`[NEEDS CLARIFICATION]` 条目不阻断（进登记表交编排层呈报用户），其 blockers/gaps 正常判定。
    - 登记表表格结构固定五列 `| 编号 | 类型 | 问题 | 来源角色/轮次 | 状态 |`，类型取值 blocker / gap(界内) / gap(靠猜) / gap(长尾) / suggestion，状态取值 open / fixed(RN) / 已吸收→GR-xx / backlog——脚本按此解析，结构漂移会被 registry-status-empty 抓到。
 8. **修订清单三轨**：blockers 修工件（按位置去重）；界内 gaps 走回流；靠猜条目补写文档（修完下轮重答该题）；简洁审查官确认的过度设计进砍单（砍出回归由下轮回归评委抓）；suggestions 择优（不收的记一句理由）。
@@ -127,8 +133,9 @@ description: 验收闭环原子技能（godw-design 家族）：用子智能体�
 ```markdown
 # 门验收报告：<工件> · 第 N 轮（<模式>）
 - 判定：建档轮 / PASS / FAIL（判定线：登记 open 清零〔含靠猜〕+ 新 blockers=0 + 核心答卷卡住=0）
-- 派发：<动态角色评委 N + 回归评委 M + 新鲜评委 K + 固定评委（架构评审官/简洁审查官/开发者复现官）>
+- 派发：<动态角色评委 N + 回归评委 M + 新鲜评委 K + 固定评委（架构评审官/简洁审查官/开发者复现官/视觉验收官〔prototype 模式〕）>
 - 锚定卡版本：<已裁决清单条数/追踪表行数/身份卡角色数与题数>
+- FAIL 分桶（0.7.0）：L1 check 机械 <n> ｜ L2 check 语义 <n> ｜ L3 评委内容 <n>（本轮基线余量 <3+2-轮次>）
 ## 答卷汇总（动态评委）
 | 角色 | 题号 | 结果 | runId·证据 |
 ## 评分汇总（固定评委）

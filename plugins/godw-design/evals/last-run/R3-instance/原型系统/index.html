@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>悬赏厅 · 完整卷原型 · 入口</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header id="topbar"></header>
+<main>
+  <section class="panel">
+    <h2 style="margin-top:0">悬赏厅完整卷 · 原型入口</h2>
+    <p class="muted">悬赏制需求协作：发布悬赏、回答悬赏、采纳结算、消息通知、运营下架。先在右上角切换角色（楼主、回答者、平台运营），再进入对应页面；不同角色看到的入口与动作不同。</p>
+    <div class="grid" id="entries"></div>
+  </section>
+</main>
+<div id="toast"></div>
+<footer>悬赏厅完整卷原型 · 种子数据来自 data.js · 采纳窗口按 WINDOW_HOURS 口径计算</footer>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>
+'use strict';
+mountHeader('index', 'pages/');
+const role = currentRole();
+const unread = unreadCount();
+const entries = [
+  { href: 'pages/bounty-list.html', title: '悬赏列表', desc: '浏览全部悬赏；楼主可发布，平台运营可下架违规悬赏。', open: true, badge: '' },
+  { href: 'pages/my-bounty.html', title: '我的悬赏', desc: '楼主按状态管理名下悬赏（仅楼主可进）。', open: role === '楼主', badge: role === '楼主' ? '' : '无权限' },
+  { href: 'pages/notify.html', title: '消息通知', desc: '新回答、采纳结果、积分到账、下架结果四类消息与未读角标。', open: role !== '平台运营', badge: role === '平台运营' ? '无权限' : (unread ? unread + ' 未读' : '') },
+  { href: 'pages/bounty-detail.html?id=B-3001', title: '悬赏详情回答', desc: '查看悬赏全文、提交回答与采纳结算。', open: true, badge: '' }
+];
+let h = '';
+for (const e of entries) {
+  h += '<a class="card clickable" href="' + e.href + '" style="text-decoration:none;color:inherit">'
+    + '<div class="row1"><h3>' + e.title + '</h3>' + (e.badge ? '<span class="badge 已下架">' + e.badge + '</span>' : '') + '</div>'
+    + '<div class="muted">' + e.desc + '</div></a>';
+}
+document.querySelector('#entries').innerHTML = h;
+</script>
+</body>
+</html>

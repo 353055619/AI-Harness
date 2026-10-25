@@ -1,0 +1,30 @@
+specification {
+  element actor {
+    style {
+      shape person
+    }
+  }
+  element system {
+    style {
+      shape rectangle
+    }
+  }
+}
+
+model {
+  poster = actor '楼主'
+  answerer = actor '回答者'
+  bountyHall = system '悬赏厅系统' {
+    description '悬赏制需求协作最小闭环：发布悬赏、回答悬赏、采纳结算'
+  }
+  poster -> bountyHall '发布悬赏'
+  answerer -> bountyHall '回答悬赏'
+  bountyHall -> poster '推送答案与结算结果'
+}
+
+views {
+  view context of bountyHall {
+    title '悬赏厅系统上下文'
+    include *
+  }
+}
