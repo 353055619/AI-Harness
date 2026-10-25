@@ -1,6 +1,6 @@
 ---
 name: godw-design-gate
-description: 验收闭环原子技能（godw-design 家族）：用子智能体模拟真实用户与专业角色对设计工件做验收——doc 模式（动态用户评委思维业务流答卷 + 开发者复现官 + 架构评审官 + 简洁审查官）、**prd 模式（动态评委思维走查 PRD 答卷 + 找茬者走歪题 + 简洁审查官——把 PRD 缺陷修在原型返工之前）**或 prototype 模式（动态用户评委**真跑 Playwright 走查器 walk.mjs 出证据**后答卷，无证据答卷作废重派；对照 PRD 验收：PRD 写了原型没做=blocker）。核心是收敛登记表+锚定卡+冻结身份卡：动态用户评委的角色与考题全部来自 2-a 产出的 身份卡.md（不发流程清单——流程是设计稿该给的答案），以**答卷表**验收（每步 能做/卡住/靠猜，固定评委打分保留）；主 agent 只派发/核对证据/判定，不代笔答卷（评委独立性）；首轮全量建档，探索期→收敛期两段节奏（换评委的壳、不换基准的魂），PASS=登记 open 清零+新 blockers=0+核心流程答卷卡住=0 且靠猜清零；长尾进 backlog 不阻断。可独立调用验收其他工件。
+description: 验收闭环原子技能（godw-design 家族）：用子智能体模拟真实用户与专业角色对设计工件做验收——doc 模式（动态用户评委思维业务流答卷 + 开发者复现官 + 架构评审官 + 简洁审查官）、**prd 模式（动态评委思维走查 PRD 答卷 + 找茬者走歪题 + 简洁审查官——把 PRD 缺陷修在原型返工之前）**或 prototype 模式（动态用户评委**真跑 Playwright 走查器 walk.mjs 出证据**后答卷，无证据答卷作废重派；场景每题带 covers:[UC-xx]，收卷后编排层跑 **walk.mjs coverage** 核对每页 ≥1 goto、每角色 UC 全覆盖；对照 PRD 验收：PRD 写了原型没做=blocker；**派发前 crawl 全绿硬前置**——walk.mjs crawl 死链/懒惰模式扫描不过先回机械修订循环）。核心是收敛登记表+锚定卡+冻结身份卡：动态用户评委的角色与考题全部来自 2-a 产出的 身份卡.md（不发流程清单——流程是设计稿该给的答案），以**答卷表**验收（每步 能做/卡住/靠猜，固定评委打分保留）；主 agent 只派发/核对证据/判定，不代笔答卷（评委独立性）；首轮全量建档，探索期→收敛期两段节奏，**PASS 判定线由 check --registry 脚本计算**（open blockers/界内 gaps/靠猜清零）+ 本轮新 blockers=0 + 核心答卷卡住=0；长尾进 backlog 不阻断。可独立调用验收其他工件。
 ---
 
 # 设计工件验收门 → 登记表收敛 + gate 报告
@@ -11,6 +11,7 @@ description: 验收闭环原子技能（godw-design 家族）：用子智能体�
 - 实例路径（`design/change/<实例>/`）。
 - 实例根 `身份卡.md`（阶段2-a 冻结产物；动态评委的角色/考题/矩阵唯一来源）——**缺则失败退出**，提示先跑阶段2-a（requirement-split）。
 - **prototype 模式环境预检（先于派发）**：bash 跑 `node <本技能目录>/scripts/walk.mjs doctor`——node ≥18 / playwright 可解析 / Chrome|Edge|chromium 任一可用；任一缺 → **停线**向调用方输出安装指引（`npm i playwright`；`npx playwright install chromium` 兜底），**不降级成推演**。
+- **prototype 模式 crawl 硬前置（0.6.0）**：doctor 过后跑 `node <本技能目录>/scripts/walk.mjs crawl <原型系统/> --out history/evidence/crawl-latest.json`——全站死链、懒惰模式（「参考xxx文档」占位/待实现/alert 桩/假链）、资源加载失败、manifest 一致性；**crawl 不过（exit 1）= 不派评委**，失败清单交编排器自动修订循环（修到 crawl 全绿再进派发）。crawl 是机械核对（编排层职责），不违 1.27 评委独立性。
 - 实例根 `原始需求.md`：**只给编排层**做 gap 三分流与边界判定；不下发动态评委与开发者复现官（他们的题来自冻结身份卡，不给原始需求）。
 - 输出报告路径（调用方指定，如 `history/gate-arch-N.md`；N = history/ 已有同前缀最大号 +1，不覆盖不重置）。
 - 登记表 `history/gate-registry.md`：不存在 → 本轮为首轮（建档轮）；存在 → 走收敛轮。
@@ -69,7 +70,7 @@ description: 验收闭环原子技能（godw-design 家族）：用子智能体�
 > 这是产品 PRD：<PRD/ 绝对路径>——验收以 PRD 为准：PRD 写了原型没做 = blocker（注明 PRD 出处）；PRD 没写但原型做了 = 靠猜类缺陷（blockers 注明「PRD 缺失」）。
 > 你的考题（只给目标句）：<T-xx｜目标句>。
 > **必须真跑浏览器作答，没有「读代码推演」这个选项**：
-> 1. 把每道考题写成操作步骤，合成一个场景 JSON（一次覆盖你全部考题）：{"prototype":"<原型路径>","evidence":"<证据根>/<角色名>","role":"<角色>","exams":[{"qid":"T-xx","steps":[…]}]}。动作词表仅七种：goto{url}/click{target}/fill{target,value}/select{target,value}/expect-text{target?,contains}/expect-count{target,count}/screenshot{name}；target 用 CSS 选择器或 `text=文本`。
+> 1. 把每道考题写成操作步骤，合成一个场景 JSON（一次覆盖你全部考题）：{"prototype":"<原型路径>","evidence":"<证据根>/<角色名>","role":"<角色>","exams":[{"qid":"T-xx","covers":["UC-xx"],"steps":[…]}]}。动作词表仅七种：goto{url}/click{target}/fill{target,value}/select{target,value}/expect-text{target?,contains}/expect-count{target,count}/screenshot{name}；target 用 CSS 选择器或 `text=文本`。**每题必带 covers 数组**=该题实际演示的用例编号（对照 原型系统/manifest.json 的 ucIds 与业务架构§3.0）——编排层收卷后用 `walk.mjs coverage` 机器核对：每页 ≥1 goto、每角色的 UC 全集被覆盖，缺口即 FAIL 补场景。
 > 2. Bash 执行：`node <走查器路径> <场景JSON>`。按钮点不动、期望文本选不到，会在对应步如实失败——**这正是「卡住」的证据，保留原样，禁止为通过而改写期望或放宽断言**。
 > 3. 用 Read 逐张查看证据目录截图（step-NN.png / page-NN-full.png）与 trace 的 DOM 摘要后再作答。每步结果三选一：**能做** / **卡住**（步骤失败或行为与文档矛盾）/ **靠猜**（场景要靠脑补设计意图才写得出来）。
 > 4. 答卷每道题必须带 "evidence"（本题证据目录绝对路径）与 "runId"（trace 里的运行编号）——缺任一这份答卷整体作废。
@@ -111,13 +112,15 @@ description: 验收闭环原子技能（godw-design 家族）：用子智能体�
 ```
 
 3. **答卷有效性核对（防推演与代笔，机械核对）**：动态评委（prototype 模式）答卷必须带 runId 与 evidence——编排层核对：证据目录存在、截图张数 ≥ 答卷 steps 数、trace 时间戳在本轮内、runId 与 trace.json 一致；任一不过 = **答卷作废，登记「待补派」下轮重派，不算消耗安全上限轮次**。主线程不代笔答卷（见纪律·评委独立）。
+3b. **覆盖核对（0.6.0，prototype 模式收卷后）**：bash 跑 `node <本技能目录>/scripts/walk.mjs coverage <原型系统/manifest.json> <history/evidence/>`——每 manifest 页 ≥1 次 goto、每角色的 UC 全集被场景 covers 覆盖、covers 无未定义 UC；缺口即 FAIL，按缺口补场景重派（不算消耗安全上限轮次）。
 4. **答卷登记规则**：核心考题「卡住」= blocker（B-xx，注明题号）；「靠猜」逐条登记 `G-xx（靠猜）`——靠猜是文档欠账，**必须补写文档清零，不得 backlog**；非核心题的卡住按 gap 分流。
 5. **gap 三分流**（编排层判）：核心路径缺失且界内 → 回流（调 godw-design-orchestrator 的回流协议 v2：架构腿与 PRD 吸收+GR 编号+DECISIONS 出处，登记表标「已吸收→GR-xx」）；锦上添花/边缘场景 → backlog；新用户群/新价值主张 → 越界（停止呈报用户）。
 6. **blocker 准入**（评委任务书已定义）：阻断 = 核心流程走不通（含核心考题卡住）/ 数据错误 / 安全问题；其余按 gap/suggestion 报，编排层分流。升级须给理由（对照锚定卡）。
-7. **判定线**：
+7. **判定线（0.6.0 起机械计算）**：
    - 首轮 = 建档轮（不判 PASS/FAIL）。
-   - 收敛轮 **PASS** = 登记表 open 状态的 blockers、界内 gaps 与**靠猜条目全部清零** + 本轮新 blockers = 0（**不论哪个评委发现，含新鲜评委**——准入已保证 blocker 均为硬伤）+ 回归评委核心考题重跑答卷**卡住=0 且无新靠猜**。**新鲜评委的答卷结果不进判定**（第一印象天然苛刻，其卡住/靠猜进登记表但不阻断），backlog 非空不影响。
+   - 收敛轮：bash 真跑 `node <godw-design-check 技能目录>/scripts/check.mjs <实例> --phase <对应阶段> --registry` 原样贴 JSON——`registry.passCandidate`（open blockers/界内 gaps/靠猜 三清零）是判定线的机器底座；**PASS** = passCandidate=true + 本轮新 blockers = 0（**不论哪个评委发现，含新鲜评委**）+ 回归评委核心考题重跑答卷**卡住=0 且无新靠猜**。**新鲜评委的答卷结果不进判定**（第一印象天然苛刻，其卡住/靠猜进登记表但不阻断），backlog 非空不影响。
    - **prd 模式同口径**（PRD 卡住=0、靠猜清零）；`[NEEDS CLARIFICATION]` 条目不阻断（进登记表交编排层呈报用户），其 blockers/gaps 正常判定。
+   - 登记表表格结构固定五列 `| 编号 | 类型 | 问题 | 来源角色/轮次 | 状态 |`，类型取值 blocker / gap(界内) / gap(靠猜) / gap(长尾) / suggestion，状态取值 open / fixed(RN) / 已吸收→GR-xx / backlog——脚本按此解析，结构漂移会被 registry-status-empty 抓到。
 8. **修订清单三轨**：blockers 修工件（按位置去重）；界内 gaps 走回流；靠猜条目补写文档（修完下轮重答该题）；简洁审查官确认的过度设计进砍单（砍出回归由下轮回归评委抓）；suggestions 择优（不收的记一句理由）。
 9. 写报告（调用方指定路径）：
 

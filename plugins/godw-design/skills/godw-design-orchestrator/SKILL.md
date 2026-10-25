@@ -1,6 +1,6 @@
 ---
 name: godw-design-orchestrator
-description: 设计流水线主编排（godw-design 家族唯一入口）：四阶段流水线——阶段1 原始需求（人在环：clarify-goal → godw-design-requirement-formalize → 原始需求.md 冻结）→ 阶段2 4A架构+模型（2-a 备料〔架构腿+身份卡+考题+参考资料 INDEX 建账〕/ 2-b 成文〔四文档+detail.json+model.c4，LikeC4 生成架构图〕/ 2-c 门1 文字层验收）→ 阶段3 PRD（3-a prd-compose 成文〔EARS 验收标准，按功能模块分文件〕/ 3-b 对抗审查验收）→ 阶段4 原型系统（4-a 可交互原型 / 4-b 合验门〔对照 PRD 走原型+walk.mjs 证据〕/ 4-c 收口归档）。参数化调用：start|document|prd|prototype 四档（后三档 🤖/goal），无参数=按实例目录实况自动识别所处阶段（state.md 对账，以目录为准）推进到本阶段末停；冻结门（阶段1 定稿）人在环不自动跨。修订循环内嵌 godw-design-check（真跑贴 ranAt 凭证，不耗评委轮次），评审收敛靠锚定卡+身份卡+两期节奏，跨层一致靠 ID 贯穿+需求追踪表。产物落 design/change/{日期}_{设计名}/，完成后自动归档 design/archive/。用户要做软件需求设计的架构文档、PRD 与低保真原型时使用。
+description: 设计流水线主编排（godw-design 家族唯一入口）：四阶段流水线——阶段1 原始需求（人在环：clarify-goal → godw-design-requirement-formalize → 原始需求.md 冻结）→ 阶段2 4A架构+模型（2-a 备料〔架构腿+身份卡+考题+参考资料 INDEX 建账〕/ 2-b 成文〔四文档+detail.json+model.c4，LikeC4 生成架构图〕/ 2-c 门1 文字层验收）→ 阶段3 PRD（3-a prd-compose 成文〔EARS 验收标准，按功能模块分文件〕/ 3-b 对抗审查验收）→ 阶段4 原型系统（4-a 可交互原型+manifest.json / 4-b 合验门〔对照 PRD 走原型+walk.mjs 证据+crawl 死链懒惰扫描+coverage 覆盖核对〕/ 4-c 收口归档）。参数化调用：start|document|prd|prototype 四档（后三档 🤖/goal），无参数=按实例目录实况自动识别所处阶段（state.md 对账，以目录为准）推进到本阶段末停；冻结门（阶段1 定稿）人在环不自动跨。**0.6.0 门禁全覆盖**：每阶段完成门机械化（check 五阶段 requirement/split/document/prd/proto + walk crawl/coverage），机械 FAIL 自动派修订子 Agent 循环不耗评委轮次（Token 不设限修到达标）；hooks 冻结围栏+收工门系统级兜底；mmdc 已移除（图校验走 check 源码级+likec4 gen 防漂移）。评审收敛靠锚定卡+身份卡+两期节奏，跨层一致靠 ID 贯穿+需求追踪表。产物落 design/change/{日期}_{设计名}/，完成后自动归档 design/archive/。用户要做软件需求设计的架构文档、PRD 与低保真原型时使用。
 ---
 
 # 设计流水线编排器 → 四阶段：原始需求 → 4A架构 → PRD → 原型系统（三门验收，全链进化）
@@ -125,22 +125,24 @@ description: 设计流水线主编排（godw-design 家族唯一入口）：四�
 1. 路径一：调同插件 **godw-design-requirement-formalize**（输入 `.agents/GOAL.md`，输出实例 `原始需求.md` + `术语.md`，FR/NFR 编号；其完备性关卡不过则停线补澄清）。
 2. 实例命名：建目录前 agent 根据需求提议设计名、请用户首肯；目录 `{YYYY-MM-DD}_{设计名}` 落 `design/change/`（子目录懒创建）。
 3. 重测（路径二）时：`design/change/` 下已有**同设计名的未完成旧轮** → 停下提示用户处置（继续旧轮/人工删除/确认并存）后再建新实例。
-4. **阶段末尾=冻结门**：原始需求.md 定稿须用户确认，确认前不放行（全流水线唯一人在环门）。
+4. **完成门机械化**：formalize 完成后 **bash 真跑 `godw-design-check --phase requirement` 并原样贴 JSON**（七章节骨架/编号连续/In-Out 非空/占位残留/GOAL 已删/角色四列；不过 → 自动派修订子 agent 循环修到全绿，不问用户不耗任何轮次）。
+5. **阶段末尾=冻结门**：原始需求.md 定稿须用户确认，确认前不放行（全流水线唯一人在环门）。
 
 ### 阶段2 4A架构 + 模型
 
-**2-a 备料**：调同插件 **godw-design-requirement-split**——原始需求.md 定向拆解为架构腿（`history/需求-架构输入.md`）+ **产出实例根 `身份卡.md`**（身份卡组+考题六类+身份×题矩阵，只从原始需求派生、产出即冻结，先于 2-b——出题的人不看答案）+ **参考资料建账 `参考资料/INDEX.md`**。架构腿「待澄清」非空时：能按业界默认安全裁决的记 DECISIONS.md 放行；影响成败的硬缺口停止呈报。
+**2-a 备料**：调同插件 **godw-design-requirement-split**——原始需求.md 定向拆解为架构腿（`history/需求-架构输入.md`）+ **产出实例根 `身份卡.md`**（身份卡组+考题六类+身份×题矩阵，只从原始需求派生、产出即冻结，先于 2-b——出题的人不看答案）+ **参考资料建账 `参考资料/INDEX.md`**。**完成门机械化**：split 完成后 bash 真跑 `godw-design-check --phase split`（架构腿五节/身份卡四句齐全六类不缺类/矩阵对齐/找茬者挂 FR/INDEX 行数对账/腿角色 ⊆ §2∪推导；不过自动派修订循环修到全绿）。架构腿「待澄清」非空时：能按业界默认安全裁决的记 DECISIONS.md 放行；影响成败的硬缺口停止呈报。
 
-**2-b 成文**：读 `原始需求.md` + `history/需求-架构输入.md`（**document 档开工先做环境预检**：`likec4 --version` 与 `mmdc --version` 可用，缺则停线提示 `npm i -g likec4` / `npm i -g @mermaid-js/mermaid-cli`）：
+**2-b 成文**：读 `原始需求.md` + `history/需求-架构输入.md`（**document 档开工先做环境预检**：`likec4 --version` 可用，缺则停线提示 `npm i -g likec4`）：
 1. **先建 `model.c4`**（LikeC4 模型源）：角色=actor、本系统与外部系统、功能模块=容器、关键依赖关系；`specification` 自定义元素类型；views：系统上下文 + 容器切分。**易错点（实测）**：元素 id 必须 ASCII（字母开头，中文写进标题引号——`actor applicant "申请人"`）；自由文本必须加引号（`title "中文"`）；`include *` 只在 `view of <元素>` 作用域视图合法，无作用域视图显式列元素。
-2. `likec4 validate` 过 → `likec4 gen mermaid` 生成上下文/容器图 → 嵌入 业务架构§5 / 应用架构§1（**这两类图不手写**）；人看视图用 `likec4 export png` / `likec4 serve`。
+2. `likec4 validate` 过 → `likec4 gen mermaid` 生成上下文/容器图 → 嵌入 业务架构§5 / 应用架构§1（**这两类图不手写**）；人看视图用 `likec4 export png` / `likec4 serve`。**模型变更后必须重新生成嵌入**——check 的 gen 防漂移规则会重跑 gen 比对文档块，漂移即打回。
 3. **先建 `需求追踪.md` 骨架**（从原始需求抄 FR/NFR 清单，含 PRD 列「待PRD」），成文过程逐条挂链；四文档节标题挂 `[FR-xx]` 标注。
-4. 严格按 [references/arch-templates.md](references/arch-templates.md) 撰写四文档 + `detail.json`（字段级明细唯一事实源，正文同构字段表=模板违规）。**手写时序图（业务流程人机接力）必须经 godw-toolkit:design-doc-mermaid 的 mmdc 渲染校验真跑，报错回喂重修后再入文**——Text→Mermaid 是实测最难格式，不信任未编译的图。
+4. 严格按 [references/arch-templates.md](references/arch-templates.md) 撰写四文档 + `detail.json`（字段级明细唯一事实源，正文同构字段表=模板违规）。手写图（时序/流程/ER/状态）**不引入 mmdc 渲染**——成文后 `godw-design-check --phase document` 做源码级校验（图型合法/引号配对/参与者与页面节点名单对齐/时序图分叉≤2），报错回喂重修后再送门1。
 5. 架构质量自查（对应架构评审官七维，先自己过一遍再送审）。
 
 **2-c 门1·文字层**：调同插件 **godw-design-gate** 模式 `doc`（动态用户评委按冻结身份卡+考题以**答卷表**验收〔能做/卡住/靠猜〕+ 开发者复现官 + 架构评审官 + 简洁审查官；探索期→收敛期两段节奏）。
 
 - **修订循环**：FAIL → 按三轨清单修订（blockers 修工件；界内 gaps 走回流协议吸收+GR 编号；suggestions 择优）→ 修订纪律：先改 detail.json/model.c4 再改正文、按追踪表受影响行同步、涉术语同步术语.md、**每次替换/编辑后必须 grep 复核命中结果再继续**（二轮实测三次静默 no-op 教训，锚点漂移即停手重定位）→ **调同插件 godw-design-check 校验——修订子 agent 必须 bash 真跑并原样贴 JSON 输出（ranAt 晚于最新修订才有效）；不过打回修订，不耗评委轮次** → 过 → 重验（回归+新鲜评委）。**安全上限 5 轮**，PASS 即收敛存快照 gate1-pass；超限停止呈报。
+- **机械修订自动化（0.6.0）**：check/crawl 类机械门禁 FAIL → 编排器**自动派修订子 agent 循环**（修→真跑 check→贴凭证→不过再修），**不耗评委轮次、不问用户**；机械循环上限 10 次仍不过 → 停线呈报根因。Token 不设限——修到达标为止，省轮次不省质量。
 - 过门不冻结：后续阶段反馈若打到架构文档照改（见 4-b 门间联动）。
 
 ### 阶段3 PRD
@@ -155,11 +157,11 @@ description: 设计流水线主编排（godw-design 家族唯一入口）：四�
 ### 阶段4 原型系统
 
 **4-a 生产**：读 `4A架构/detail.json`（**只消费它，不重读四文档**）+ `PRD/`（功能清单与 AC 是原型需求的直接来源；原 brief 已退役，页面清单=PRD 总览+模块功能清单，可见性矩阵=detail pages.roles，模拟数据方案=detail seedData）：
-1. **生成**（委托 godw-html lo-fi 线，按其 make-html 的 lo-fi 分流）：结构未定先 **html-wireframe** 出 2-3 方向；定稿走 **html-prototype** 出可交互交付——**默认多文件组织**：`原型系统/` 下 `index.html`（壳+路由+账号切换）+ `pages/`（每页一个模块）+ `data.js`（JSON 模拟数据库）+ `assets/`（公共样式脚本）；页面 ≥6 或业务复杂**必须**多文件，≤5 页小场景可单文件 prototype.html。无论组织形态：**不是静态页**——模拟库跳转全通、状态真实流转、角色切换可见性随矩阵变化；data.js 独立使评委与 check 可直接读模拟数据。
+1. **生成**（委托 godw-html lo-fi 线，按其 make-html 的 lo-fi 分流）：结构未定先 **html-wireframe** 出 2-3 方向；定稿走 **html-prototype** 出可交互交付——**默认多文件组织**：`原型系统/` 下 `index.html`（壳+路由+账号切换）+ `pages/`（每页一个模块）+ `data.js`（JSON 模拟数据库）+ `assets/`（公共样式脚本）；页面 ≥6 或业务复杂**必须**多文件，≤5 页小场景可单文件 prototype.html。无论组织形态：**不是静态页**——模拟库跳转全通、状态真实流转、角色切换可见性随矩阵变化；data.js 独立使评委与 check 可直接读模拟数据。**必产 `原型系统/manifest.json`**：`{"pages":[{"id"(=detail pages.id),"file","route","roles"(可见角色),"ucIds"(该页承载的用例 UC-xx)}]}`——三向一致性（manifest↔detail pages↔实际文件）由 check 机械核对，是 4-b 覆盖核对的基准。
 2. **填追踪表**：4-a 完成后需求追踪.md 原型页面列全部填满（不再允许「待原型」）。
-3. 原型自检：detail pages 全落页、flows 每步可走通、状态机全状态可达；AC 覆盖自查（PRD 每条 AC 对应原型可演示行为）。
+3. **自检机械化（0.6.0）**：bash 跑 `node <godw-design-gate 技能目录>/scripts/walk.mjs crawl <原型系统/> --out history/evidence/crawl-latest.json`（全站死链+懒惰模式〔「参考xxx文档」占位/待实现/alert 桩/假链〕+资源失败）+ `node <godw-design-check 技能目录>/scripts/check.mjs <实例> --phase proto --crawl history/evidence/crawl-latest.json`；任一 FAIL → 自动派修订子 agent 循环修到全绿（不问用户）；flows 每步可走通/状态机全状态可达/AC 覆盖自查仍按原嘱咐人工核对（交 4-b 评委兜底）。
 
-**4-b 合验门·原型层**：调 **godw-design-gate** 模式 `prototype`（开工先 `node <godw-design-gate 技能目录>/scripts/walk.mjs doctor` 环境预检，缺 playwright/浏览器 → 停线提示 `npm i playwright` 等装齐，**不降级成推演**；动态用户评委按冻结身份卡+考题**真跑走查器出证据**，含管理员/运维管理面；**对照 PRD 验收：PRD 写了原型没做 = blocker，PRD 没写但原型做了 = 靠猜类缺陷**）。FAIL → **修改低保真同步修改 PRD 与文档**（不必吝惜 token），问题根源在哪层改哪层：纯实现改原型；PRD 缺陷改 PRD（下轮 3-b 复验对应题）；设计问题改 4A架构（先 detail 后正文）；需求问题走回流。**门间联动**：动了 `4A架构/` 或 `PRD/` 则该轮 **godw-design-check 必跑**（phase 相应 arch/prd）+ 回归评委任务书附「受影响 FR/GR 链一致性」附带验证；**仅当改动触及核心不变量或边界规则时回炉 2-c 重验**（防死循环）。安全上限 5 轮，PASS 存快照 gate2-pass/。
+**4-b 合验门·原型层**：调 **godw-design-gate** 模式 `prototype`（开工先 `node <godw-design-gate 技能目录>/scripts/walk.mjs doctor` 环境预检，缺 playwright/浏览器 → 停线提示 `npm i playwright` 等装齐，**不降级成推演**；4-a 的 crawl 报告必须全绿，否则先回机械修订循环；动态用户评委按冻结身份卡+考题**真跑走查器出证据**，场景 JSON 每题须带 `covers:[UC-xx]`（该题演示的用例），含管理员/运维管理面；**对照 PRD 验收：PRD 写了原型没做 = blocker，PRD 没写但原型做了 = 靠猜类缺陷**）。评委答卷收齐后编排层跑 `node walk.mjs coverage <原型系统/manifest.json> <history/evidence/>` **覆盖核对：每 manifest 页 ≥1 次 goto、每角色的 UC 全集被场景 covers 覆盖**——缺口即 FAIL 打回补场景。FAIL → **修改低保真同步修改 PRD 与文档**（不必吝惜 token），问题根源在哪层改哪层：纯实现改原型；PRD 缺陷改 PRD（下轮 3-b 复验对应题）；设计问题改 4A架构（先 detail 后正文）；需求问题走回流。**门间联动**：动了 `4A架构/` 或 `PRD/` 则该轮 **godw-design-check 必跑**（phase 相应 document/prd）+ 回归评委任务书附「受影响 FR/GR 链一致性」附带验证；**仅当改动触及核心不变量或边界规则时回炉 2-c 重验**（防死循环）。安全上限 5 轮（机械修订循环另计不耗轮次），PASS 存快照 gate2-pass/。
 
 **4-c 收口**：汇报 + 自动归档：
 - 三门各轮成绩（登记表收敛曲线）、产物路径（原始需求 / 身份卡 / 需求追踪 / 4A架构含 model.c4 / PRD / 原型系统 / 验收报告）、DECISIONS 裁决清单、**backlog 呈报**、**「建议并入原始需求的 gap 清单」呈报**、**参考资料未内化项呈报**、遗留事项。
@@ -168,12 +170,13 @@ description: 设计流水线主编排（godw-design 家族唯一入口）：四�
 ## 无人值守纪律（贯穿全程）
 
 1. **不问用户**：原始需求定稿即授权（阶段1 冻结门除外——那是全流水线唯一人在环点）；歧义当场裁决记 DECISIONS.md，收口如实汇报。
-2. **迭代即常态**：三门是提前预演生产版本运维——宁可门内多打死几轮，不让问题漏到下一段。但**收敛≠零问题**：登记表清零即收敛，长尾进 backlog，不为清空 backlog 无限加料（简洁是质量维度）。
-3. **超限即停**：任一门 5 轮不收敛 → 停止呈报（多为需求矛盾/边界争议），不带病放行。
-4. **完成即停**：三门全过即收口，不擅自扩展（不主动出高保真、不写真实后端）。
+2. **机械门禁自动修（0.6.0）**：check/crawl/coverage 类机械 FAIL 一律自动派修订子 agent 循环（上限 10 次，不耗评委轮次不问用户）；评委语义 FAIL 走人工三轨修订。**Token 不设限**——用户口径「能交给 Agent 干的就交给 Agent 干，不要怕 Token 消耗，干好最重要」。
+3. **迭代即常态**：三门是提前预演生产版本运维——宁可门内多打死几轮，不让问题漏到下一段。但**收敛≠零问题**：登记表清零即收敛，长尾进 backlog，不为清空 backlog 无限加料（简洁是质量维度）。
+4. **超限即停**：任一门 5 轮不收敛 → 停止呈报（多为需求矛盾/边界争议），不带病放行。
+5. **完成即停**：三门全过即收口，不擅自扩展（不主动出高保真、不写真实后端）。
 
 ## 边界
 
-- 只管「设计流水线怎么走、质量门怎么守」。`.agents/GOAL.md` 的定稿归 godw-goal 域；原始需求.md 由本插件 formalize 产出后冻结（回流协议 v2 是设计侧唯一进化通道）；HTML 制作方法学归 godw-html；Mermaid/LikeC4 图规范归 godw-toolkit 的 design-doc-mermaid 与本插件 model.c4 规范；评审协议细节归 godw-design-gate；一致性校验归 godw-design-check——本技能只做衔接与守门。
-- 依赖按名调用的插件（须已安装启用）：godw-goal（clarify-goal 前置）、godw-html（lo-fi 线）、godw-toolkit（design-doc-mermaid）。
-- 外部工具（document 档预检缺则停线提示安装）：`likec4`（模型校验与出图，`npm i -g likec4`）、`mmdc`（时序图编译校验，`npm i -g @mermaid-js/mermaid-cli`）、原型门另需目标项目 `npm i playwright`。
+- 只管「设计流水线怎么走、质量门怎么守」。`.agents/GOAL.md` 的定稿归 godw-goal 域；原始需求.md 由本插件 formalize 产出后冻结（回流协议 v2 是设计侧唯一进化通道，hooks 冻结围栏兜底拦截）；HTML 制作方法学归 godw-html；Mermaid 图型分工规范归 godw-toolkit 的 design-doc-mermaid（图校验本插件自查：check 源码级 + likec4 gen 防漂移，不依赖 mmdc）；评审协议细节归 godw-design-gate；一致性校验归 godw-design-check——本技能只做衔接与守门。
+- 依赖按名调用的插件（须已安装启用）：godw-goal（clarify-goal 前置）、godw-html（lo-fi 线）、godw-toolkit（design-doc-mermaid 图型分诊）。
+- 外部工具（document 档预检缺则停线提示安装）：`likec4`（模型校验/出图/防漂移，`npm i -g likec4`）；原型门另需目标项目 `npm i playwright`。mmdc 已于 0.6.0 移除，不再是依赖。

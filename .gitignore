@@ -6,3 +6,4 @@
 !/reference/case-studies/
 node_modules/
 __pycache__/
+.zcode/plans/

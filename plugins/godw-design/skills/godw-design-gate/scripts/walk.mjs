@@ -6,13 +6,15 @@
 // 用法:
 //   node walk.mjs doctor                 # 环境预检；退出码 0=可用，2=缺依赖（附安装指引，不降级）
 //   node walk.mjs <scenario.json>        # 执行场景；退出码 0=完整跑完并出证据，2=走查器自身故障
+//   node walk.mjs crawl <原型路径> [--out <报告.json>]   # 全站爬取：死链+懒惰模式+资源失败；死链/懒惰>0 → exit 1
+//   node walk.mjs coverage <manifest.json> <evidence根>  # 场景覆盖核对：每页≥1 goto、每角色 UC 全覆盖；缺口 → exit 1
 //
 // 场景 JSON:
 // {
 //   "prototype": "<原型系统/ 目录或 index.html 绝对路径>",
 //   "evidence":  "<证据输出目录（如 history/evidence/gate-proto-3/<角色>）绝对路径>",
 //   "role": "<角色名>",
-//   "exams": [ { "qid": "T-01", "steps": [
+//   "exams": [ { "qid": "T-01", "covers": ["UC-01"], "steps": [
 //       { "action": "goto", "url": "index.html" },
 //       { "action": "click", "target": "text=提交" },
 //       { "action": "fill", "target": "#amount", "value": "100" },
@@ -25,7 +27,7 @@
 // 环境变量: WALK_TIMEOUT_MS(单步超时，默认 8000)；WALK_CONCURRENCY(可选自限并发数，默认不限——并发自然上限=评委波次)
 import { createRequire } from 'node:module';
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, statSync, readdirSync } from 'node:fs';
-import { join, resolve, dirname, extname, basename } from 'node:path';
+import { join, resolve, dirname, extname, basename, normalize } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import http from 'node:http';
 import os from 'node:os';
@@ -164,7 +166,7 @@ async function run(scenarioPath) {
     for (const ex of sc.exams) {
       const dir = join(evidence, sanitize(sc.role), sanitize(ex.qid));
       mkdirSync(dir, { recursive: true });
-      const exam = { qid: ex.qid, dir, steps: [], pageErrors: [], result: 'pass' };
+      const exam = { qid: ex.qid, ...(Array.isArray(ex.covers) ? { covers: ex.covers } : {}), dir, steps: [], pageErrors: [], result: 'pass' };
       const page = await context.newPage();
       page.setDefaultTimeout(TIMEOUT);
       page.on('pageerror', e => exam.pageErrors.push(`pageerror: ${e.message}`));
@@ -233,9 +235,192 @@ async function run(scenarioPath) {
   process.exit(0);
 }
 
+// ---------------- crawl ----------------
+// 全站爬取：静态死链预检 + 浏览器运行态扫描（懒惰模式/资源失败）+ manifest 一致性。
+// 机械核对（编排层职责，非评委判断）；死链/懒惰>0 → exit 1。
+const LAZY_TEXT = [
+  [/参考[^\n"{]{0,8}文档|详见[^\n"{]{0,14}(?:文档|PRD|架构|设计稿)/, '「参考文档」类占位'],
+  [/待实现|敬请期待|coming\s+soon|暂未提供|占位符/, '未实现占位'],
+  [/TODO/, 'TODO 残留'],
+];
+
+async function crawlSub(argv) {
+  const outIdx = argv.indexOf('--out');
+  const out = outIdx !== -1 ? resolve(argv[outIdx + 1]) : null;
+  const target = argv.find(a => !a.startsWith('--'));
+  if (!target) fail('crawl 用法: node walk.mjs crawl <原型路径> [--out 报告.json]');
+  const protoPath = resolve(target);
+  const root = existsSync(protoPath) && statSync(protoPath).isDirectory() ? protoPath : dirname(protoPath);
+  if (!existsSync(root)) fail(`原型路径不存在: ${protoPath}`);
+
+  const report = { ranAt: new Date().toISOString(), prototype: root, pages: [], deadLinks: [], lazyHits: [], resourceErrors: [], manifestCheck: null, note: '' };
+
+  // 1) 静态预检：枚举 html，解析 href → 死链 + href="#" 假链 + onclick alert 桩
+  const htmlFiles = [];
+  (function walkDir(d) {
+    for (const f of readdirSync(d)) {
+      const fp = join(d, f);
+      if (statSync(fp).isDirectory()) { if (f !== '.walk-locks') walkDir(fp); continue; }
+      if (f.endsWith('.html')) htmlFiles.push(fp);
+    }
+  })(root);
+  report.pages = htmlFiles.map(p => p.slice(root.length + 1));
+  const norm = (h) => { let s = h.split('#')[0].split('?')[0].replace(/^\.\//, ''); return s; };
+  for (const fp of htmlFiles) {
+    const rel = fp.slice(root.length + 1);
+    const text = readFileSync(fp, 'utf8');
+    for (const m of text.matchAll(/<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>/gi)) {
+      const href = m[1].trim();
+      const tag = m[0];
+      if (/^(https?:|mailto:|tel:)/i.test(href)) continue;
+      if (/^javascript:/i.test(href)) continue;
+      if (/onclick\s*=\s*["'][^"']*alert\s*\(/i.test(tag)) { report.lazyHits.push({ page: rel, pattern: 'alert 桩', excerpt: tag.slice(0, 80) }); continue; }
+      if (href === '#' || href === '#/') { report.lazyHits.push({ page: rel, pattern: '假链 href="#"', excerpt: tag.slice(0, 80) }); continue; }
+      let t = norm(href);
+      if (!t) continue;
+      // 相对路径按页面自身目录解析（../ 回上级），并做根目录约束
+      let file = normalize(join(root, dirname(rel), t));
+      if (!file.startsWith(root)) { report.deadLinks.push({ page: rel, href, target: t, error: '链接越出原型根目录' }); continue; }
+      if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
+      if (!existsSync(file)) report.deadLinks.push({ page: rel, href, target: t });
+    }
+  }
+
+  // 2) 运行态扫描（playwright 可用才做；缺失降级为仅静态并注明）
+  const { pw } = loadPlaywright();
+  if (!pw) {
+    report.note = 'playwright 未安装：本次仅静态扫描，运行态懒惰文案/资源失败未覆盖（npm i playwright 后重跑）';
+  } else {
+    let channel;
+    for (const c of ['chrome', 'msedge', undefined]) {
+      try { const b = await pw.chromium.launch(c ? { channel: c, headless: true } : { headless: true }); await b.close(); channel = c || 'bundled-chromium'; break; }
+      catch { /* next */ }
+    }
+    if (!channel) { report.note = '无可用浏览器：本次仅静态扫描'; }
+    else {
+      const { srv, port } = await startStaticServer(root);
+      const base = `http://127.0.0.1:${port}/`;
+      const browser = await pw.chromium.launch(channel.startsWith('bundled') ? { headless: true } : { channel, headless: true });
+      const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+      try {
+        for (const rel of report.pages) {
+          const page = await context.newPage();
+          const errs = [];
+          page.on('requestfailed', r => { if (!r.url().includes('favicon')) errs.push(`${rel}: ${r.url()}`); });
+          try {
+            await page.goto(base + rel, { waitUntil: 'load', timeout: TIMEOUT });
+            const bodyText = (await page.locator('body').innerText({ timeout: 3000 }).catch(() => '')) || '';
+            for (const [re, label] of LAZY_TEXT) {
+              const m = bodyText.match(re);
+              if (m) report.lazyHits.push({ page: rel, pattern: label, excerpt: m[0].slice(0, 60) });
+            }
+            for (const a of await page.locator('a[onclick*=alert]').all()) {
+              const txt = (await a.innerText().catch(() => '')).slice(0, 30);
+              report.lazyHits.push({ page: rel, pattern: 'alert 桩', excerpt: `链接「${txt}」点击弹 alert` });
+            }
+          } catch (e) {
+            report.deadLinks.push({ page: rel, href: rel, target: rel, error: String(e.message).split('\n')[0] });
+          }
+          report.resourceErrors.push(...errs.slice(0, 20));
+          await page.close();
+        }
+      } finally { await browser.close().catch(() => {}); srv.close(); }
+    }
+  }
+
+  // 3) manifest 一致性（存在才核对；extraHtml 仅提示——壳页/辅助页允许不在 manifest）
+  const mfPath = join(root, 'manifest.json');
+  if (existsSync(mfPath)) {
+    try {
+      const mf = JSON.parse(readFileSync(mfPath, 'utf8'));
+      const files = new Set(report.pages);
+      const missing = [], extra = [];
+      for (const p of mf.pages || []) if (!files.has(p.file)) missing.push(p.file);
+      for (const f of files) if (!(mf.pages || []).some(p => p.file === f)) extra.push(f);
+      report.manifestCheck = { manifestPages: (mf.pages || []).length, crawled: report.pages.length, missingFiles: missing, extraHtml: extra };
+    } catch (e) { report.manifestCheck = { error: `manifest.json 解析失败: ${e.message}` }; }
+  }
+
+  const bad = report.deadLinks.length || report.lazyHits.length;
+  const json = JSON.stringify({ ok: !bad, deadLinks: report.deadLinks.length, lazyHits: report.lazyHits.length, ...report }, null, 2);
+  if (out) { mkdirSync(dirname(out), { recursive: true }); writeFileSync(out, json); }
+  console.log(json);
+  process.exit(bad ? 1 : 0);
+}
+
+// ---------------- coverage ----------------
+// 场景覆盖核对：每 manifest 页 ≥1 goto；每角色的 UC 全集被场景 covers 声明覆盖。缺口 → exit 1。
+async function coverageSub(argv) {
+  const mfPath = resolve(argv[0] || '');
+  const evRoot = resolve(argv[1] || '');
+  if (!existsSync(mfPath)) fail(`manifest 不存在: ${mfPath}`);
+  if (!existsSync(evRoot)) fail(`证据根不存在: ${evRoot}`);
+  const mf = JSON.parse(readFileSync(mfPath, 'utf8'));
+
+  const traces = [];
+  (function walkDir(d) {
+    for (const f of readdirSync(d)) {
+      const fp = join(d, f);
+      if (statSync(fp).isDirectory()) { walkDir(fp); continue; }
+      if (/^trace-.*\.json$/.test(f)) { try { traces.push(JSON.parse(readFileSync(fp, 'utf8'))); } catch { /* 跳过坏文件 */ } }
+    }
+  })(evRoot);
+  if (!traces.length) fail(`证据根下无 trace-*.json：${evRoot}`);
+
+  const visited = new Set();
+  const coversByRole = {};
+  const allUc = new Set();
+  for (const t of traces) {
+    for (const ex of t.exams || []) {
+      for (const c of ex.covers || []) {
+        (coversByRole[t.role] = coversByRole[t.role] || new Set()).add(c);
+      }
+      for (const st of ex.steps || []) {
+        if (st.action === 'goto' && st.ok) {
+          const p = String(st.target || '').replace(/^\//, '').split('?')[0].split('#')[0];
+          if (p) visited.add(p);
+          if (st.target && String(st.target).startsWith('http')) {
+            try { const u = new URL(st.target); visited.add(u.pathname.replace(/^\//, '')); } catch { /* 忽略 */ }
+          }
+        }
+      }
+    }
+  }
+  for (const p of mf.pages || []) for (const u of p.ucIds || []) allUc.add(u);
+
+  const pagesNotVisited = [];
+  for (const p of mf.pages || []) {
+    const hit = [...visited].some(v => v === p.file || v === p.file.replace(/\.html$/, '') || v.startsWith(p.file.replace(/\.html$/, '') + '/'));
+    if (!hit) pagesNotVisited.push(p.file);
+  }
+  const roleUcGaps = [];
+  const roleNeeded = {};
+  for (const p of mf.pages || []) {
+    for (const r of p.roles || []) {
+      (roleNeeded[r] = roleNeeded[r] || new Set());
+      for (const u of p.ucIds || []) roleNeeded[r].add(u);
+    }
+  }
+  for (const [role, needed] of Object.entries(roleNeeded)) {
+    const covered = coversByRole[role] || new Set();
+    const gaps = [...needed].filter(u => !covered.has(u));
+    if (gaps.length) roleUcGaps.push({ role, missing: gaps });
+  }
+  const unknownCovers = [];
+  for (const c of new Set([...Object.values(coversByRole).flatMap(s => [...s])])) if (!allUc.has(c)) unknownCovers.push(c);
+
+  const result = { ranAt: new Date().toISOString(), manifest: mfPath, traces: traces.length, pagesVisited: visited.size,
+    pagesNotVisited, roleUcGaps, unknownCovers, pass: !pagesNotVisited.length && !roleUcGaps.length && !unknownCovers.length };
+  console.log(JSON.stringify(result, null, 2));
+  process.exit(result.pass ? 0 : 1);
+}
+
 const arg = process.argv[2];
 if (!arg || arg === '-h' || arg === '--help') {
-  console.log('用法: node walk.mjs doctor | node walk.mjs <scenario.json>');
+  console.log('用法: node walk.mjs doctor | crawl <原型路径> [--out 报告.json] | coverage <manifest.json> <evidence根> | node walk.mjs <scenario.json>');
   process.exit(arg ? 0 : 1);
 }
-(arg === 'doctor' ? doctor() : run(resolve(arg))).catch(e => fail(e.stack || e.message));
+(arg === 'doctor' ? doctor()
+  : arg === 'crawl' ? crawlSub(process.argv.slice(3))
+  : arg === 'coverage' ? coverageSub(process.argv.slice(3))
+  : run(resolve(arg))).catch(e => fail(e.stack || e.message));

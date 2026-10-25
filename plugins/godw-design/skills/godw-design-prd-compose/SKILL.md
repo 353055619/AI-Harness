@@ -1,6 +1,6 @@
 ---
 name: godw-design-prd-compose
-description: PRD 成文原子技能（godw-design 家族）：阶段3-a——读实例 原始需求.md + 4A架构/detail.json + 业务架构§3.0 用例总览 + 身份卡.md 考题，产出 PRD/ 目录（PRD-<设计名>.md 总览 + 每功能模块 PRD-<模块名>.md）。按 prd-template 成文：EARS 验收标准（WHEN/IF/WHILE…SHALL，每功能≥1 条异常 AC）、Assumptions 与 [NEEDS CLARIFICATION] 双通道（不许编造）、禁词自查、单模块 AC ≤30、字段只引 detail.json（双写红线）。只产出 PRD，不进原型；完成后 bash 真跑 godw-design-check --phase prd 并原样贴 JSON 输出。
+description: PRD 成文原子技能（godw-design 家族）：阶段3-a——读实例 原始需求.md + 4A架构/detail.json + 业务架构§3.0 用例总览 + 身份卡.md 考题，产出 PRD/ 目录（PRD-<设计名>.md 总览 + 每功能模块 PRD-<模块名>.md）。按 prd-template 成文：EARS 验收标准（WHEN/IF/WHILE/WHERE/THE…SHALL，**AC 行末挂关联 FR/GR 列——每条 FR ≥1 条 AC、每模块 ≥1 条 IF 型异常 AC、编号连续，全部机器门禁**）、Assumptions 与 [NEEDS CLARIFICATION] 双通道（不许编造）、禁词自查、单模块 AC ≤30、字段只引 detail.json（双写红线）。只产出 PRD，不进原型；完成后 bash 真跑 godw-design-check --phase prd 并原样贴 JSON 输出。
 ---
 
 # PRD 成文 → PRD/（总览 + 每功能模块一个文件）
@@ -21,7 +21,7 @@ description: PRD 成文原子技能（godw-design 家族）：阶段3-a——读
 
 1. **模板严格**：按 [references/prd-template.md](references/prd-template.md) 两套骨架成文；模板头部注释是给成文 agent 的守则，逐条遵守。
 2. **双写红线**：字段级明细只引 detail.json（如「金额——detail.entities.申请单.amount」）；业务规则本体在业务架构（PRD 引用规则编号，只写界面如何体现）；状态机在信息架构（PRD 只写界面呈现）。
-3. **AC 全 EARS**：每条 `AC-<模块名>-NNN` 必须以 WHEN/IF/WHILE/WHERE/THE 开头且含 SHALL，一句一个可判对错的断言；单模块 ≤30 条；**每功能至少一条异常 AC**（`IF <条件> THEN THE 系统 SHALL <显示什么，显示在哪>`），异常呈现引用总览§3 全局状态清单。
+3. **AC 全 EARS + FR 挂接（0.6.0 机器门禁）**：每条 `AC-<模块名>-NNN` 必须以 WHEN/IF/WHILE/WHERE/THE 开头且含 SHALL，一句一个可判对错的断言，**行末挂关联 FR/GR 列**；check 机器四查——每条 AC 挂 ≥1 FR/GR、每条 FR 至少被 1 条 AC 覆盖、每模块 ≥1 条 IF 型异常 AC、编号模块内连续；单模块 ≤30 条；异常呈现引用总览§3 全局状态清单。
 4. **用户故事具体化**：角色用岗位名（「采购员」不是「用户」）；每功能附「为什么是这个优先级」与「如何独立验证」。
 5. **Non-Goals 带理由**：本模块/本功能不做的每条说明为什么不做。
 6. **歧义双通道**：能定默认 → 写进 Assumptions（每条带依据）；定不了 → 正文原位 `[NEEDS CLARIFICATION: 原因]` 并汇总进开放问题表——**禁止编造补位**。

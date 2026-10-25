@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/freeze-fence.mjs\"",
+            "timeout": 10,
+            "statusMessage": "godw-design 冻结围栏"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/stop-gate.mjs\"",
+            "timeout": 10,
+            "statusMessage": "godw-design 收工门"
+          }
+        ]
+      }
+    ]
+  }
+}
