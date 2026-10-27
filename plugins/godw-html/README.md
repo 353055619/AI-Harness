@@ -1,6 +1,6 @@
 # godw-html
 
-godw html 制作域插件（v0.4.0，2026-10-11 设立：html 制作能力自 godw-toolkit/godw-report 的格式调度中独立成域；2026-10-15 增设 lo-fi 线支撑 godw-design 原型段；2026-10-17 成品线规范按页面类型分工、裁剪 effective-html 路由器，同日增设渲染验收门 render_gate 成三门收口）。
+godw html 制作域插件（v0.4.1，2026-10-11 设立：html 制作能力自 godw-toolkit/godw-report 的格式调度中独立成域；2026-10-15 增设 lo-fi 线支撑 godw-design 原型段；2026-10-17 成品线规范按页面类型分工、裁剪 effective-html 路由器，同日增设渲染验收门 render_gate 成三门收口；2026-10-27 增结构与文字纪律——主线一屏半/细节折叠弹窗收纳/界面元素不写自我解释的副文案）
 
 ## 技能（2 自研 + 7 vendored）
 

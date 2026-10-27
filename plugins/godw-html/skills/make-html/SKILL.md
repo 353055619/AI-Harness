@@ -1,6 +1,6 @@
 ---
 name: make-html
-description: html 制作统一入口（原子编排）：lo-fi 线（线框/可交互原型请求 → workbench-conventions 定分区 → vendored html-wireframe/html-prototype，godw-design 原型段由此委派）与成品线（设计规范按页面类型选：landing/营销页走 design-taste-frontend 发牌工程线，dashboard/app 走 frontend-design + ui-ux-pro-max 查库 → 实现选型路由 web-animation/antv/archify → 单文件构建）双线并行，共用 impeccable detect 样式门与 humanizer-zh 文字门收口。当用户要做网页/页面/看板/信息页/原型/线框，或任何调用方委派 html 制作时使用。
+description: html 制作统一入口（原子编排）：lo-fi 线（线框/可交互原型请求 → workbench-conventions 定分区 → vendored html-wireframe/html-prototype，godw-design 原型段由此委派）与成品线（设计规范按页面类型选：landing/营销页走 design-taste-frontend 发牌工程线，dashboard/app 走 frontend-design + ui-ux-pro-max 查库 → 实现选型路由 web-animation/antv/archify → 单文件构建）双线并行，构建期执行结构与文字纪律（主线 1.5 屏、细节折叠/弹窗/分区切换收纳、界面元素不写自我解释的副文案），共用 impeccable detect 样式门与 humanizer-zh 文字门收口。当用户要做网页/页面/看板/信息页/原型/线框，或任何调用方委派 html 制作时使用。
 ---
 
 # html 制作 → 单文件交付
@@ -23,12 +23,27 @@ description: html 制作统一入口（原子编排）：lo-fi 线（线框/可�
    - 图示/架构图 → **archify**（同插件 vendored）
    - 纯静态排版 → 按 frontend-design 规范直写，不引动效库
    - 类型可叠加（图表页也可有动效），总量受 frontend-design「大胆只花一处」纪律约束
-3. **构建**：单文件 html（内联 CSS/JS，离线可开）；响应式、键盘焦点、reduced-motion、可访问性按 frontend-design 质量地板执行（lo-fi 线按 html-prototype 自带的响应式与可访问性纪律执行）。
+3. **构建**：单文件 html（内联 CSS/JS，离线可开）；动工前先过下方「结构与文字纪律」定页面骨架；响应式、键盘焦点、reduced-motion、可访问性按 frontend-design 质量地板执行（lo-fi 线按 html-prototype 自带的响应式与可访问性纪律执行）。
 4. **质检门（必经，三门串行各自留证据，不跳步）**：
    - 样式门：impeccable detect（--json 证据落盘，退出码 0 过门）；
    - **渲染门**：`node <插件根>/scripts/render_gate.mjs <产出.html> --smoke`（本插件自带，纯 node+CDP 连本机 Chrome，设 GODW_CHROME 可指定浏览器）——收集运行时错误/资源加载失败，375/768/1280 三宽度截图与横向溢出检测，交互冒烟点遍导航按钮；**退出码 0 过门，2 不过**；证据落盘 `<产出目录>/render-gate-evidence/`（render-gate.json + 三张截图）；**必须亲眼看三张截图对照所选设计规范评审**，发现视觉问题回第 2 步修；
-   - 文字门：页内全部文字（含标题/按钮/空态提示）过 vendored humanizer-zh（godw-toolkit，31 条中文模式）—— impeccable 管样式反模式，渲染门管"真的能看"，humanizer-zh 管文字反模式，三者互补不重叠；
+   - 文字门：页内全部文字（含标题/按钮/空态提示）过 vendored humanizer-zh（godw-toolkit，31 条中文模式），并复查副文案禁令（见结构与文字纪律）—— impeccable 管样式反模式，渲染门管"真的能看"，humanizer-zh 管文字反模式，三者互补不重叠；
    - 任一门不过回对应步骤修，不带病交付。两线共用本步（lo-fi 线的角色走查评分仍归调用方 design-gate）。
+
+## 结构与文字纪律（第 3 步执行，第 4 步复查，两线通用）
+
+html 相对 markdown 的价值在交互、图表与分层收纳。产出和 markdown 差不多的长滚动页，或界面上到处是自我解释的小字，就是没发挥这个价值——这两条纪律因此存在。
+
+**1. 页面结构：主线一屏半，细节全收纳**
+
+- 主线内容（用户最该看到的东西）1.5 屏内放完。预估滚动超过 3 屏的正文先别写：要么内容本身是书面批阅材料，退回调用方改选 markdown；要么用 html 的收纳手段重组——tab/hash 分区切换（单文件内的"页面路由"）、details/summary 折叠卡、弹窗、hover 提示。
+- 报告/汇报型页面（godw-report html 路线）：主线 = 结论 + 2-3 张核心图表，一屏半讲完；过程、明细、逐条证据全部折叠收纳；至少一张真图表（SVG/antv），纯文字排版等于没发挥 html。
+
+**2. 文字纪律：不写自我解释的副文案，让版面自己说话**
+
+- 界面元素的含义由位置、样式与上下文表达，不用文字复述功能。反例：按钮写着「重试」，旁边再起一行小字「点击按钮即可重试」——这是 AI 味最重的一类文字。
+- 判断法：把这句小字删掉，用户还能不能懂？能懂就删。正文段落该有的解释不受此限，禁的是对界面元素的功能复述。
+- 说明文字只在「不看就会做错」时出现（危险操作、格式要求），且优先用 placeholder / title / hover 承载，不起正文行。
 
 ## 边界
 
