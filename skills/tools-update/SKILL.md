@@ -1,6 +1,6 @@
 ---
 name: tools-update
-description: Update all upstream-sourced skills and plugins under ~/.agents/ to their latest upstream versions. Use whenever the user asks to 更新技能 / 更新插件 / 更新原子技能 / tools-update / update skills or plugins, mentions remotion / iart-ai / antvis / archify / ECC skills may be outdated, or right after a fresh godw bundle is placed under ~/.agents/. Covers inventory scan, per-origin update (git pull / re-clone overwrite / vendored skill refresh), backup, and ZCode cache refresh reminder.
+description: Update all upstream-sourced skills and plugins under ~/.agents/ to their latest upstream versions. Use whenever the user asks to 更新技能 / 更新插件 / 更新原子技能 / tools-update / update skills or plugins, mentions iart-ai / antvis / archify skills may be outdated, or right after a fresh godw bundle is placed under ~/.agents/. Covers inventory scan, per-origin update (git pull / re-clone overwrite / vendored skill refresh), backup, and ZCode cache refresh reminder.
 ---
 
 # tools-update：更新 ~/.agents/ 下的上游技能与插件
@@ -17,7 +17,7 @@ python3 ~/.agents/skills/tools-update/scripts/tools_update.py
 python3 ~/.agents/skills/tools-update/scripts/tools_update.py --apply
 
 # 只更新指定项（支持逗号分隔与 * 通配）
-python3 ~/.agents/skills/tools-update/scripts/tools_update.py --apply --only 'kinetic-typography,remotion-*'
+python3 ~/.agents/skills/tools-update/scripts/tools_update.py --apply --only 'humanizer-zh,design-doc-mermaid'
 
 # 扫描其他根目录（如尚未搬入 ~/.agents/ 的 bundle）
 python3 ~/.agents/skills/tools-update/scripts/tools_update.py --root /path/to/bundle

@@ -4,14 +4,14 @@
     {
       "name": "godw-toolkit",
       "source": "./godw-toolkit",
-      "version": "0.5.4",
-      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate) + 15 vendored skills (remotion official series/ECC/humanizer-zh Chinese anti-slop editing/design-doc-mermaid). Since 2026-10-11 godw-goal (with vendored grilling) and godw-html (html production with frontend-design/archify) are separate plugins. Loop engine in godw-loop, search in godw-finder.",
+      "version": "0.6.0",
+      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate; formats markdown/html/archify/script-copy) + 2 vendored skills (humanizer-zh Chinese anti-slop editing / design-doc-mermaid markdown charts). v0.6.0 fully retires video capability: remotion series + motion-foundations removed, 6 video plugins delisted; the video script-writing methodology is distilled into godw-report references. Loop engine in godw-loop, search in godw-finder.",
       "displayName": "godw-toolkit",
       "displayName_i18n": {
         "zh-CN": "Godw Toolkit：Godw自研Agent工具箱"
       },
       "description_i18n": {
-        "zh-CN": "Session 契约 + 交付呈现（status.html 每轮看板 + impeccable 门）+ vendored 15 件（含 humanizer-zh 中文去 AI 味）；2026-10-11 起 godw-goal（含 grilling）与 godw-html（html 制作，含 frontend-design/archify）为独立插件；循环在 godw-loop、搜索在 godw-finder。"
+        "zh-CN": "Session 契约 + 交付呈现（delivery/DELIVERY.md/status.html，格式 markdown/html/archify/文案，web/html 过 impeccable 门）+ vendored 2 件（humanizer-zh 中文去 AI 味 / design-doc-mermaid 图表选型）；v0.6.0 起 video 能力全面退役（remotion 系 + motion-foundations 移除、6 个 video 插件注销），视频文案方法论提炼收入 godw-report；循环在 godw-loop、搜索在 godw-finder。"
       },
       "category": "productivity"
     },
@@ -68,90 +68,6 @@
       },
       "description_i18n": {
         "zh-CN": "godw设计流水线域插件。四阶段：阶段1 原始需求（人在环冻结）→ 阶段2 4A架构+身份卡（2-a 架构腿+身份卡+INDEX 建账；2-b 四文档+detail.json+model.c4+用例覆盖矩阵与每角色用例视图；2-c 门1）→ 阶段3 PRD（3-a 成文〔EARS 验收标准挂 FR〕；3-b 对抗审查）→ 阶段4 原型系统（4-a 可交互原型+manifest.json；4-b 合验门〔walk 证据+crawl 死链懒惰扫描+coverage 覆盖核对〕；4-c 收口归档）。godw-design-orchestrator 按目录实况自动识别阶段步骤（state.md 对账以目录为准），冻结门人在环不自动跨。godw-design-gate 用冻结身份卡派动态评委（答卷表 能做/卡住/靠猜），prototype 评委真跑走查器出证据、每题带 covers 用例声明，收卷后 coverage 机器核对每页每角色全覆盖；PASS 判定线由 check --registry 机器计算。godw-design-check 机械门五阶段 requirement/split/document/prd/proto（约 80 条规则）：阶段1 骨架/编号/边界/占位/双源；2-a 五节/四句/六类/矩阵对齐/INDEX 对账；document 用例覆盖三件套+状态图↔detail 一致+NFR→质量场景+BR 编号+likec4 gen 防漂移+mermaid 源码校验；prd AC 挂 FR 三查（每 AC 挂 FR、每 FR ≥1 AC、每模块 ≥1 异常 AC）+Input 溯源+全局状态五类；proto manifest 三向一致+懒惰模式静态扫描（参考文档占位/待实现/alert 桩/假链）。walk.mjs 增 crawl（全站死链+运行态懒惰+manifest 一致）与 coverage 子命令。hooks/ 双保险：冻结围栏+收工门（无实例秒放行）。机械 FAIL 自动派修订子 Agent 循环不耗评委轮次（Token 不设限）。mmdc 已整体移除。按名调用 godw-goal/godw-html/godw-toolkit。"
-      },
-      "category": "productivity"
-    },
-    {
-      "name": "data-animation-skills",
-      "source": "./data-animation-skills",
-      "version": "0.1.1",
-      "description": "Data animation / animated infographic skills for AI coding agents — turn a CSV into a chart that moves, with exact, accurate numbers on every frame.",
-      "displayName": "data-animation-skills",
-      "displayName_i18n": {
-        "zh-CN": "data-animation-skills"
-      },
-      "description_i18n": {
-        "zh-CN": "数据动画三件套：信息图序列、图表竞赛/CSV 转视频、PPT 转视频。"
-      },
-      "category": "productivity"
-    },
-    {
-      "name": "explainer-video-skills",
-      "source": "./explainer-video-skills",
-      "version": "0.1.1",
-      "description": "Explainer video skills for AI coding agents: script, storyboard, and render narrated explainers and animated diagrams.",
-      "displayName": "explainer-video-skills",
-      "displayName_i18n": {
-        "zh-CN": "explainer-video-skills"
-      },
-      "description_i18n": {
-        "zh-CN": "解说视频四件套：白板、等轴测、图示动画、全流程解说。"
-      },
-      "category": "productivity"
-    },
-    {
-      "name": "javascript-animation-skills",
-      "source": "./javascript-animation-skills",
-      "version": "0.4.1",
-      "description": "Every frame drawn in JavaScript: canvas animation with zero image assets, rendered to MP4, with a code-synthesized Web Audio soundtrack and an A/V sync check.",
-      "displayName": "javascript-animation-skills",
-      "displayName_i18n": {
-        "zh-CN": "javascript-animation-skills"
-      },
-      "description_i18n": {
-        "zh-CN": "纯代码 canvas 动画与代码合成配乐（soundtrack）。"
-      },
-      "category": "productivity"
-    },
-    {
-      "name": "kinetic-typography-skills",
-      "source": "./kinetic-typography-skills",
-      "version": "0.1.1",
-      "description": "Kinetic typography skills for AI coding agents — animate headlines, stagger text reveals, and build lyric/title videos across CSS, GSAP, Framer Motion, and Remotion.",
-      "displayName": "kinetic-typography-skills",
-      "displayName_i18n": {
-        "zh-CN": "kinetic-typography-skills"
-      },
-      "description_i18n": {
-        "zh-CN": "大字报/动态文字动画。"
-      },
-      "category": "productivity"
-    },
-    {
-      "name": "lower-thirds-skills",
-      "source": "./lower-thirds-skills",
-      "version": "0.1.0",
-      "description": "Animated lower thirds and stream overlays with a transparent background, drawn in JavaScript and rendered to WebM with alpha (OBS) or ProRes 4444 (Premiere, Resolve, Final Cut).",
-      "displayName": "lower-thirds-skills",
-      "displayName_i18n": {
-        "zh-CN": "lower-thirds-skills"
-      },
-      "description_i18n": {
-        "zh-CN": "下三分之一字幕条/直播叠加层（透明 WebM/ProRes）。"
-      },
-      "category": "productivity"
-    },
-    {
-      "name": "map-animation-skills",
-      "source": "./map-animation-skills",
-      "version": "0.1.1",
-      "description": "Map animation skills for AI coding agents — build editorial, \"Vox-style\" animated maps for explainer and documentary video: camera zooms, drawn-on routes, dropped pins, region highlights, and the 12fps stutter.",
-      "displayName": "map-animation-skills",
-      "displayName_i18n": {
-        "zh-CN": "map-animation-skills"
-      },
-      "description_i18n": {
-        "zh-CN": "地图动画（编辑向）。"
       },
       "category": "productivity"
     },

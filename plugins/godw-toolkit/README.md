@@ -1,15 +1,15 @@
 # godw-toolkit
 
-godw 原子技能包（v0.5.0，2026-10-07 v3 改版：循环拆往 godw-loop、搜索拆往 godw-finder；2026-10-11 godw-goal 拆出、html 制作连 archify 拆往 godw-html）。
+godw 原子技能包（v0.6.0，2026-10-07 v3 改版：循环拆往 godw-loop、搜索拆往 godw-finder；2026-10-11 godw-goal 拆出、html 制作连 archify 拆往 godw-html；2026-10-27 video 能力全面退役）。
 
-## 技能（2 + vendored 15）
+## 技能（2 + vendored 2）
 
 | 技能 | 职责 |
 |---|---|
 | godw-session-init | session 工作契约（11 条，原 godw-init 更名） |
-| godw-report | 交付呈现：delivery/ + .agents/DELIVERY.md + .agents/status.html（每轮看板）；web/html 强制 impeccable detect 门 |
+| godw-report | 交付呈现：delivery/ + .agents/DELIVERY.md + .agents/status.html（每轮看板）；格式 markdown/html/archify/文案；web/html 强制 impeccable detect 门 |
 
-vendored 15 件（带 .origin.json，只读）：design-doc-mermaid（markdown 内嵌 mermaid 选型与语法，godw-report 图表路由；弱许可见其 .origin.json 注记）· humanizer-zh（中文去 AI 味编辑规范，godw-report 文字交付操作化）· motion-foundations · remotion-{best-practices, captions, create, docs, interactivity, maps, markup, multimedia, render, saas, studio, upgrade}（archify 已迁 godw-html）。
+vendored 2 件（带 .origin.json，只读）：design-doc-mermaid（markdown 内嵌 mermaid 选型与语法，godw-report 图表路由；弱许可见其 .origin.json 注记）· humanizer-zh（中文去 AI 味编辑规范，godw-report 文字交付操作化）。
 
 ## 搭配
 
@@ -22,6 +22,7 @@ vendored 15 件（带 .origin.json，只读）：design-doc-mermaid（markdown �
 
 ## 版本
 
+- 0.6.0（2026-10-27）：video 能力全面退役——vendored remotion 系 12 件 + motion-foundations 移除（15→2）；marketplace 注销 6 个 video 插件（explainer-video-skills / data-animation-skills / kinetic-typography-skills / lower-thirds-skills / map-animation-skills / javascript-animation-skills，15→9）；godw-report 的 video 格式退役，视频文案方法论提炼 vendored 为 references/script-copy.md，「文案」成为正式格式档位，思想关增「一句核心信息，说不清就砍范围」。
 - 0.5.3（2026-10-17）：vendored design-doc-mermaid；godw-report markdown 路由补图表指路（mermaid 代码块 + mmdc 校验）。
 - 0.5.2（2026-10-11）：godw-report 全部输出文字（含 html 页面文字、status.html、视频文案）统一过 humanizer-zh——汇报就说人话；impeccable 只管样式不管文字。
 - 0.5.1（2026-10-11）：vendored humanizer-zh（op7418，MIT，31 条中文模式）；godw-report 文字交付（markdown/DELIVERY.md）过 humanizer-zh，与 html 的 impeccable 门对称。
