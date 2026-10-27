@@ -1,7 +1,7 @@
 {
   "name": "godw-toolkit",
-  "version": "0.6.0",
-  "description": "godw 原子技能包：godw-session-init（session 契约）、godw-report（交付呈现 delivery/DELIVERY/status.html，格式 markdown/html/archify/文案，web/html 过 impeccable 门）+ vendored 2 件（humanizer-zh 中文去 AI 味编辑规范 / design-doc-mermaid markdown 图表）。2026-10-11 起 godw-goal 拆出为独立插件（含 vendored grilling），html 制作拆往 godw-html 插件（archify 随迁）。循环引擎在 godw-loop 插件，搜索调研在 godw-finder 插件。2026-10-27 v0.6.0 video 能力全面退役：remotion 系 12 件 + motion-foundations 移除，6 个 video 插件注销；视频文案方法论（一句核心信息/四拍故事弧/字数预算）提炼进 godw-report references/script-copy.md，文案成为正式格式档位。",
+  "version": "0.6.1",
+  "description": "godw 原子技能包：godw-session-init（session 契约）、godw-report（交付呈现 delivery/DELIVERY/status.html，格式 markdown/html/archify/文案，web/html 过 impeccable 门）+ vendored 2 件（humanizer-zh 中文去 AI 味编辑规范 / design-doc-mermaid markdown 图表）。2026-10-11 起 godw-goal 拆出为独立插件（含 vendored grilling），html 制作拆往 godw-html 插件（archify 随迁）。搜索调研在 godw-finder 插件；循环引擎 godw-loop 已归档至仓库 archive/plugins/（2026-10-27，拾起路径见 archive/README.md）。2026-10-27 v0.6.0 video 能力全面退役：remotion 系 12 件 + motion-foundations 移除，6 个 video 插件注销；视频文案方法论（一句核心信息/四拍故事弧/字数预算）提炼进 godw-report references/script-copy.md，文案成为正式格式档位。",
   "author": {
     "name": "godw"
   },

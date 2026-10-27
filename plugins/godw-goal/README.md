@@ -28,4 +28,4 @@ godw 需求澄清域插件（v0.2.2，2026-10-11 自 godw-toolkit 拆出升级�
 
 上游更新方式：tools-update 不进自研插件内部，grill-me/grilling 的更新 = 按 `.origin.json` 整装重拉（不拆不改）。
 
-依赖：无外部依赖。循环引擎在 godw-loop，session 契约与交付呈现仍在 godw-toolkit。
+依赖：无外部依赖。循环引擎 godw-loop 已归档（archive/plugins/），session 契约与交付呈现仍在 godw-toolkit。

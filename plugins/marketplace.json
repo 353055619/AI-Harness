@@ -4,14 +4,14 @@
     {
       "name": "godw-toolkit",
       "source": "./godw-toolkit",
-      "version": "0.6.0",
-      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate; formats markdown/html/archify/script-copy) + 2 vendored skills (humanizer-zh Chinese anti-slop editing / design-doc-mermaid markdown charts). v0.6.0 fully retires video capability: remotion series + motion-foundations removed, 6 video plugins delisted; the video script-writing methodology is distilled into godw-report references. Loop engine in godw-loop, search in godw-finder.",
+      "version": "0.6.1",
+      "description": "godw atomic skill pack: godw-session-init (session contract of 11 rules), godw-report (delivery/DELIVERY.md/status.html with impeccable detect gate; formats markdown/html/archify/script-copy) + 2 vendored skills (humanizer-zh Chinese anti-slop editing / design-doc-mermaid markdown charts). v0.6.0 fully retires video capability: remotion series + motion-foundations removed, 6 video plugins delisted; the video script-writing methodology is distilled into godw-report references. Search in godw-finder.",
       "displayName": "godw-toolkit",
       "displayName_i18n": {
         "zh-CN": "Godw Toolkit：Godw自研Agent工具箱"
       },
       "description_i18n": {
-        "zh-CN": "Session 契约 + 交付呈现（delivery/DELIVERY.md/status.html，格式 markdown/html/archify/文案，web/html 过 impeccable 门）+ vendored 2 件（humanizer-zh 中文去 AI 味 / design-doc-mermaid 图表选型）；v0.6.0 起 video 能力全面退役（remotion 系 + motion-foundations 移除、6 个 video 插件注销），视频文案方法论提炼收入 godw-report；循环在 godw-loop、搜索在 godw-finder。"
+        "zh-CN": "Session 契约 + 交付呈现（delivery/DELIVERY.md/status.html，格式 markdown/html/archify/文案，web/html 过 impeccable 门）+ vendored 2 件（humanizer-zh 中文去 AI 味 / design-doc-mermaid 图表选型）；v0.6.0 起 video 能力全面退役（remotion 系 + motion-foundations 移除、6 个 video 插件注销），视频文案方法论提炼收入 godw-report；搜索在 godw-finder。"
       },
       "category": "productivity"
     },
@@ -46,7 +46,7 @@
     {
       "name": "godw-goal",
       "source": "./godw-goal",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "description": "godw goal-clarification plugin: clarify-goal (诉求升级法 4 steps + 5Why/Mom Test chain, one question at a time, two-chapter GOAL.md finalize-once; atomic, caller-agnostic) + 4 vendored interview engines from mattpocock/skills (grill-me, grilling, grill-with-docs with ADR/glossary persistence via domain-modeling — adopted wholesale, glossary at .agents/ via orchestration override, ADR at docs/adr/ per upstream default).",
       "displayName": "godw-goal",
       "displayName_i18n": {
@@ -100,24 +100,10 @@
       "category": "design"
     },
     {
-      "name": "godw-loop",
-      "source": "./godw-loop",
-      "version": "0.3.0",
-      "description": "godw perpetual loop engine: three-stage main loop start (gate+analysis+proposal) -> run (FIFO dispatch+plan.md execution) -> complete (parallel postmortem/report/doc wrap-up), driven by the native /goal session objective (set once, auto-iterates, one round per goal iteration); one-proposal-one-folder notes (3P file set: proposal/plan/postmortem), TRAP.md pitfall log, history.json decision summary ledger, guard write-protection hooks (human zone read-only / GOAL freeze / notes mechanical gate / AGENTS.md budget).",
-      "displayName": "godw-loop",
-      "displayName_i18n": {
-        "zh-CN": "Godw Loop：Godw 自研无人值守项目开发循环框架"
-      },
-      "description_i18n": {
-        "zh-CN": "三段主循环 start→run→complete，由 ZCode 原生 /goal 会话目标驱动自动迭代（一次设置，每轮迭代走一遍技能链）；notes 一题一文件夹（3P 文件组）；TRAP 坑账 + history 决策摘要账；guard hooks 保护 human 区/GOAL/notes/AGENTS.md 预算。"
-      },
-      "category": "productivity"
-    },
-    {
       "name": "godw-finder",
       "source": "./godw-finder",
-      "version": "0.2.0",
-      "description": "godw unified search plugin: godw-finder orchestrator (4-agent full research, tiered adoption, reference/ disk persistence + AGENTS.md index) + atomic skills plugin-finder (offline local marketplace search), find-skills (skills.sh ecosystem skill search & install, vendored from vercel-labs/skills), web-search (web/API channels), social-search (social platforms via browser-act). Called by godw-loop-start, also user-invocable.",
+      "version": "0.2.1",
+      "description": "godw unified search plugin: godw-finder orchestrator (4-agent full research, tiered adoption, reference/ disk persistence + AGENTS.md index) + atomic skills plugin-finder (offline local marketplace search), find-skills (skills.sh ecosystem skill search & install, vendored from vercel-labs/skills), web-search (web/API channels), social-search (social platforms via browser-act). User-invocable.",
       "displayName": "godw-finder",
       "displayName_i18n": {
         "zh-CN": "Godw Finder: 统一搜索入口"

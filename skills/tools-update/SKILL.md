@@ -32,7 +32,7 @@ python3 ~/.agents/skills/tools-update/scripts/tools_update.py --set-upstream ~/.
 |---|---|
 | 目录含 `.claude-plugin/`（上游插件仓） | 有 `.git` → `git pull --ff-only`；无 `.git` → 上游地址（plugin.json 的 repository 字段，或登记表）浅克隆到临时区后 `rsync --delete` 整仓覆盖（排除 .git） |
 | 目录含 `SKILL.md` 且 `.origin.json` 有 url（vendored 技能） | 解析 url（支持 github `/tree/<ref>/<路径>` 子目录式与仓库式）→ 浅克隆 → 覆盖技能目录（**排除 .origin.json**，凭证永不被上游覆盖）→ 更新 installed 日期 |
-| 目录含 `.zcode-plugin/`（自研插件：godw-toolkit / godw-loop / godw-finder） | **跳过，仅报告**——本地是权威源，上游 GitHub 是它的下游，绝不能反向拉覆盖 |
+| 目录含 `.zcode-plugin/`（自研插件：godw-toolkit / godw-finder） | **跳过，仅报告**——本地是权威源，上游 GitHub 是它的下游，绝不能反向拉覆盖 |
 | `SKILL.md` 但无凭证（如 algo-coach） | 跳过，报告「无凭证」，不得猜测上游 |
 
 更新执行后自动做**市场版本同步**：读每个插件自报版本（`.claude-plugin/` 或 `.zcode-plugin/` 的 plugin.json），写回 `~/.agents/plugins/marketplace.json` 对应条目的 version（写前备份）。否则克隆覆盖后清单版本滞后，市场页继续显示旧版。dry-run 时列出「市场版本滞后」预览。

@@ -1,6 +1,6 @@
 # godw-toolkit
 
-godw 原子技能包（v0.6.0，2026-10-07 v3 改版：循环拆往 godw-loop、搜索拆往 godw-finder；2026-10-11 godw-goal 拆出、html 制作连 archify 拆往 godw-html；2026-10-27 video 能力全面退役）。
+godw 原子技能包（v0.6.1，2026-10-07 v3 改版：循环拆往 godw-loop、搜索拆往 godw-finder；2026-10-11 godw-goal 拆出、html 制作连 archify 拆往 godw-html；2026-10-27 video 能力全面退役）。
 
 ## 技能（2 + vendored 2）
 
@@ -13,7 +13,7 @@ vendored 2 件（带 .origin.json，只读）：design-doc-mermaid（markdown �
 
 ## 搭配
 
-- **godw-loop**（循环引擎：loop-init/start/run/complete/postmortem/doc + guard hooks + 自循环 workflow）
+- **godw-loop**（循环引擎——**已归档**至仓库 archive/plugins/godw-loop，2026-10-27；恢复步骤见 archive/README.md）
 - **godw-finder**（搜索调研：编排 + plugin/find-skills/web/social 四原子）
 - **godw-goal**（需求澄清：clarify-goal 定目标 + vendored 访谈引擎四件 grill-me/grilling/grill-with-docs/domain-modeling，2026-10-11 拆出）
 - **godw-html**（html 制作：make-html 统一入口 + vendored frontend-design/archify，2026-10-11 设立）
@@ -22,6 +22,7 @@ vendored 2 件（带 .origin.json，只读）：design-doc-mermaid（markdown �
 
 ## 版本
 
+- 0.6.1（2026-10-27）：godw-loop 插件退役归档（archive/plugins/）；godw-report 循环模式保留并加归档注记；各描述中循环引擎指向同步更新。
 - 0.6.0（2026-10-27）：video 能力全面退役——vendored remotion 系 12 件 + motion-foundations 移除（15→2）；marketplace 注销 6 个 video 插件（explainer-video-skills / data-animation-skills / kinetic-typography-skills / lower-thirds-skills / map-animation-skills / javascript-animation-skills，15→9）；godw-report 的 video 格式退役，视频文案方法论提炼 vendored 为 references/script-copy.md，「文案」成为正式格式档位，思想关增「一句核心信息，说不清就砍范围」。
 - 0.5.3（2026-10-17）：vendored design-doc-mermaid；godw-report markdown 路由补图表指路（mermaid 代码块 + mmdc 校验）。
 - 0.5.2（2026-10-11）：godw-report 全部输出文字（含 html 页面文字、status.html、视频文案）统一过 humanizer-zh——汇报就说人话；impeccable 只管样式不管文字。

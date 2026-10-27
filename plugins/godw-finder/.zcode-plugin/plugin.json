@@ -1,7 +1,7 @@
 {
   "name": "godw-finder",
-  "version": "0.2.0",
-  "description": "godw 统一搜索调研插件：godw-finder 编排（4 智能体全调研+分级采用+reference 落盘与 AGENTS.md 索引）+ 原子四件 plugin-finder（本地插件市场离线搜）/ find-skills（skills.sh 生态技能搜索与安装，vendored 自 vercel-labs/skills）/ web-search（网页与 API 检索）/ social-search（社交平台 browser-act 侦察）。被 godw-loop-start 调用，也可用户直呼。",
+  "version": "0.2.1",
+  "description": "godw 统一搜索调研插件：godw-finder 编排（4 智能体全调研+分级采用+reference 落盘与 AGENTS.md 索引）+ 原子四件 plugin-finder（本地插件市场离线搜）/ find-skills（skills.sh 生态技能搜索与安装，vendored 自 vercel-labs/skills）/ web-search（网页与 API 检索）/ social-search（社交平台 browser-act 侦察）。用户直呼（原调度方 godw-loop 已归档，拾起后恢复）。",
   "author": {
     "name": "godw"
   },

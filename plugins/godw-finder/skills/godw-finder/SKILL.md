@@ -1,6 +1,6 @@
 ---
 name: godw-finder
-description: godw 统一搜索入口（编排技能）：抽象问题 → 4 智能体全调研（GitHub 侦察/官方+社区/社交平台/竞品+视频）+ 工具面（plugin-finder/find-skills/web-search/social-search 按需调）→ 分级采用 → 落盘 reference/（survey 文件+镜像+AGENTS.md 索引）。被 godw-loop-start 调用，也可用户直呼"搜一下 X / 调研 X"。
+description: godw 统一搜索入口（编排技能）：抽象问题 → 4 智能体全调研（GitHub 侦察/官方+社区/社交平台/竞品+视频）+ 工具面（plugin-finder/find-skills/web-search/social-search 按需调）→ 分级采用 → 落盘 reference/（survey 文件+镜像+AGENTS.md 索引）。用户直呼"搜一下 X / 调研 X"（原调度方 godw-loop 已归档，拾起后恢复）。
 ---
 
 # 统一搜索入口 → reference/
@@ -23,7 +23,7 @@ description: godw 统一搜索入口（编排技能）：抽象问题 → 4 智�
    - 4 份调研报告：`reference/survey-<theme>-YYYYMMDD.md`（每智能体一份：候选表/搜索轨迹/采用建议）；
    - 素材镜像：直接用/裁剪用必拉（代码仓 `git clone --depth 1`、一候选一目录、根放来源 URL 与日期），按主题组织；
    - **索引**：`reference/AGENTS.md` 维护（survey 清单+镜像目录+日期+一句用途；只增；<128 行预算门，超限提额）。
-7. **采用建议返回**：给调用方（godw-loop-start 或用户）分级清单与出处；确无方案写明已搜渠道防重复搜。
+7. **采用建议返回**：给调用方（用户，或拾起后的 godw-loop-start）分级清单与出处；确无方案写明已搜渠道防重复搜。
 8. **完成门**：4 份 survey 在场带轨迹；镜像带来源；索引已更新；调研 ≠ 实现授权（提案由调用方定稿）。
 
 ## 平台路由速查（详表见 social-search）

@@ -5,7 +5,8 @@
 ## 目录结构
 
 - `skills/` — 技能源码（12 个：xiaohongshu-search、tiktok-search-videos、tools-update 等）
-- `plugins/` — 插件源码（9 个，与 `marketplace.json` 注册表一一对应）
+- `plugins/` — 插件源码（8 个，与 `marketplace.json` 注册表一一对应）
+- `archive/` — 退役插件归档（git 跟踪、不装 `~/.agents`；恢复步骤见 `archive/README.md`）
 - `sync.sh` — 一键「安装到 `~/.agents` + 提交推送 GitHub」的脚本
 - `.zcode/skills/publish/` — 本项目专用技能 `/publish`（发布前差异检查 → `sync.sh` → 插件生效 update/install+enable → 验证汇报），随仓库版本化，不安装到 `~/.agents`
 - 本地工作目录（`.gitignore` 已排除，不提交 GitHub）：`reference/`（调研 survey 报告 + `mirrors/` 上游参考仓库镜像，索引见 `reference/AGENTS.md`）、`delivery/`（日期命名的交付面板 JSON/HTML）、`.agents/`（本地交付说明 `DELIVERY.md`）
