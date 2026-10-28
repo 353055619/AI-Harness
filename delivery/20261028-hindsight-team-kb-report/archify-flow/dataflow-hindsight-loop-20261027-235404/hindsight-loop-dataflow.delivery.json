@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "2b4ee4d9-19cb-48d7-a235-40f34481524b",
+  "status": "current",
+  "command": "deliver",
+  "type": "dataflow",
+  "input": "/Users/godw/hindsight/.archify/dataflow-hindsight-loop-20261027-235404/candidate.json",
+  "output": "/Users/godw/hindsight/.archify/dataflow-hindsight-loop-20261027-235404/hindsight-loop-dataflow.html",
+  "specification": {
+    "sha256": "eecf0960aec438aa82aa0b18551ef93fca697143b41ea383301fa7d6f336f8de",
+    "bytes": 2608
+  },
+  "artifact": {
+    "sha256": "20e7f76f8620903f88a1dcbce9476c1c69172b4a302a3972674a25448b07e266",
+    "bytes": 754038
+  }
+}

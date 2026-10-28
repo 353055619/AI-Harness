@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Hindsight 记忆闭环 · 数据流",
+    "locale": "zh-CN",
+    "output": ".archify/dataflow-hindsight-loop-20261027-235404/hindsight-loop-dataflow.html",
+    "quality_profile": "showcase"
+  },
+  "stages": [
+    { "label": "写入" },
+    { "label": "加工" },
+    { "label": "存储" },
+    { "label": "取用" }
+  ],
+  "nodes": [
+    { "id": "docs", "type": "external", "label": "存量文档", "sublabel": "wiki · 复盘 · 项目记录", "stage": 0, "row": 0, "tag": "批量导入" },
+    { "id": "chat", "type": "frontend", "label": "AI 助手对话", "sublabel": "协作结论自动沉淀", "stage": 0, "row": 2 },
+    { "id": "llm", "type": "cloud", "label": "大模型加工", "sublabel": "拆成事实 · 向量化", "stage": 1, "row": 1 },
+    { "id": "memdb", "type": "database", "label": "记忆库", "sublabel": "PostgreSQL + pgvector", "stage": 2, "row": 1, "tag": "事实 + 向量" },
+    { "id": "agent", "type": "backend", "label": "AI 助手", "sublabel": "自动带出相关记忆", "stage": 3, "row": 0 },
+    { "id": "web", "type": "frontend", "label": "网页 · 接口", "sublabel": "直接检索", "stage": 3, "row": 2 }
+  ],
+  "flows": [
+    { "id": "f-docs", "from": "docs", "to": "llm", "label": "批量导入", "classification": "存量知识", "variant": "emphasis" },
+    { "id": "f-chat", "from": "chat", "to": "llm", "label": "自动沉淀", "classification": "日常协作" },
+    { "id": "f-ingest", "from": "llm", "to": "memdb", "label": "事实 + 向量入库", "classification": "拆解结果" },
+    { "id": "f-recall", "from": "memdb", "to": "agent", "label": "语义召回 · 秒回", "classification": "检索", "variant": "emphasis" },
+    { "id": "f-web", "from": "memdb", "to": "web", "label": "直接检索", "classification": "检索", "variant": "dashed" },
+    { "id": "f-reflect", "from": "memdb", "to": "llm", "label": "定期整理", "classification": "合并去重 · 越用越准", "variant": "dashed", "route": "top-channel" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "主线", "items": ["写入、加工、存储、取用,一条线看完", "不管来自文档还是对话,最终都变成同一种可检索的事实"] },
+    { "dot": "cyan", "title": "两条进路", "items": ["存量文档批量导入,7112 篇已入 3267", "AI 助手对话中的结论自动沉淀,无需额外操作"] },
+    { "dot": "amber", "title": "越用越准", "items": ["记忆库定期整理,合并重复、归纳同主题", "检索结果随沉淀量增加越来越相关"] }
+  ]
+}

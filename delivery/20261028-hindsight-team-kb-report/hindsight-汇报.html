@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>从文档库到记忆库 · Hindsight 团队知识库</title>
+<style>
+:root{
+  --paper:#FFFFFF;
+  --blush:#FBEBEE;
+  --ink:#211818;
+  --ink-soft:#5C5151;
+  --red:#C0102D;
+  --red-deep:#8E0E22;
+  --card:#FFFFFF;
+  --num:"Georgia","Songti SC","Noto Serif SC",serif;
+  --body:"PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1060px;margin:0 auto;padding:0 32px}
+
+/* ── 页头 ─────────────────────────── */
+header{padding:48px 0 8px}
+.meta-line{font-size:15px;color:var(--ink-soft)}
+h1{
+  font-size:clamp(40px,6vw,68px);
+  line-height:1.15;
+  font-weight:700;
+  letter-spacing:.01em;
+  margin:16px 0 14px;
+  max-width:18em;
+}
+.lede{font-size:clamp(18px,2vw,21px);line-height:1.7;max-width:32em;color:var(--ink)}
+
+/* ── 章节标题 ─────────────────────── */
+.sect{font-size:26px;font-weight:600;color:var(--red-deep);margin:64px 0 22px}
+
+/* ── 一、问题的提出 ───────────────── */
+.pains{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.pain{background:var(--blush);padding:26px 28px}
+.pain h3{font-size:20px;font-weight:600;line-height:1.45;margin-bottom:10px;color:var(--ink)}
+.pain p{color:var(--ink-soft);font-size:16px}
+
+/* ── 二、核心洞察 ─────────────────── */
+.insights{background:var(--blush);margin-top:24px;padding:44px 32px 50px}
+.insights h2{font-size:26px;font-weight:600;color:var(--red-deep)}
+.insight{max-width:46em;margin-top:24px}
+.insight h3{font-size:20px;font-weight:600;color:var(--red);margin-bottom:4px}
+.insight p{color:var(--ink-soft);font-size:16.5px}
+
+/* ── 折叠区 ───────────────────────── */
+section.fold{margin-top:28px}
+details{background:var(--card)}
+summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  padding:22px 28px;
+  font-size:26px;
+  font-weight:600;
+  color:var(--red-deep);
+  user-select:none;
+}
+summary::-webkit-details-marker{display:none}
+summary h2{margin:0;font-size:inherit;font-weight:inherit;color:inherit}
+summary .tri{
+  flex:none;
+  width:0;height:0;
+  border-left:9px solid var(--red);
+  border-top:7px solid transparent;
+  border-bottom:7px solid transparent;
+  transform:translateY(1px);
+  transition:transform .18s ease;
+}
+details[open] summary .tri{transform:translateY(1px) rotate(90deg)}
+summary:hover{color:var(--red)}
+summary:focus-visible{outline:3px solid var(--red);outline-offset:-3px}
+.fold-body{padding:6px 28px 30px}
+.fold-body > p{max-width:46em;color:var(--ink);margin-bottom:18px}
+
+/* ── 键值列表 ─────────────────────── */
+ul.kv{list-style:none;display:grid;gap:0;margin-bottom:24px;max-width:52em}
+ul.kv li{display:grid;grid-template-columns:96px 1fr;gap:18px;padding:12px 0;align-items:baseline}
+ul.kv li + li{border-top:1px solid var(--blush)}
+ul.kv b{color:var(--red-deep);font-weight:600;font-size:16.5px}
+ul.kv span{color:var(--ink-soft);font-size:16px}
+
+/* ── 三种用法 ─────────────────────── */
+.uses{display:grid;gap:0;margin-bottom:24px}
+.use{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:24px;
+  padding:16px 0;
+  align-items:baseline;
+}
+.use + .use{border-top:1px solid var(--blush)}
+.use h3{font-size:19px;font-weight:600;color:var(--red-deep)}
+.use p{font-size:16px;color:var(--ink-soft)}
+
+/* ── 检索演示(产品界面片段) ────────── */
+[data-ui]{
+  background:#26201E;
+  color:#EDE7E4;
+  padding:26px 30px;
+  font-size:15px;
+  line-height:1.65;
+  margin-bottom:22px;
+}
+.qa .q{
+  color:#FFFFFF;
+  font-size:18px;
+  font-weight:600;
+  margin-bottom:16px;
+}
+.qa .q::before{content:"问";display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--red);color:#FFFFFF;font-size:14px;font-weight:600;margin-right:10px;vertical-align:-4px}
+.hit{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:10px 0}
+.hit + .hit{border-top:1px solid #3B3230}
+.hit .name{color:#F0A7B2;white-space:nowrap;font-weight:600}
+.hit .name::before{content:"【"}
+.hit .name::after{content:"】"}
+.hit .fact{color:#CFC5C2}
+.qa .foot{margin-top:16px;color:#9A8C89;font-size:13.5px}
+.qa .foot b{color:#F0A7B2;font-weight:600}
+
+/* ── 图卡 ─────────────────────────── */
+.diagrams{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.diagram{background:var(--blush);padding:20px}
+.diagram svg,.diagram img{width:100%;height:auto;display:block}
+.diagram figcaption{font-size:15px;color:var(--ink-soft);margin:12px 2px 14px}
+.diagram figcaption b{color:var(--ink);font-weight:600;display:block;font-size:16px}
+.open-link{
+  display:inline-block;
+  background:var(--red-deep);
+  color:#FFFFFF;
+  font-size:15px;
+  padding:10px 18px;
+  text-decoration:none;
+}
+.open-link:hover{background:var(--red)}
+.open-link:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+
+/* ── 五、实施路径 ─────────────────── */
+.steps{list-style:none;counter-reset:step}
+.steps li{
+  counter-increment:step;
+  display:grid;
+  grid-template-columns:56px 1fr;
+  gap:18px;
+  padding:14px 0;
+  align-items:baseline;
+}
+.steps li::before{
+  content:counter(step,cjk-ideographic);
+  font-family:var(--num);
+  font-size:30px;
+  font-weight:600;
+  color:var(--red);
+  line-height:1;
+}
+.steps b{font-weight:600;font-size:17.5px}
+.steps p{font-size:16px;color:var(--ink-soft)}
+.steps .note{grid-column:1 / -1;max-width:44em;color:var(--ink-soft);font-size:15px;padding-top:8px}
+
+/* ── 尾注 ─────────────────────────── */
+footer{background:var(--blush);margin-top:56px;padding:30px 0}
+footer p{font-size:15px;color:var(--ink-soft)}
+
+/* ── 响应式 ───────────────────────── */
+@media (max-width:820px){
+  .pains{grid-template-columns:1fr}
+  .diagrams{grid-template-columns:1fr}
+  .use{grid-template-columns:1fr;gap:4px}
+  ul.kv li{grid-template-columns:1fr;gap:2px}
+  [data-ui]{padding:20px 18px}
+  .insights{padding:34px 20px 40px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  summary .tri{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="meta-line">Hindsight 团队知识库,2026 年 10 月 28 日,讲 5 分钟。</p>
+    <h1>从文档库到记忆库</h1>
+    <p class="lede">用开源项目 Hindsight,把团队存量笔记拆成一条条可检索的事实,装进每个 AI 助手的记忆。</p>  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section>
+      <h2 class="sect">一、问题的提出</h2>
+      <div class="pains">
+        <div class="pain">
+          <h3>「这事上次怎么解决的?」检索不到</h3>
+          <p>文档在 wiki、结论在聊天记录、细节在人脑。检索以文档为单位,要求先知道答案在哪份文档里——新人恰恰没有这个前提。同一个问题,换个小组重做一遍。</p>
+        </div>
+        <div class="pain">
+          <h3>AI 助手:会话即遗忘</h3>
+          <p>全组 50 人每天都在用,但每个助手无状态、彼此隔离。团队知识进不了 AI 的工作过程,50 人的日常使用,没有沉淀为任何积累。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="insights">
+      <h2>二、核心洞察</h2>
+      <div class="insight">
+        <h3>消费端在迁移:读者从人变成 AI 助手</h3>
+        <p>知识库的主要读者不再是翻文档的人,而是回答问题的 AI 助手。</p>
+      </div>
+      <div class="insight">
+        <h3>存储单元从「文档」降到「事实」</h3>
+        <p>文档级检索回答「哪份文档讲过」;事实级直接回答「这件事是什么」——只有事实能进入 AI 的回答。</p>
+      </div>
+      <div class="insight">
+        <h3>记忆是生命周期,不是一次性导入</h3>
+        <p>写入、整理、召回三个环节缺一不可;只有导入、没有整理,检索质量随规模退化。</p>
+      </div>
+    </section>
+
+    <section class="fold">
+      <details>
+        <summary><span class="tri" aria-hidden="true"></span><h2>三、方案:会学习的团队记忆</h2></summary>
+        <div class="fold-body">
+          <p>Hindsight 是 Vectorize 的开源 agent 记忆系统,定位是「让 agent 学习,而不只是记住」:不存对话原文,只从中抽取类型化的事实,在事实上持续构建。官方基准 LongMemEval 94.6%(次优系统 74.0%),由弗吉尼亚理工 Sanghani 中心与《华盛顿邮报》独立复现。</p>
+          <ul class="kv">
+            <li><b>接入</b><span>内置 MCP 端点,任意 AI 助手一行配置;网页、接口可直查。</span></li>
+            <li><b>加工</b><span>大模型把文档与对话抽取为事实并生成向量,无人工整理。</span></li>
+            <li><b>存储</b><span>PostgreSQL + pgvector,事实与向量同库。</span></li>
+            <li><b>整理</b><span>定期合并去重、归纳同主题,检索质量不随规模退化。</span></li>
+          </ul>
+          <p>三种用法:</p>
+          <div class="uses">
+            <div class="use">
+              <h3>存量导入</h3>
+              <p>批量灌入,自动拆成一条条事实,7112 篇已入 3267 篇。</p>
+            </div>
+            <div class="use">
+              <h3>自动沉淀与召回</h3>
+              <p>协作中的结论自动记下;任何人问到,助手自动带出。</p>
+            </div>
+            <div class="use">
+              <h3>直接检索</h3>
+              <p>网页、接口直接查,不当 AI 用也是一个知识库。</p>
+            </div>
+          </div>
+          <p>两个架构图,点开可交互:</p>
+          <div class="diagrams">
+            <figure class="diagram">
+              <svg viewBox="0 0 760 348" role="img" aria-labelledby="arch-t">
+                <title id="arch-t">总体架构:团队成员与 AI 助手通过 Hindsight 记忆服务读写向量数据库;存量文档批量导入,大模型做提炼与向量化;网页接口可直接检索</title>
+                <rect x="24" y="250" width="120" height="58" fill="#FFFFFF"/>
+                <text x="84" y="276" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">团队成员</text>
+                <text x="84" y="294" text-anchor="middle" fill="#5C5151" font-size="10.5">50 人</text>
+                <rect x="178" y="250" width="120" height="58" fill="#FFFFFF"/>
+                <text x="238" y="276" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">AI 助手</text>
+                <text x="238" y="294" text-anchor="middle" fill="#5C5151" font-size="10.5">编程 / 办公 agent</text>
+                <rect x="332" y="250" width="200" height="58" fill="#C0102D"/>
+                <text x="432" y="276" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="600">Hindsight 记忆服务</text>
+                <text x="432" y="294" text-anchor="middle" fill="#FFE4E8" font-size="10.5">HTTP API · MCP 入口</text>
+                <rect x="566" y="250" width="170" height="58" fill="#FFFFFF"/>
+                <text x="651" y="276" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">向量数据库</text>
+                <text x="651" y="294" text-anchor="middle" fill="#5C5151" font-size="10.5">PostgreSQL + pgvector</text>
+                <rect x="300" y="64" width="130" height="56" fill="#FFFFFF"/>
+                <text x="365" y="89" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">存量文档</text>
+                <text x="365" y="107" text-anchor="middle" fill="#5C5151" font-size="10.5">wiki / 复盘 / 记录</text>
+                <rect x="452" y="64" width="130" height="56" fill="#FFFFFF"/>
+                <text x="517" y="89" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">大模型服务</text>
+                <text x="517" y="107" text-anchor="middle" fill="#5C5151" font-size="10.5">抽取 · 向量化</text>
+                <line x1="144" y1="279" x2="178" y2="279" stroke="#211818" stroke-width="1.6"/>
+                <line x1="298" y1="279" x2="332" y2="279" stroke="#211818" stroke-width="1.6"/>
+                <text x="315" y="270" text-anchor="middle" fill="#5C5151" font-size="10">MCP</text>
+                <line x1="532" y1="279" x2="566" y2="279" stroke="#211818" stroke-width="1.6"/>
+                <line x1="365" y1="120" x2="365" y2="250" stroke="#C0102D" stroke-width="1.4" stroke-dasharray="5 4"/>
+                <text x="376" y="190" fill="#8E0E22" font-size="10">批量导入</text>
+                <line x1="517" y1="120" x2="517" y2="250" stroke="#C0102D" stroke-width="1.4" stroke-dasharray="5 4"/>
+                <text x="528" y="190" fill="#8E0E22" font-size="10">抽取 / 向量化</text>
+                <path d="M 84 308 L 84 334 L 432 334 L 432 308" fill="none" stroke="#C0102D" stroke-width="1.4" stroke-dasharray="5 4"/>
+                <text x="258" y="328" text-anchor="middle" fill="#8E0E22" font-size="10">网页 / 接口直接检索</text>
+              </svg>
+              <figcaption><b>总体架构</b>一个服务加一个库,两个容器;AI 助手经标准协议接入,存量文档批量灌入。</figcaption>
+              <a class="open-link" href="arch-architecture.html" target="_blank" rel="noopener">打开架构交互大图</a>
+            </figure>
+            <figure class="diagram">
+              <svg viewBox="0 0 760 330" role="img" aria-labelledby="flow-t">
+                <title id="flow-t">记忆生命周期:存量文档与 AI 助手对话写入,大模型加工成事实与向量,存入记忆库,再供 AI 助手与网页接口取用,并有定期整理回路</title>
+                <rect x="24" y="52" width="130" height="54" fill="#FFFFFF"/>
+                <text x="89" y="75" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">存量文档</text>
+                <text x="89" y="93" text-anchor="middle" fill="#5C5151" font-size="10.5">批量导入</text>
+                <rect x="24" y="212" width="130" height="54" fill="#FFFFFF"/>
+                <text x="89" y="235" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">AI 助手对话</text>
+                <text x="89" y="253" text-anchor="middle" fill="#5C5151" font-size="10.5">结论自动沉淀</text>
+                <rect x="220" y="132" width="140" height="54" fill="#C0102D"/>
+                <text x="290" y="155" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="600">大模型加工</text>
+                <text x="290" y="173" text-anchor="middle" fill="#FFE4E8" font-size="10.5">拆成事实 · 向量化</text>
+                <rect x="420" y="132" width="140" height="54" fill="#C0102D"/>
+                <text x="490" y="155" text-anchor="middle" fill="#FFFFFF" font-size="13" font-weight="600">记忆库</text>
+                <text x="490" y="173" text-anchor="middle" fill="#FFE4E8" font-size="10.5">事实 + 向量</text>
+                <rect x="610" y="52" width="130" height="54" fill="#FFFFFF"/>
+                <text x="675" y="75" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">AI 助手</text>
+                <text x="675" y="93" text-anchor="middle" fill="#5C5151" font-size="10.5">自动带出记忆</text>
+                <rect x="610" y="212" width="130" height="54" fill="#FFFFFF"/>
+                <text x="675" y="235" text-anchor="middle" fill="#211818" font-size="13" font-weight="600">网页 · 接口</text>
+                <text x="675" y="253" text-anchor="middle" fill="#5C5151" font-size="10.5">直接检索</text>
+                <line x1="154" y1="106" x2="220" y2="140" stroke="#211818" stroke-width="1.6"/>
+                <line x1="154" y1="212" x2="220" y2="178" stroke="#211818" stroke-width="1.6"/>
+                <line x1="360" y1="159" x2="420" y2="159" stroke="#211818" stroke-width="1.6"/>
+                <text x="390" y="150" text-anchor="middle" fill="#5C5151" font-size="10">入库</text>
+                <line x1="560" y1="140" x2="610" y2="106" stroke="#211818" stroke-width="1.6"/>
+                <text x="585" y="112" text-anchor="middle" fill="#5C5151" font-size="10">秒回</text>
+                <line x1="560" y1="178" x2="610" y2="230" stroke="#211818" stroke-width="1.6" stroke-dasharray="5 4"/>
+                <path d="M 490 132 L 490 26 L 290 26 L 290 132" fill="none" stroke="#C0102D" stroke-width="1.4" stroke-dasharray="5 4"/>
+                <text x="390" y="20" text-anchor="middle" fill="#8E0E22" font-size="10">定期整理 · 越用越准</text>
+              </svg>
+              <figcaption><b>记忆生命周期</b>写入、加工、存储、取用一条线;定期整理合并去重。</figcaption>
+              <a class="open-link" href="loop-dataflow.html" target="_blank" rel="noopener">打开生命周期交互大图</a>
+            </figure>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="fold">
+      <details>
+        <summary><span class="tri" aria-hidden="true"></span><h2>四、效果</h2></summary>
+        <div class="fold-body">
+          <p>一次检索,问法随意,不需要知道文档名。</p>
+          <div class="qa" data-ui>
+            <p class="q">需求澄清,怎么判断理解到位了?</p>
+            <div class="hit"><span class="name">需求质量维度</span><span class="fact">完整性、清晰性、可测量性等七个维度,逐条检查需求是否写得足够好</span></div>
+            <div class="hit"><span class="name">验收标准</span><span class="fact">判断一项工作是否达到验收边界的标准,必须可测量、能逐项核验</span></div>
+            <div class="hit"><span class="name">澄清流程</span><span class="fact">问题必须可快速回答,答案要能改变实现或验收方式,低影响问题不问</span></div>
+            <p class="foot">来源标签 <b>godwiki</b> · 共命中 <b>20</b> 条相关记忆 · <b>秒级</b>返回</p>
+          </div>
+          <ul class="kv">
+            <li><b>规模</b><span>3267 / 7112 篇已拆解入库,无人工参与。</span></li>
+            <li><b>质量</b><span>一次提问返回 20 条相关事实,语义检索加重排两级。</span></li>
+            <li><b>稳定</b><span>自 10 月 24 日连续运行。</span></li>
+          </ul>
+          <p style="margin-top:6px">控制台实况:</p>
+          <div class="diagrams">
+            <figure class="diagram">
+              <img src="console-home.png" alt="Hindsight 控制台:记忆库概览,含记忆星座图与记忆构成">
+              <figcaption><b>控制台 · 记忆库概览</b>记忆星座图与记忆构成(世界 / 经历 / 观察)。</figcaption>
+            </figure>
+            <figure class="diagram">
+              <img src="console-docs.png" alt="Hindsight 控制台:文档管理页,含已入库文档与来源标签">
+              <figcaption><b>控制台 · 文档管理</b>已入库文档、来源标签与记忆单元数。</figcaption>
+            </figure>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section class="fold">
+      <details>
+        <summary><span class="tri" aria-hidden="true"></span><h2>五、实施路径</h2></summary>
+        <div class="fold-body">
+          <ol class="steps">
+            <li>
+              <div><b>内网一台服务器,容器化部署</b><p>两个容器,一台机器。</p></div>
+            </li>
+            <li>
+              <div><b>存量文档批量导入</b><p>不依赖人工整理。</p></div>
+            </li>
+            <li>
+              <div><b>每人 AI 助手一行配置接入</b><p>当天接入当天能用。</p></div>
+            </li>
+            <li class="note">每一步可单独回退。</li>
+          </ol>
+        </div>
+      </details>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>本次只讲功能与效果;成本与数据边界,确定建设后再单独说明。</p>
+  </div>
+</footer>
+
+</body>
+</html>

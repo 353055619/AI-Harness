@@ -9,7 +9,7 @@
 - `archive/` — 退役插件归档（git 跟踪、不装 `~/.agents`；恢复步骤见 `archive/README.md`）
 - `sync.sh` — 一键「安装到 `~/.agents` + 提交推送 GitHub」的脚本
 - `.zcode/skills/publish/` — 本项目专用技能 `/publish`（发布前差异检查 → `sync.sh` → 插件生效 update/install+enable → 验证汇报），随仓库版本化，不安装到 `~/.agents`
-- 本地工作目录（`.gitignore` 已排除，不提交 GitHub）：`reference/`（调研 survey 报告 + `mirrors/` 上游参考仓库镜像，索引见 `reference/AGENTS.md`）、`delivery/`（日期命名的交付面板 JSON/HTML）、`.agents/`（本地交付说明 `DELIVERY.md`）
+- 本地工作目录（`.gitignore` 已排除，不提交 GitHub）：`reference/`（调研 survey 报告 + `mirrors/` 上游参考仓库镜像，索引见 `reference/AGENTS.md`）、`delivery/`（日期命名的交付面板 JSON/HTML）、`.agents/`（本地交付说明 `DELIVERY.md`）；例外：`delivery/20261027-godw-design-report/` 与 `delivery/20261028-hindsight-team-kb-report/` 两份汇报已跟踪发布（`git add -f`，内容经敏感扫描无公司信息）
 - `~/.agents/.tools-update/`（更新备份与运行状态，16MB）不在本仓库管理范围
 
 ## 工作流：开发 → 安装 → 推送

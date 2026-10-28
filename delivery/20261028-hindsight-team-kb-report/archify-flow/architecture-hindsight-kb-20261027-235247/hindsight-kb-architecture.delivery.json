@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "bd28702c-a459-4444-b216-55c19e310da8",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "/Users/godw/hindsight/.archify/architecture-hindsight-kb-20261027-235247/candidate.json",
+  "output": "/Users/godw/hindsight/.archify/architecture-hindsight-kb-20261027-235247/hindsight-kb-architecture.html",
+  "specification": {
+    "sha256": "9148cd240b3c6dd7720f8f59bdb8073ce2c5b6f9d8935a295473c1c5f56d561a",
+    "bytes": 3646
+  },
+  "artifact": {
+    "sha256": "308c2cad3f6a064c2b59cc28f8e2f1729292df3b64ad2aa1ff468dfafa3fca3b",
+    "bytes": 755283
+  }
+}

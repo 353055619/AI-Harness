@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Hindsight 团队记忆库 · 总体架构",
+    "locale": "zh-CN",
+    "output": ".archify/architecture-hindsight-kb-20261027-235247/hindsight-kb-architecture.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "team",
+      "type": "external",
+      "label": "团队成员",
+      "sublabel": "50 人 · 每天在用 AI 助手",
+      "pos": [
+        40,
+        300
+      ],
+      "size": [
+        140,
+        64
+      ]
+    },
+    {
+      "id": "agent",
+      "type": "frontend",
+      "label": "AI 助手",
+      "sublabel": "编程 / 办公 agent",
+      "pos": [
+        300,
+        300
+      ],
+      "size": [
+        130,
+        64
+      ]
+    },
+    {
+      "id": "hindsight",
+      "type": "backend",
+      "label": "Hindsight 记忆服务",
+      "sublabel": "HTTP API :8888 · MCP 入口",
+      "pos": [
+        560,
+        296
+      ],
+      "size": [
+        180,
+        72
+      ]
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "向量数据库",
+      "sublabel": "PostgreSQL + pgvector",
+      "pos": [
+        880,
+        300
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "docs",
+      "type": "external",
+      "label": "团队存量文档",
+      "sublabel": "wiki / 复盘 / 项目记录",
+      "pos": [
+        500,
+        120
+      ],
+      "size": [
+        160,
+        64
+      ]
+    },
+    {
+      "id": "llm",
+      "type": "cloud",
+      "label": "大模型服务",
+      "sublabel": "事实提炼 · 向量化",
+      "pos": [
+        700,
+        120
+      ],
+      "size": [
+        150,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "内网主机 · 两个容器",
+      "wraps": [
+        "hindsight",
+        "pg"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "team-agent",
+      "from": "team",
+      "to": "agent",
+      "label": "日常协作",
+      "variant": "emphasis"
+    },
+    {
+      "id": "agent-mcp",
+      "from": "agent",
+      "to": "hindsight",
+      "label": "MCP · 读写记忆"
+    },
+    {
+      "id": "hs-pg",
+      "from": "hindsight",
+      "to": "pg",
+      "label": "记忆 · 向量存取"
+    },
+    {
+      "id": "docs-import",
+      "from": "docs",
+      "to": "hindsight",
+      "label": "批量导入",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "llm-call",
+      "from": "llm",
+      "to": "hindsight",
+      "label": "提炼 / 向量化",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "team-direct",
+      "from": "team",
+      "to": "hindsight",
+      "label": "网页 / 接口直接检索",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [
+        [
+          110,
+          480
+        ],
+        [
+          650,
+          480
+        ]
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "接入",
+      "items": [
+        "AI 助手经标准 MCP 协议接入,每人一行配置",
+        "网页与接口可直接检索,不当 AI 用也能查"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "存储",
+      "items": [
+        "记忆以一条条事实的形式存入 PostgreSQL + pgvector",
+        "向量检索,秒级返回"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "处理",
+      "items": [
+        "大模型把长文档自动拆成事实,存量文档变活知识",
+        "定期整理合并,记忆越用越准"
+      ]
+    }
+  ]
+}

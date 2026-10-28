@@ -1,0 +1,62 @@
+{
+  "gate": "render-gate",
+  "version": 1,
+  "file": "/Users/godw/GodwGarage/projects/AI-Harness/delivery/20261028-hindsight-team-kb-report/hindsight-汇报.html",
+  "timestamp": "2026-10-28T00:22:18.436Z",
+  "browser": "Google Chrome",
+  "widths": [
+    375,
+    768,
+    1280
+  ],
+  "smoke": true,
+  "verdict": "pass",
+  "failures": [],
+  "perWidth": [
+    {
+      "width": 375,
+      "hOverflow": false,
+      "brokenImages": 0,
+      "imageTotal": 2,
+      "textLen": 523,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResources": [],
+      "smoke": {
+        "clicked": true,
+        "newErrors": 0
+      },
+      "screenshot": "../GodwGarage/projects/AI-Harness/delivery/20261028-hindsight-team-kb-report/render-gate-evidence/shot-375.png"
+    },
+    {
+      "width": 768,
+      "hOverflow": false,
+      "brokenImages": 0,
+      "imageTotal": 2,
+      "textLen": 523,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResources": [],
+      "smoke": {
+        "clicked": true,
+        "newErrors": 0
+      },
+      "screenshot": "../GodwGarage/projects/AI-Harness/delivery/20261028-hindsight-team-kb-report/render-gate-evidence/shot-768.png"
+    },
+    {
+      "width": 1280,
+      "hOverflow": false,
+      "brokenImages": 0,
+      "imageTotal": 2,
+      "textLen": 523,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResources": [],
+      "smoke": {
+        "clicked": true,
+        "newErrors": 0
+      },
+      "screenshot": "../GodwGarage/projects/AI-Harness/delivery/20261028-hindsight-team-kb-report/render-gate-evidence/shot-1280.png"
+    }
+  ]
+}

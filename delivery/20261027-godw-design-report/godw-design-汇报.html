@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>godw-design · 设计流水线汇报</title>
+<style>
+  :root{
+    --paper:#FAF9F6;
+    --ink:#23262B;
+    --red:#B3282F;
+    --grey:#59616D;
+    --line:#E6E2D9;
+    --tint:#F5EDE9;
+    --seal:#FBF3F0;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16px;
+    line-height:1.75;
+  }
+  .page{max-width:1040px;margin:0 auto;padding:48px 28px 40px}
+  h1,h2,h3{font-family:"Songti SC","STSong","SimSun",serif;font-weight:700;margin:0}
+  h1{font-size:34px;line-height:1.3;letter-spacing:.01em}
+  h1 .sub{display:block;font-size:19px;color:var(--grey);font-weight:400;margin-top:6px;letter-spacing:.02em}
+  .masthead{border-bottom:2px solid var(--ink);padding-bottom:20px}
+  .statusline{list-style:none;display:flex;flex-wrap:wrap;padding:0;margin:16px 0 0;font-size:13px;color:var(--grey)}
+  .statusline li{padding:0 14px;border-left:1px solid var(--line)}
+  .statusline li:first-child{padding-left:0;border-left:0}
+  section{margin-top:36px}
+  h2{font-size:21px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .verdict p{font-size:19px;margin:14px 0 0;max-width:46em}
+  figure{margin:0}
+  figcaption{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--grey)}
+  .interact{
+    font-size:13px;color:var(--red);text-decoration:none;
+    border:1px solid var(--red);padding:3px 12px;border-radius:2px;white-space:nowrap;
+  }
+  .interact:hover{background:var(--seal)}
+  .interact:focus-visible,summary:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  svg{display:block;width:100%;height:auto}
+  .folds{margin-top:40px;padding-top:10px;border-top:2px solid var(--ink)}
+  details{border-bottom:1px solid var(--line)}
+  summary{
+    cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;
+    padding:15px 4px;font-size:17px;font-family:"Songti SC","STSong",serif;font-weight:700;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--red);font-size:20px;font-family:sans-serif;font-weight:400}
+  details[open] summary::after{content:"−"}
+  summary:hover{background:var(--seal)}
+  .foldbody{padding:4px 4px 24px;font-size:15px;color:var(--ink)}
+  .stage{border-left:3px solid var(--line);padding:2px 0 2px 16px;margin:18px 0}
+  .stage h3{font-size:16px;margin-bottom:4px}
+  .stage p{margin:0;color:var(--grey);font-size:14px}
+  .stage .gate{color:var(--red)}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-weight:600;color:var(--grey);font-size:13px;white-space:nowrap}
+  dl.terms{display:grid;grid-template-columns:110px 1fr;gap:8px 18px;margin:8px 0 0;font-size:14px}
+  dl.terms dt{color:var(--grey)}
+  dl.terms dd{margin:0}
+  footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--grey)}
+  @media (max-width:720px){
+    .page{padding:32px 18px 32px}
+    h1{font-size:27px}
+    h1 .sub{font-size:16px}
+    .verdict p{font-size:17px}
+    .statusline li{padding:0 8px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="masthead">
+  <h1>godw-design<span class="sub">设计环节的 AI 流水线</span></h1>
+  <ul class="statusline">
+    <li>v0.7.0</li>
+    <li>2026-10-25 发布</li>
+    <li>四阶段 · 五道门</li>
+    <li>回归考题全绿</li>
+    <li>已在公司真实项目迭代三轮</li>
+  </ul>
+</header>
+
+<main>
+
+<section class="verdict">
+  <h2>一句话结论</h2>
+  <p>设计环节以前靠人写文档，现在是一条 AI 流水线：需求进来，四个阶段自动推进，每段出口有道门。机器先查约 80 条硬规则，再由 AI 评委把关：四位固定架构评委挑专业毛病，N 个用户评委按真实角色答卷，过不了就打回重做，过门才放行。人只做两件事：开头把需求说清，结尾看结果。流程自身也有保险：改任何规则必须先过回归考题，改坏了发不出新版。</p>
+</section>
+
+<section class="pipeline">
+  <h2>四阶段五道门</h2>
+  <figure>
+    <svg viewBox="0 0 1000 330" role="img" aria-label="godw-design 四阶段流水线：需求定形、4A 架构、PRD 成文、原型与收口，阶段间有质量门把守">
+      <!-- 人在环：需求方 / 看结果 -->
+      <g font-family="'Songti SC','STSong',serif">
+        <rect x="22" y="26" width="168" height="58" fill="#FFFFFF" stroke="#23262B" stroke-width="1.5"/>
+        <text x="106" y="50" text-anchor="middle" font-size="15" font-weight="700" fill="#23262B">需求方</text>
+        <text x="106" y="71" text-anchor="middle" font-size="11" fill="#59616D">说清想法、点头定稿</text>
+        <rect x="810" y="26" width="168" height="58" fill="#FFFFFF" stroke="#23262B" stroke-width="1.5"/>
+        <text x="894" y="50" text-anchor="middle" font-size="15" font-weight="700" fill="#23262B">看结果</text>
+        <text x="894" y="71" text-anchor="middle" font-size="11" fill="#59616D">一页成绩单</text>
+      </g>
+      <!-- 需求方 → 阶段一 -->
+      <path d="M 106 84 L 106 128" stroke="#23262B" stroke-width="1.5" fill="none"/>
+      <path d="M 101 122 L 106 131 L 111 122" fill="none" stroke="#23262B" stroke-width="1.5"/>
+      <!-- 成绩单 → 看结果 -->
+      <path d="M 925 128 L 925 96 L 902 96 L 902 84" stroke="#23262B" stroke-width="1.5" fill="none"/>
+      <path d="M 897 90 L 902 81 L 907 90" fill="none" stroke="#23262B" stroke-width="1.5"/>
+      <!-- 四个阶段 -->
+      <g font-family="-apple-system,'PingFang SC',sans-serif">
+        <g>
+          <rect x="22" y="132" width="168" height="74" fill="#FFFFFF" stroke="#23262B" stroke-width="1.5"/>
+          <text x="106" y="160" text-anchor="middle" font-size="14.5" font-weight="600" fill="#23262B">一 需求定形</text>
+          <text x="106" y="182" text-anchor="middle" font-size="11" fill="#59616D">访谈澄清 · 编号 · 冻结</text>
+        </g>
+        <g>
+          <rect x="272" y="132" width="168" height="74" fill="#FFFFFF" stroke="#23262B" stroke-width="1.5"/>
+          <text x="356" y="160" text-anchor="middle" font-size="14.5" font-weight="600" fill="#23262B">二 4A 架构</text>
+          <text x="356" y="182" text-anchor="middle" font-size="11" fill="#59616D">四份架构文档 + 模型</text>
+        </g>
+        <g>
+          <rect x="522" y="132" width="168" height="74" fill="#FFFFFF" stroke="#23262B" stroke-width="1.5"/>
+          <text x="606" y="160" text-anchor="middle" font-size="14.5" font-weight="600" fill="#23262B">三 PRD 成文</text>
+          <text x="606" y="182" text-anchor="middle" font-size="11" fill="#59616D">总览 + 模块验收标准</text>
+        </g>
+        <g>
+          <rect x="772" y="132" width="168" height="74" fill="#FFFFFF" stroke="#23262B" stroke-width="1.5"/>
+          <text x="856" y="160" text-anchor="middle" font-size="14.5" font-weight="600" fill="#23262B">四 原型与收口</text>
+          <text x="856" y="182" text-anchor="middle" font-size="11" fill="#59616D">可交互页面 · 成绩单</text>
+        </g>
+        <!-- 阶段间流动箭头（被门截断） -->
+        <path d="M 190 169 L 218 169" stroke="#23262B" stroke-width="1.5"/>
+        <path d="M 440 169 L 468 169" stroke="#23262B" stroke-width="1.5"/>
+        <path d="M 690 169 L 718 169" stroke="#23262B" stroke-width="1.5"/>
+      </g>
+      <!-- 门 1：机器规则（阶段一出口） -->
+      <g>
+        <rect x="222" y="150" width="34" height="34" fill="#B3282F" rx="2"/>
+        <text x="239" y="173" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF" font-family="'Songti SC',serif">门</text>
+        <text x="239" y="200" text-anchor="middle" font-size="10.5" fill="#59616D">机器规则</text>
+      </g>
+      <!-- 门 2：架构门（评委） -->
+      <g>
+        <rect x="472" y="150" width="34" height="34" fill="#B3282F" rx="2"/>
+        <text x="489" y="173" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF" font-family="'Songti SC',serif">门</text>
+        <text x="489" y="200" text-anchor="middle" font-size="10.5" fill="#59616D">AI 评委</text>
+      </g>
+      <!-- 门 3：PRD 门（对抗审查） -->
+      <g>
+        <rect x="722" y="150" width="34" height="34" fill="#B3282F" rx="2"/>
+        <text x="739" y="173" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF" font-family="'Songti SC',serif">门</text>
+        <text x="739" y="200" text-anchor="middle" font-size="10.5" fill="#59616D">对抗审查</text>
+      </g>
+      <!-- 门 4：原型合验门，在阶段四出口右侧 + 过门章 -->
+      <g>
+        <rect x="828" y="228" width="34" height="34" fill="#B3282F" rx="2"/>
+        <text x="845" y="251" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF" font-family="'Songti SC',serif">门</text>
+        <text x="845" y="278" text-anchor="middle" font-size="10.5" fill="#59616D">走查 + 视觉断言</text>
+        <!-- 过门章 -->
+        <g transform="rotate(-12 930 245)">
+          <circle cx="930" cy="245" r="27" fill="none" stroke="#B3282F" stroke-width="2.5"/>
+          <circle cx="930" cy="245" r="21" fill="none" stroke="#B3282F" stroke-width="1"/>
+          <text x="930" y="251" text-anchor="middle" font-size="14" font-weight="700" fill="#B3282F" font-family="'Songti SC',serif">过门</text>
+        </g>
+        <path d="M 856 206 L 856 224" stroke="#23262B" stroke-width="1.5"/>
+        <path d="M 851 219 L 856 228 L 861 219" fill="none" stroke="#23262B" stroke-width="1.5"/>
+      </g>
+      <!-- 打回重做（代表一条，全流程同规则） -->
+      <path d="M 489 184 C 489 216 420 216 386 216 L 366 216" stroke="#B3282F" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
+      <path d="M 372 211 L 362 216 L 372 221" fill="none" stroke="#B3282F" stroke-width="1.5"/>
+      <text x="428" y="238" text-anchor="middle" font-size="11.5" fill="#B3282F">不过就打回重做，直到过门</text>
+      <text x="106" y="238" text-anchor="middle" font-size="11" fill="#59616D">冻结后越界改动会被拦下</text>
+    </svg>
+    <figcaption>
+      <span>每道门先过机器规则，再过 AI 评委；产物过门才落盘，全程留证据。</span>
+      <a class="interact" href="archify-flow/pipeline.html">打开可交互流程图</a>
+    </figcaption>
+  </figure>
+</section>
+
+<section class="quality">
+  <h2>质量怎么保</h2>
+  <figure>
+        <svg viewBox="0 0 1000 156" role="img" aria-label="三道防线：机器规则、AI 评委、回归考题，各配一个例子">
+      <line x1="0" y1="8" x2="1000" y2="8" stroke="#E6E2D9"/>
+      <g font-family="-apple-system,'PingFang SC',sans-serif">
+        <g stroke="#23262B" stroke-width="1.5" fill="none">
+          <rect x="0" y="30" width="26" height="34"/>
+          <path d="M 6 40 l 3 3 l 6 -6"/>
+          <path d="M 6 51 l 3 3 l 6 -6"/>
+        </g>
+        <path d="M 6 62 l 3 3 l 6 -6" stroke="#B3282F" stroke-width="1.5" fill="none"/>
+        <text x="40" y="45" font-size="15" font-weight="700" fill="#23262B" font-family="'Songti SC',serif">机器规则</text>
+        <text x="40" y="66" font-size="12" fill="#59616D">五阶段检查，约 80 条硬规则</text>
+        <text x="40" y="86" font-size="12" fill="#59616D">机械问题自动打回重修，上限 10 次</text>
+        <text x="40" y="106" font-size="12" fill="#59616D">冻结围栏拦住越界改动</text>
+        <text x="40" y="128" font-size="12" fill="#59616D"><tspan fill="#B3282F">例：</tspan>追踪表指着不存在的 9.9 节，当场打回</text>
+      </g>
+      <g font-family="-apple-system,'PingFang SC',sans-serif">
+        <g fill="#23262B">
+          <circle cx="346" cy="38" r="4"/>
+          <path d="M 339 52 q 7 -8 14 0" stroke="#23262B" stroke-width="1.5" fill="none"/>
+          <circle cx="368" cy="38" r="4"/>
+          <path d="M 361 52 q 7 -8 14 0" stroke="#23262B" stroke-width="1.5" fill="none"/>
+          <circle cx="346" cy="66" r="4"/>
+          <path d="M 339 80 q 7 -8 14 0" stroke="#23262B" stroke-width="1.5" fill="none"/>
+          <circle cx="368" cy="66" r="4" fill="#B3282F"/>
+          <path d="M 361 80 q 7 -8 14 0" stroke="#B3282F" stroke-width="1.5" fill="none"/>
+        </g>
+        <text x="396" y="45" font-size="15" font-weight="700" fill="#23262B" font-family="'Songti SC',serif">AI 评委</text>
+        <text x="396" y="66" font-size="12" fill="#59616D">四位固定架构评委 + N 个用户评委</text>
+        <text x="396" y="86" font-size="12" fill="#59616D">架构评委挑专业毛病，用户评委按角色答卷</text>
+        <text x="396" y="106" font-size="12" fill="#59616D">只认证据，PASS 线机器算</text>
+        <text x="396" y="128" font-size="12" fill="#59616D"><tspan fill="#B3282F">例：</tspan>文档塞「细节由系统智能处理」，被打回</text>
+      </g>
+      <g font-family="-apple-system,'PingFang SC',sans-serif">
+        <circle cx="686" cy="50" r="17" fill="none" stroke="#23262B" stroke-width="1.5"/>
+        <circle cx="686" cy="50" r="10" fill="none" stroke="#23262B" stroke-width="1.2"/>
+        <circle cx="686" cy="50" r="3.5" fill="#B3282F"/>
+        <text x="716" y="45" font-size="15" font-weight="700" fill="#23262B" font-family="'Songti SC',serif">回归考题</text>
+        <text x="716" y="66" font-size="12" fill="#59616D">两卷考题、六颗雷，改规则必跑</text>
+        <text x="716" y="86" font-size="12" fill="#59616D">机械雷全自动验收，全逮才许发版</text>
+        <text x="716" y="106" font-size="12" fill="#59616D">评委雷对分核对，当前 3/3</text>
+        <text x="716" y="128" font-size="12" fill="#59616D"><tspan fill="#B3282F">例：</tspan>改规则后好卷被误杀，这版发不出去</text>
+      </g>
+      <line x1="333" y1="24" x2="333" y2="134" stroke="#E6E2D9"/>
+      <line x1="663" y1="24" x2="663" y2="134" stroke="#E6E2D9"/>
+    </svg>
+    <figcaption><span>三道防线叠着用：机器拦机械问题，评委拦语义问题，考题拦「流程自己改坏」。</span></figcaption>
+  </figure>
+</section>
+
+<section class="folds">
+  <details>
+    <summary>四阶段逐段细节</summary>
+    <div class="foldbody">
+      <div class="stage">
+        <h3>一 需求定形</h3>
+        <p>AI 访谈把原始想法问清，编成带编号的需求文档（功能项 FR、质量项 NFR），人确认定稿后冻结，之后谁也改不动。出口<span class="gate">门：机器查骨架、编号、占位、双源</span>，产物是冻结的原始需求和术语表。</p>
+      </div>
+      <div class="stage">
+        <h3>二 4A 架构</h3>
+        <p>AI 把需求拆成架构腿，写业务、信息、应用、技术四份架构文档和模型，每条需求都挂得到架构上，追得到。出口<span class="gate">门：机器查用例覆盖与追踪对账，用户评委按「能做 / 卡住 / 靠猜」三栏答卷</span>，产物是 4A 文档、模型和追踪表。</p>
+      </div>
+      <div class="stage">
+        <h3>三 PRD 成文</h3>
+        <p>总览加模块 PRD，验收标准用统一句式写，每条需求至少一条验收、每个模块至少一条异常验收。出口<span class="gate">门：对抗审查，评委专挑过度设计和含糊其辞，PASS 线由登记表机器计算</span>，产物是 PRD 集。</p>
+      </div>
+      <div class="stage">
+        <h3>四 原型与收口</h3>
+        <p>AI 出可交互原型（不是静态图），自动走查死链和占位桩；再抽验收条目让视觉验收官看截图逐条判定，写了没做直接算 blocker。出口<span class="gate">门：走查覆盖 + 视觉断言</span>，产物是原型、走查证据和一页成绩单。</p>
+      </div>
+    </div>
+  </details>
+
+  <details>
+    <summary>AI 评委怎么干活</summary>
+    <div class="foldbody">
+      <p>评委分两层：四位固定架构评委管专业质量，N 个用户评委管真实角色用不用得顺。用户评委从冻结的身份卡派生，一个角色一个，考题只发目标句不发流程，路该由文档自己说清。</p>
+      <table>
+        <tr><th>架构评委</th><th>干什么</th></tr>
+        <tr><td>架构评审官</td><td>七个维度找具体反例，找不到反例才给高分，空泛自评拿不到分。</td></tr>
+        <tr><td>开发者复现官</td><td>只看文档不看需求，照图复现要建的模块、接口、时序；只能靠猜的地方逐条记 blocker。</td></tr>
+        <tr><td>简洁审查官</td><td>反膨胀砍单：页面、流程、状态、通知、接口、重复六区审查，确认过度设计的砍掉。</td></tr>
+        <tr><td>视觉验收官</td><td>只看走查截图，对界面验收条目逐条判过不过，判定必须引用具体截图。</td></tr>
+      </table>
+      <p style="margin-top:12px;color:#59616D">用户评委逐题作答，每步三选一：能做（文档写清了）、卡住（没写或前后矛盾）、靠猜（文档没写，脑补了一步才走得下去，照实报，替未来开发者暴露欠账）。原型门的用户评委还要真跑走查器留证据，没证据的答卷作废。PASS 线由登记表机器算：卡住和靠猜清零、本轮新问题为零才放行；评委自身的改动也要先过回归考题。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>回归考题：流程自身的保险</summary>
+    <div class="foldbody">
+      <p>门禁和评委自己也会改版，改坏了以前只能等实战暴露。现在配了两卷考题（虚构示例项目），六颗雷埋在产物里：抹掉验收挂链、伪造追踪引用、删关键流程、塞豁免句、塞过度设计、塞空泛自评。改任何规则，发版前必跑：机械雷要全逮、好卷零误杀；改评委另跑评委雷对分，当前 3/3。实战暴露新的偷懒形态，就回来补雷。</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>名词速查</summary>
+    <div class="foldbody">
+      <dl class="terms">
+        <dt>FR / NFR</dt><dd>功能需求条目 / 非功能（质量）需求条目，带编号可追踪。</dd>
+        <dt>4A 架构</dt><dd>业务、信息、应用、技术四份架构文档，加一份模型和追踪表。</dd>
+        <dt>PRD</dt><dd>产品需求文档，写清做什么、做到什么程度算验收。</dd>
+        <dt>EARS</dt><dd>验收标准句式：当某条件出现时，系统应当怎样响应。</dd>
+        <dt>对抗审查</dt><dd>评委专门挑毛病的审查方式：找反例、记 blocker、砍过度设计。</dd>
+        <dt>视觉断言</dt><dd>AI 看界面截图，对验收条目逐条判定过不过。</dd>
+        <dt>架构腿</dt><dd>需求拆分后送进架构设计的那一股。</dd>
+        <dt>身份卡</dt><dd>冻结的角色清单：每类用户要办什么、怕什么、懂多少，用户评委由此派生。</dd>
+        <dt>blocker</dt><dd>挡住交付的问题，必须解决才能过门。</dd>
+      </dl>
+    </div>
+  </details>
+</section>
+
+</main>
+
+<footer>
+  2026-10-27 汇报材料 · 本页离线可开 · 可交互流程图在同目录，页面内可直达
+</footer>
+
+</div>
+</body>
+</html>

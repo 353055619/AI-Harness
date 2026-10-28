@@ -1,0 +1,62 @@
+{
+  "gate": "render-gate",
+  "version": 1,
+  "file": "/Users/godw/GodwGarage/projects/AI-Harness/delivery/20261027-godw-design-report/godw-design-汇报.html",
+  "timestamp": "2026-10-27T23:52:37.545Z",
+  "browser": "Google Chrome",
+  "widths": [
+    375,
+    768,
+    1280
+  ],
+  "smoke": true,
+  "verdict": "pass",
+  "failures": [],
+  "perWidth": [
+    {
+      "width": 375,
+      "hOverflow": false,
+      "brokenImages": 0,
+      "imageTotal": 0,
+      "textLen": 821,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResources": [],
+      "smoke": {
+        "clicked": true,
+        "newErrors": 0
+      },
+      "screenshot": "render-gate-evidence/shot-375.png"
+    },
+    {
+      "width": 768,
+      "hOverflow": false,
+      "brokenImages": 0,
+      "imageTotal": 0,
+      "textLen": 821,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResources": [],
+      "smoke": {
+        "clicked": true,
+        "newErrors": 0
+      },
+      "screenshot": "render-gate-evidence/shot-768.png"
+    },
+    {
+      "width": 1280,
+      "hOverflow": false,
+      "brokenImages": 0,
+      "imageTotal": 0,
+      "textLen": 821,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedResources": [],
+      "smoke": {
+        "clicked": true,
+        "newErrors": 0
+      },
+      "screenshot": "render-gate-evidence/shot-1280.png"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "workflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/godw/GodwGarage/projects/AI-Harness/delivery/20261027-godw-design-report/archify-flow/candidate.json",
+    "sha256": "7cf6d2cd1e5079b9499bafea4522257152e3178ac6c643c5281e84e35d29bf86",
+    "bytes": 5379
+  },
+  "artifact": {
+    "path": "/Users/godw/GodwGarage/projects/AI-Harness/delivery/20261027-godw-design-report/archify-flow/pipeline.html",
+    "sha256": "3078ed587f188a09f3c7a36a75662121d63214064d67cb6dec228476b8c0fb21",
+    "bytes": 761572
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/godw/GodwGarage/projects/AI-Harness/delivery/20261027-godw-design-report/archify-flow/pipeline.finalize.json",
+    "summaryReceipt": "/Users/godw/GodwGarage/projects/AI-Harness/delivery/20261027-godw-design-report/archify-flow/pipeline.finalize-summary.json",
+    "browserCheckReceipt": "/Users/godw/GodwGarage/projects/AI-Harness/delivery/20261027-godw-design-report/archify-flow/pipeline.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "invalid-local-release"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 2111,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "routesOverSuggestedBends": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [],
+      "detours": [
+        {
+          "relationship": {
+            "id": "e_v3",
+            "from": "a_prd",
+            "to": "g_prd",
+            "label": "对抗审查",
+            "collectionIndex": 11,
+            "artifactIndex": 12
+          },
+          "bends": 3,
+          "stretch": 1
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "a_prd → g_prd needs 3 bends: move node a_prd or g_prd so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

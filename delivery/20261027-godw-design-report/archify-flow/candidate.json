@@ -1,0 +1,250 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "godw-design 设计流水线 · 标准流程",
+    "locale": "zh-CN",
+    "quality_profile": "showcase",
+    "output": "archify-flow/pipeline.html"
+  },
+  "lanes": [
+    {
+      "id": "human",
+      "label": "人在环"
+    },
+    {
+      "id": "agent",
+      "label": "AI 流水线"
+    },
+    {
+      "id": "gate",
+      "label": "质量门"
+    }
+  ],
+  "mainPath": [
+    "h_owner",
+    "a_formalize",
+    "g_req",
+    "a_split",
+    "a_4a",
+    "g_arch",
+    "a_prd",
+    "g_prd",
+    "a_proto",
+    "g_proto",
+    "a_archive",
+    "h_boss"
+  ],
+  "nodes": [
+    {
+      "id": "h_owner",
+      "lane": "human",
+      "col": 0,
+      "type": "external",
+      "label": "需求方",
+      "sublabel": "说清想法、点头定稿"
+    },
+    {
+      "id": "h_boss",
+      "lane": "human",
+      "col": 5,
+      "type": "external",
+      "label": "看结果",
+      "sublabel": "一页成绩单"
+    },
+    {
+      "id": "a_formalize",
+      "lane": "agent",
+      "col": 0,
+      "type": "backend",
+      "label": "需求定形",
+      "sublabel": "访谈澄清、编号、冻结"
+    },
+    {
+      "id": "a_split",
+      "lane": "agent",
+      "col": 1,
+      "type": "backend",
+      "label": "需求拆分",
+      "sublabel": "架构腿 + 身份卡"
+    },
+    {
+      "id": "a_4a",
+      "lane": "agent",
+      "col": 2,
+      "type": "backend",
+      "label": "4A 架构",
+      "sublabel": "四份架构文档 + 模型",
+      "width": 140
+    },
+    {
+      "id": "a_prd",
+      "lane": "agent",
+      "col": 3,
+      "type": "backend",
+      "label": "PRD 成文",
+      "sublabel": "总览 + 模块验收标准"
+    },
+    {
+      "id": "a_proto",
+      "lane": "agent",
+      "col": 4,
+      "type": "backend",
+      "label": "原型生产",
+      "sublabel": "可交互页面 + 走查自检"
+    },
+    {
+      "id": "a_archive",
+      "lane": "agent",
+      "col": 5,
+      "type": "backend",
+      "label": "收口归档",
+      "sublabel": "统一成绩单"
+    },
+    {
+      "id": "g_req",
+      "lane": "gate",
+      "col": 1,
+      "type": "security",
+      "label": "完成门",
+      "sublabel": "机器查骨架与编号",
+      "tag": "机器规则"
+    },
+    {
+      "id": "g_arch",
+      "lane": "gate",
+      "col": 3,
+      "type": "security",
+      "label": "架构门",
+      "sublabel": "评委答卷式审查",
+      "tag": "AI 评委"
+    },
+    {
+      "id": "g_prd",
+      "lane": "gate",
+      "col": 4,
+      "type": "security",
+      "label": "PRD 门",
+      "sublabel": "对抗审查、机器算分",
+      "tag": "AI 评委"
+    },
+    {
+      "id": "g_proto",
+      "lane": "gate",
+      "col": 5,
+      "type": "security",
+      "label": "原型合验门",
+      "sublabel": "走查覆盖 + 视觉断言",
+      "tag": "AI 评委"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_own",
+      "from": "h_owner",
+      "to": "a_formalize",
+      "role": "main"
+    },
+    {
+      "id": "e_v1",
+      "from": "a_formalize",
+      "to": "g_req",
+      "role": "main"
+    },
+    {
+      "id": "e_p1",
+      "from": "g_req",
+      "to": "a_split",
+      "role": "main"
+    },
+    {
+      "id": "e_h12",
+      "from": "a_split",
+      "to": "a_4a",
+      "role": "main",
+      "label": "拆出架构腿"
+    },
+    {
+      "id": "e_v2",
+      "from": "a_4a",
+      "to": "g_arch",
+      "role": "main",
+      "label": "答卷送审"
+    },
+    {
+      "id": "e_p2",
+      "from": "g_arch",
+      "to": "a_prd",
+      "role": "main"
+    },
+    {
+      "id": "e_v3",
+      "from": "a_prd",
+      "to": "g_prd",
+      "role": "main",
+      "label": "对抗审查",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "e_p3",
+      "from": "g_prd",
+      "to": "a_proto",
+      "role": "main"
+    },
+    {
+      "id": "e_d4",
+      "from": "a_proto",
+      "to": "g_proto",
+      "role": "main",
+      "label": "送原型合验"
+    },
+    {
+      "id": "e_p4",
+      "from": "g_proto",
+      "to": "a_archive",
+      "role": "main",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e_report",
+      "from": "a_archive",
+      "to": "h_boss",
+      "role": "main"
+    },
+    {
+      "id": "e_fix2",
+      "from": "g_arch",
+      "to": "a_4a",
+      "label": "打回重做",
+      "variant": "dashed",
+      "role": "return"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "机器门禁",
+      "items": [
+        "五阶段检查共约 80 条硬规则，机械问题打回后由修订子代理自动重做，上限 10 次",
+        "原始需求由人确认定稿后冻结，越界修改被 hooks 拦住；每道门都这样打回重做，图上只画一处"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "AI 评委",
+      "items": [
+        "四位固定架构评委（架构评审官、开发者复现官、简洁审查官、视觉验收官）加 N 个按身份卡生成的用户评委，只认证据不认说法",
+        "PASS 判定线由登记表机器计算，评委本身改动也要先过回归考题"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "回归考题",
+      "items": [
+        "两卷考题六颗雷：改任何门禁规则，发版前必跑考题，全逮才许发版",
+        "三颗机械雷全自动验收，三颗评委雷对分核对（当前 3/3）"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "/Users/godw/hindsight/.archify/architecture-hindsight-kb-20261027-235247/candidate.json",
+    "sha256": "9148cd240b3c6dd7720f8f59bdb8073ce2c5b6f9d8935a295473c1c5f56d561a",
+    "bytes": 3646
+  },
+  "artifact": {
+    "path": "/Users/godw/hindsight/.archify/architecture-hindsight-kb-20261027-235247/hindsight-kb-architecture.html",
+    "sha256": "308c2cad3f6a064c2b59cc28f8e2f1729292df3b64ad2aa1ff468dfafa3fca3b",
+    "bytes": 755283
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "/Users/godw/hindsight/.archify/architecture-hindsight-kb-20261027-235247/hindsight-kb-architecture.finalize.json",
+    "summaryReceipt": "/Users/godw/hindsight/.archify/architecture-hindsight-kb-20261027-235247/hindsight-kb-architecture.finalize-summary.json",
+    "browserCheckReceipt": "/Users/godw/hindsight/.archify/architecture-hindsight-kb-20261027-235247/hindsight-kb-architecture.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "invalid-local-release"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 1715,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "routesOverSuggestedStretch": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [],
+      "detours": [
+        {
+          "relationship": {
+            "id": "team-direct",
+            "from": "team",
+            "to": "hindsight",
+            "label": "网页 / 接口直接检索",
+            "collectionIndex": 5,
+            "artifactIndex": 6
+          },
+          "bends": 2,
+          "stretch": 1.412,
+          "directCorridorBlockers": [
+            {
+              "id": "agent",
+              "label": "AI 助手",
+              "box": [
+                300,
+                300,
+                130,
+                64
+              ]
+            }
+          ]
+        }
+      ],
+      "truncated": false
+    },
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}
